@@ -188,7 +188,7 @@ fun SettingsScreen(
                     )
                     Spacer(modifier = Modifier.height(4.dp))
                     Text(
-                        text = "Version 1.0.0 • Native Android Material 3 Expressive",
+                        text = "Version 1.0.1 • Native Android Material 3 Expressive",
                         style = MaterialTheme.typography.bodySmall,
                         color = MaterialTheme.colorScheme.primary
                     )
