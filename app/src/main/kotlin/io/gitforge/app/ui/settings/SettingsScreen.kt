@@ -23,6 +23,7 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
+import io.gitforge.core.designsystem.component.GitForgeCreatorCard
 import io.gitforge.core.designsystem.theme.CodeTypography
 import io.gitforge.core.designsystem.theme.ForgeEmerald
 
@@ -169,6 +170,9 @@ fun SettingsScreen(
                     }
                 }
             }
+
+            // Creator & Author Credits (Arkim @biZenX)
+            GitForgeCreatorCard()
 
             // Application & Security Info Card
             Card(

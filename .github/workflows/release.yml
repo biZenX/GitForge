@@ -1,0 +1,112 @@
+name: Release GitForge
+
+on:
+  push:
+    tags:
+      - 'v*'
+  workflow_dispatch:
+    inputs:
+      tag_name:
+        description: 'Release Tag (e.g. v1.0.0)'
+        required: false
+        default: 'v1.0.0'
+
+permissions:
+  contents: write
+
+concurrency:
+  group: release-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  build-and-release:
+    name: Build & Publish Release
+    runs-on: ubuntu-latest
+    timeout-minutes: 35
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set up JDK 21
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '21'
+          cache: 'gradle'
+
+      - name: Grant execute permission for gradlew
+        run: chmod +x gradlew
+
+      - name: Run Unit Tests
+        run: ./gradlew test --stacktrace
+
+      - name: Assemble Release APK
+        run: ./gradlew assembleRelease --stacktrace
+
+      - name: Prepare Release Artifacts
+        id: prepare_artifacts
+        run: |
+          TAG="${{ github.ref_name }}"
+          if [ -z "$TAG" ] || [ "$TAG" = "main" ]; then
+            TAG="${{ github.event.inputs.tag_name || 'v1.0.0' }}"
+          fi
+          echo "TAG=$TAG" >> $GITHUB_ENV
+          mkdir -p dist
+          cp app/build/outputs/apk/release/app-release.apk dist/GitForge-$TAG.apk
+          cd dist
+          sha256sum GitForge-$TAG.apk > GitForge-$TAG.apk.sha256
+          echo "Calculated SHA-256:"
+          cat GitForge-$TAG.apk.sha256
+          cd ..
+
+      - name: Create or Update GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ env.TAG }}
+          name: GitForge ${{ env.TAG }} — Production Release
+          files: |
+            dist/GitForge-*.apk
+            dist/GitForge-*.apk.sha256
+          draft: false
+          prerelease: false
+          body: |
+            # 🚀 GitForge ${{ env.TAG }} — Production Release
+
+            [![Creator](https://img.shields.io/badge/Created%20by-Arkim%20(@biZenX)-orange?logo=github&style=for-the-badge)](https://github.com/biZenX)
+            [![Platform](https://img.shields.io/badge/Platform-Android%208.0%2B%20(API%2027--36)-brightgreen?logo=android&style=for-the-badge)](https://github.com/biZenX/GitForge)
+            [![License](https://img.shields.io/badge/License-GNU%20GPLv3-blue?style=for-the-badge)](https://github.com/biZenX/GitForge/blob/main/LICENSE)
+
+            ---
+
+            ### 👨‍💻 Created & Designed by
+            <p align="left">
+              <a href="https://github.com/biZenX">
+                <img src="https://github.com/biZenX.png" width="96" height="96" style="border-radius: 28px;" alt="Arkim" />
+              </a>
+              <br />
+              <strong>Arkim (<a href="https://github.com/biZenX">@biZenX</a>)</strong><br />
+              <em>Lead Architect & Android Engineer</em>
+            </p>
+
+            ---
+
+            ### 🌟 Key Highlights
+            - **Material 3 Expressive UI:** Built with 28dp squircle cards, warm tonal surfaces, and pill action chips inspired by modern high-end Android design.
+            - **Pure On-Device JGit Engine:** Real Git operations executed locally (clone, branch, stage, commit, push, diff, and conflict resolution).
+            - **Code Studio:** Mobile syntax-highlighting code editor with line numbers, search, and buffer recovery.
+            - **Sandboxed Terminal:** Command runner with process isolation and stdout/stderr capture.
+            - **Full GitHub API:** Issues, Pull Requests, Workflow runs & logs, Notifications, and Releases.
+
+            ---
+
+            ### 📦 Checksums & Verification
+            Verify your download using SHA-256:
+            ```bash
+            sha256sum -c GitForge-${{ env.TAG }}.apk.sha256
+            ```
+            © 2026 Arkim (@biZenX). Licensed under the GNU General Public License v3.0 (GPLv3).
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

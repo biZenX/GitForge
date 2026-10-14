@@ -111,7 +111,33 @@ app/build/outputs/apk/release/app-release.apk
 
 ---
 
-## 📜 License
+## 👨‍💻 Author & Creator
 
+<div align="left">
+  <table>
+    <tr>
+      <td width="120" valign="top">
+        <a href="https://github.com/biZenX">
+          <img src="https://github.com/biZenX.png" width="110" height="110" style="border-radius: 28px;" alt="Arkim (@biZenX)" />
+        </a>
+      </td>
+      <td valign="middle">
+        <h3>Arkim (<a href="https://github.com/biZenX">@biZenX</a>)</h3>
+        <p><strong>Lead Architect & Creator of GitForge</strong></p>
+        <p>Crafting production-grade native Android applications with Material 3 Expressive, pure on-device JGit, and local development workspaces.</p>
+        <p>
+          <a href="https://github.com/biZenX"><img src="https://img.shields.io/badge/GitHub-@biZenX-181717?logo=github&style=flat-square" alt="GitHub" /></a>
+          <a href="https://bizenx.github.io/GitForge/"><img src="https://img.shields.io/badge/Website-bizenx.github.io%2FGitForge-orange?logo=googlechrome&style=flat-square" alt="Website" /></a>
+        </p>
+      </td>
+    </tr>
+  </table>
+</div>
+
+---
+
+## 📜 Copyright & License
+
+Copyright © 2026 **Arkim** ([@biZenX](https://github.com/biZenX)). All Rights Reserved.  
 This project is licensed under the **GNU General Public License v3.0 (GPLv3)**.  
 See the [LICENSE](LICENSE) file for complete terms and copyleft guarantees.

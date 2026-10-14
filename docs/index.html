@@ -754,6 +754,91 @@
       line-height: 1.4;
     }
 
+    /* Creator Section (sameerasw.com authentic style) */
+    .creator-card {
+      background: var(--md-sys-color-surface-container);
+      border: 1px solid var(--md-sys-color-outline);
+      border-radius: var(--radius-card);
+      padding: 2.25rem;
+      margin-top: 1rem;
+      display: flex;
+      gap: 2rem;
+      align-items: center;
+    }
+
+    .creator-avatar-wrapper {
+      position: relative;
+      width: 120px;
+      height: 120px;
+      flex-shrink: 0;
+    }
+
+    .creator-avatar-bg {
+      position: absolute;
+      top: -8px;
+      left: -8px;
+      width: 136px;
+      height: 136px;
+      clip-path: url(#m3-flower-12);
+      -webkit-clip-path: url(#m3-flower-12);
+      background: linear-gradient(135deg, var(--primary-color-dim) 0%, var(--primary-color) 100%);
+      opacity: 0.35;
+      animation: spinFlowerPath 40s linear infinite;
+    }
+
+    .creator-avatar-img {
+      position: relative;
+      width: 120px;
+      height: 120px;
+      border-radius: 28px;
+      object-fit: cover;
+      border: 2px solid var(--primary-color);
+      box-shadow: 0 8px 30px rgba(0, 0, 0, 0.4);
+      z-index: 2;
+    }
+
+    .creator-info {
+      flex: 1;
+    }
+
+    .creator-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 0.75rem;
+      margin-bottom: 0.75rem;
+    }
+
+    .creator-name {
+      font-size: 1.6rem;
+      font-weight: 800;
+      color: var(--md-sys-color-on-surface);
+    }
+
+    .creator-handle {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      color: var(--primary-color);
+      text-decoration: none;
+      font-weight: 600;
+      font-size: 0.95rem;
+    }
+
+    .creator-bio {
+      font-size: 0.98rem;
+      color: var(--md-sys-color-on-surface-variant);
+      line-height: 1.6;
+      margin-bottom: 1.25rem;
+    }
+
+    .creator-pills {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.6rem;
+    }
+
     /* Download Section (Direct APK Hub) */
     .download-card {
       background: linear-gradient(145deg, var(--md-sys-color-surface-container) 0%, var(--md-sys-color-surface-container-high) 100%);
@@ -887,6 +972,7 @@
       <li><a href="#showcase"><span class="material-symbols-rounded">category</span><span class="caption">Showcase</span></a></li>
       <li><a href="#interactive"><span class="material-symbols-rounded">smartphone</span><span class="caption">Interactive</span></a></li>
       <li><a href="#architecture"><span class="material-symbols-rounded">account_tree</span><span class="caption">Architecture</span></a></li>
+      <li><a href="#creator"><span class="material-symbols-rounded">person</span><span class="caption">Creator</span></a></li>
       <li><a href="#download"><span class="material-symbols-rounded">download</span><span class="caption">Download</span></a></li>
     </ul>
   </nav>
@@ -932,7 +1018,7 @@
             </span>
             <span class="socials-chip">
               <span class="material-symbols-rounded">verified</span>
-              <span>Apache 2.0 Open Source</span>
+              <span>GNU GPLv3 Open Source</span>
             </span>
           </div>
         </div>
@@ -1114,12 +1200,10 @@
             <div id="sim-view-home">
               <div class="app-hero-card">
                 <div class="app-profile-row">
-                  <div class="app-avatar">
-                    <span class="material-symbols-rounded">person</span>
-                  </div>
+                  <img src="https://github.com/biZenX.png" alt="Arkim" style="width:42px;height:42px;border-radius:14px;object-fit:cover;border:1.5px solid var(--primary-color);" />
                   <div style="flex:1;">
-                    <div style="font-weight:700;font-size:1.05rem;">Ali Mohammed</div>
-                    <div style="font-size:0.8rem;color:var(--primary-color);">@bizenx</div>
+                    <div style="font-weight:700;font-size:1.05rem;">Arkim</div>
+                    <div style="font-size:0.8rem;color:var(--primary-color);">@biZenX • Lead Architect</div>
                   </div>
                   <span class="app-badge-pill" style="background:rgba(52, 211, 153, 0.15);color:var(--emerald-accent);">Active</span>
                 </div>
@@ -1316,6 +1400,46 @@ $ </div>
       </div>
     </section>
 
+    <!-- Creator Section (Arkim @biZenX) -->
+    <section id="creator">
+      <div class="section-heading">
+        <h2>About the Creator</h2>
+        <span class="pill-badge">Architect & Author</span>
+      </div>
+
+      <div class="creator-card">
+        <div class="creator-avatar-wrapper">
+          <div class="creator-avatar-bg"></div>
+          <img src="https://github.com/biZenX.png" alt="Arkim" class="creator-avatar-img" />
+        </div>
+        <div class="creator-info">
+          <div class="creator-header">
+            <div>
+              <div class="creator-name">Arkim</div>
+              <a href="https://github.com/biZenX" target="_blank" rel="noopener noreferrer" class="creator-handle">
+                <i class="fa-brands fa-github"></i>
+                <span>@biZenX</span>
+                <span class="material-symbols-rounded" style="font-size:0.9rem;">open_in_new</span>
+              </a>
+            </div>
+            <span class="pill-badge" style="background:rgba(255,158,121,0.15);color:var(--primary-color);border:1px solid rgba(255,158,121,0.3);">
+              Lead Android Architect
+            </span>
+          </div>
+          <p class="creator-bio">
+            Creator and lead architect of <strong>GitForge</strong>. Specializing in high-performance native Android engineering, Material 3 Expressive UI design systems, and on-device Git tooling for developers worldwide.
+          </p>
+          <div class="creator-pills">
+            <span class="tag-pill"><i class="fa-brands fa-android"></i> Android Native</span>
+            <span class="tag-pill"><i class="fa-brands fa-git-alt"></i> JGit Engine</span>
+            <span class="tag-pill">Material 3 Expressive</span>
+            <span class="tag-pill">Kotlin Coroutines & Flow</span>
+            <span class="tag-pill">GNU GPLv3</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
     <!-- Download Section -->
     <section id="download">
       <div class="section-heading">
@@ -1351,7 +1475,7 @@ $ </div>
             SHA-256 Checksum Verification
           </div>
           <div class="hash-box">
-            <span class="hash-text" id="apk-sha256">294ce6f5c5886e202139940f7e7deb4cbbfd77422ea00754f75b5ef99f4e29c0</span>
+            <span class="hash-text" id="apk-sha256">e59fc5585325d064d18c642cec0c6d6b10ac7ce1467b2b8d2927fabe0dc352d1</span>
             <button class="copy-btn" onclick="copyChecksum()">
               <span class="material-symbols-rounded" id="copy-icon" style="font-size:1.1rem">content_copy</span>
               <span id="copy-label">Copy</span>
@@ -1370,8 +1494,8 @@ $ </div>
     </section>
 
     <footer>
-      <p>GitForge is open-source software licensed under the <a href="https://github.com/biZenX/GitForge/blob/main/LICENSE" target="_blank" style="color:var(--primary-color);text-decoration:none;">Apache License 2.0</a>.</p>
-      <p style="margin-top:0.4rem;color:#786F69;">Inspired by Material 3 Expressive, Wafeer, and modern Android design systems.</p>
+      <p>© 2026 <strong>Arkim (<a href="https://github.com/biZenX" target="_blank" rel="noopener noreferrer" style="color:var(--primary-color);text-decoration:none;">@biZenX</a>)</strong>. GitForge is open-source software licensed under the <a href="https://github.com/biZenX/GitForge/blob/main/LICENSE" target="_blank" rel="noopener noreferrer" style="color:var(--primary-color);text-decoration:none;">GNU General Public License v3.0 (GPLv3)</a>.</p>
+      <p style="margin-top:0.4rem;color:#786F69;">Crafted with Material 3 Expressive, Wafeer aesthetics, and native Android DNA.</p>
     </footer>
   </div>
 

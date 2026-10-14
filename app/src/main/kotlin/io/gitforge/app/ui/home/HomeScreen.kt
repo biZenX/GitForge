@@ -48,6 +48,7 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
+import io.gitforge.core.designsystem.component.GitForgeCreatorCard
 import io.gitforge.core.designsystem.component.GitForgeEmptyView
 import io.gitforge.core.designsystem.component.GitForgeErrorView
 import io.gitforge.core.designsystem.component.GitForgeLanguageDot
@@ -160,33 +161,27 @@ fun HomeScreen(
                                 }
                             }
                         } else {
-                            Box(
+                            AsyncImage(
+                                model = "https://github.com/biZenX.png",
+                                contentDescription = "Arkim Avatar",
                                 modifier = Modifier
                                     .size(54.dp)
                                     .clip(IconContainerShape)
-                                    .background(TerracottaPrimaryDark.copy(alpha = 0.15f))
-                                    .border(1.dp, TerracottaPrimaryDark.copy(alpha = 0.3f), IconContainerShape),
-                                contentAlignment = Alignment.Center
-                            ) {
-                                Icon(
-                                    imageVector = Icons.Default.Code,
-                                    contentDescription = null,
-                                    tint = TerracottaPrimaryDark,
-                                    modifier = Modifier.size(28.dp)
-                                )
-                            }
+                                    .border(1.5.dp, TerracottaPrimaryDark, IconContainerShape)
+                            )
                             Spacer(modifier = Modifier.width(14.dp))
                             Column(modifier = Modifier.weight(1f)) {
                                 Text(
-                                    text = "GitForge Workspace",
+                                    text = "Arkim",
                                     style = MaterialTheme.typography.titleLarge,
                                     fontWeight = FontWeight.Bold,
                                     color = MaterialTheme.colorScheme.onSurface
                                 )
                                 Text(
-                                    text = "Native GitHub & Local Git",
+                                    text = "@biZenX • GitForge Creator",
                                     style = MaterialTheme.typography.bodySmall,
-                                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                                    color = TerracottaPrimaryDark,
+                                    fontWeight = FontWeight.SemiBold
                                 )
                             }
                             Button(
@@ -360,6 +355,12 @@ fun HomeScreen(
                     }
                 )
             }
+        }
+
+        // Creator Credits Card (Arkim @biZenX)
+        item {
+            Spacer(modifier = Modifier.height(4.dp))
+            GitForgeCreatorCard()
         }
     }
 }
