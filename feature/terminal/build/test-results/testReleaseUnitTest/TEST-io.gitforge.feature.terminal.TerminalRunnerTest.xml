@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="io.gitforge.feature.terminal.TerminalRunnerTest" tests="5" skipped="0" failures="0" errors="0" timestamp="2026-10-14T17:44:17.016Z" hostname="fedora" time="0.227">
+  <properties/>
+  <testcase name="cd escapes are blocked by sandbox" classname="io.gitforge.feature.terminal.TerminalRunnerTest" time="0.164"/>
+  <testcase name="mkdir touch and ls create and list files" classname="io.gitforge.feature.terminal.TerminalRunnerTest" time="0.037"/>
+  <testcase name="pwd returns workspace root initially" classname="io.gitforge.feature.terminal.TerminalRunnerTest" time="0.011"/>
+  <testcase name="help prints available commands" classname="io.gitforge.feature.terminal.TerminalRunnerTest" time="0.005"/>
+  <testcase name="echo returns text argument" classname="io.gitforge.feature.terminal.TerminalRunnerTest" time="0.004"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

@@ -1,0 +1,22 @@
+[
+    {
+        "merged": "io.gitforge.app-release-55:/mipmap-anydpi-v26_ic_launcher.xml.flat",
+        "source": "io.gitforge.app-main-56:/mipmap-anydpi-v26/ic_launcher.xml"
+    },
+    {
+        "merged": "io.gitforge.app-release-55:/mipmap-anydpi-v26_ic_launcher_round.xml.flat",
+        "source": "io.gitforge.app-main-56:/mipmap-anydpi-v26/ic_launcher_round.xml"
+    },
+    {
+        "merged": "io.gitforge.app-release-55:/xml_data_extraction_rules.xml.flat",
+        "source": "io.gitforge.app-main-56:/xml/data_extraction_rules.xml"
+    },
+    {
+        "merged": "io.gitforge.app-release-55:/xml_backup_rules.xml.flat",
+        "source": "io.gitforge.app-main-56:/xml/backup_rules.xml"
+    },
+    {
+        "merged": "io.gitforge.app-release-55:/drawable_ic_launcher_foreground.xml.flat",
+        "source": "io.gitforge.app-main-56:/drawable/ic_launcher_foreground.xml"
+    }
+]

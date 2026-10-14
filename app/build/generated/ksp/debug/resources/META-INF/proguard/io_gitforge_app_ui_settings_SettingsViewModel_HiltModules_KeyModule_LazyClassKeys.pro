@@ -1,0 +1,1 @@
+-keep,allowobfuscation,allowshrinking class io.gitforge.app.ui.settings.SettingsViewModel

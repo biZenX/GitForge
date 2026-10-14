@@ -1,0 +1,16 @@
+-- Merging decision tree log ---
+manifest
+ADDED from /home/zen/Andohub/feature/terminal/build/intermediates/tmp/ProcessLibraryManifest/debug/tempAndroidManifest10982647175768358997.xml:2:13-83
+INJECTED from /home/zen/Andohub/feature/terminal/build/intermediates/tmp/ProcessLibraryManifest/debug/tempAndroidManifest10982647175768358997.xml:2:13-83
+	package
+		INJECTED from /home/zen/Andohub/feature/terminal/build/intermediates/tmp/ProcessLibraryManifest/debug/tempAndroidManifest10982647175768358997.xml
+	xmlns:android
+		ADDED from /home/zen/Andohub/feature/terminal/build/intermediates/tmp/ProcessLibraryManifest/debug/tempAndroidManifest10982647175768358997.xml:2:23-81
+uses-sdk
+INJECTED from /home/zen/Andohub/feature/terminal/build/intermediates/tmp/ProcessLibraryManifest/debug/tempAndroidManifest10982647175768358997.xml reason: use-sdk injection requested
+INJECTED from /home/zen/Andohub/feature/terminal/build/intermediates/tmp/ProcessLibraryManifest/debug/tempAndroidManifest10982647175768358997.xml
+INJECTED from /home/zen/Andohub/feature/terminal/build/intermediates/tmp/ProcessLibraryManifest/debug/tempAndroidManifest10982647175768358997.xml
+	android:targetSdkVersion
+		INJECTED from /home/zen/Andohub/feature/terminal/build/intermediates/tmp/ProcessLibraryManifest/debug/tempAndroidManifest10982647175768358997.xml
+	android:minSdkVersion
+		INJECTED from /home/zen/Andohub/feature/terminal/build/intermediates/tmp/ProcessLibraryManifest/debug/tempAndroidManifest10982647175768358997.xml

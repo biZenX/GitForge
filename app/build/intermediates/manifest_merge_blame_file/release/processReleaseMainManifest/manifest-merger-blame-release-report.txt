@@ -1,0 +1,187 @@
+1<?xml version="1.0" encoding="utf-8"?>
+2<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+3    package="io.gitforge.app"
+4    android:versionCode="1"
+5    android:versionName="1.0.0" >
+6
+7    <uses-sdk
+8        android:minSdkVersion="26"
+9        android:targetSdkVersion="36" />
+10
+11    <uses-permission android:name="android.permission.INTERNET" />
+11-->/home/zen/Andohub/app/src/main/AndroidManifest.xml:4:5-67
+11-->/home/zen/Andohub/app/src/main/AndroidManifest.xml:4:22-64
+12    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+12-->/home/zen/Andohub/app/src/main/AndroidManifest.xml:5:5-79
+12-->/home/zen/Andohub/app/src/main/AndroidManifest.xml:5:22-76
+13
+14    <permission
+14-->[androidx.core:core:1.18.0] /home/zen/.gradle/caches/8.13/transforms/07f009f9916997f9cfc37629a9219f19/transformed/core-1.18.0/AndroidManifest.xml:22:5-24:47
+15        android:name="io.gitforge.app.DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION"
+15-->[androidx.core:core:1.18.0] /home/zen/.gradle/caches/8.13/transforms/07f009f9916997f9cfc37629a9219f19/transformed/core-1.18.0/AndroidManifest.xml:23:9-81
+16        android:protectionLevel="signature" />
+16-->[androidx.core:core:1.18.0] /home/zen/.gradle/caches/8.13/transforms/07f009f9916997f9cfc37629a9219f19/transformed/core-1.18.0/AndroidManifest.xml:24:9-44
+17
+18    <uses-permission android:name="io.gitforge.app.DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION" />
+18-->[androidx.core:core:1.18.0] /home/zen/.gradle/caches/8.13/transforms/07f009f9916997f9cfc37629a9219f19/transformed/core-1.18.0/AndroidManifest.xml:26:5-97
+18-->[androidx.core:core:1.18.0] /home/zen/.gradle/caches/8.13/transforms/07f009f9916997f9cfc37629a9219f19/transformed/core-1.18.0/AndroidManifest.xml:26:22-94
+19
+20    <application
+20-->/home/zen/Andohub/app/src/main/AndroidManifest.xml:7:5-39:19
+21        android:name="io.gitforge.app.GitForgeApplication"
+21-->/home/zen/Andohub/app/src/main/AndroidManifest.xml:8:9-44
+22        android:allowBackup="true"
+22-->/home/zen/Andohub/app/src/main/AndroidManifest.xml:9:9-35
+23        android:appComponentFactory="androidx.core.app.CoreComponentFactory"
+23-->[androidx.core:core:1.18.0] /home/zen/.gradle/caches/8.13/transforms/07f009f9916997f9cfc37629a9219f19/transformed/core-1.18.0/AndroidManifest.xml:28:18-86
+24        android:dataExtractionRules="@xml/data_extraction_rules"
+24-->/home/zen/Andohub/app/src/main/AndroidManifest.xml:10:9-65
+25        android:extractNativeLibs="false"
+26        android:fullBackupContent="@xml/backup_rules"
+26-->/home/zen/Andohub/app/src/main/AndroidManifest.xml:11:9-54
+27        android:icon="@mipmap/ic_launcher"
+27-->/home/zen/Andohub/app/src/main/AndroidManifest.xml:12:9-43
+28        android:label="@string/app_name"
+28-->/home/zen/Andohub/app/src/main/AndroidManifest.xml:13:9-41
+29        android:roundIcon="@mipmap/ic_launcher_round"
+29-->/home/zen/Andohub/app/src/main/AndroidManifest.xml:14:9-54
+30        android:supportsRtl="true"
+30-->/home/zen/Andohub/app/src/main/AndroidManifest.xml:15:9-35
+31        android:theme="@style/Theme.GitForge" >
+31-->/home/zen/Andohub/app/src/main/AndroidManifest.xml:16:9-46
+32        <activity
+32-->/home/zen/Andohub/app/src/main/AndroidManifest.xml:18:9-38:20
+33            android:name="io.gitforge.app.MainActivity"
+33-->/home/zen/Andohub/app/src/main/AndroidManifest.xml:19:13-41
+34            android:exported="true"
+34-->/home/zen/Andohub/app/src/main/AndroidManifest.xml:20:13-36
+35            android:theme="@style/Theme.GitForge"
+35-->/home/zen/Andohub/app/src/main/AndroidManifest.xml:21:13-50
+36            android:windowSoftInputMode="adjustResize" >
+36-->/home/zen/Andohub/app/src/main/AndroidManifest.xml:22:13-55
+37            <intent-filter>
+37-->/home/zen/Andohub/app/src/main/AndroidManifest.xml:23:13-26:29
+38                <action android:name="android.intent.action.MAIN" />
+38-->/home/zen/Andohub/app/src/main/AndroidManifest.xml:24:17-69
+38-->/home/zen/Andohub/app/src/main/AndroidManifest.xml:24:25-66
+39
+40                <category android:name="android.intent.category.LAUNCHER" />
+40-->/home/zen/Andohub/app/src/main/AndroidManifest.xml:25:17-77
+40-->/home/zen/Andohub/app/src/main/AndroidManifest.xml:25:27-74
+41            </intent-filter>
+42
+43            <!-- OAuth Deep Link Callback -->
+44            <intent-filter>
+44-->/home/zen/Andohub/app/src/main/AndroidManifest.xml:29:13-37:29
+45                <action android:name="android.intent.action.VIEW" />
+45-->/home/zen/Andohub/app/src/main/AndroidManifest.xml:30:17-69
+45-->/home/zen/Andohub/app/src/main/AndroidManifest.xml:30:25-66
+46
+47                <category android:name="android.intent.category.DEFAULT" />
+47-->/home/zen/Andohub/app/src/main/AndroidManifest.xml:31:17-76
+47-->/home/zen/Andohub/app/src/main/AndroidManifest.xml:31:27-73
+48                <category android:name="android.intent.category.BROWSABLE" />
+48-->/home/zen/Andohub/app/src/main/AndroidManifest.xml:32:17-78
+48-->/home/zen/Andohub/app/src/main/AndroidManifest.xml:32:27-75
+49
+50                <data
+50-->/home/zen/Andohub/app/src/main/AndroidManifest.xml:33:17-36:49
+51                    android:host="oauth"
+51-->/home/zen/Andohub/app/src/main/AndroidManifest.xml:34:21-41
+52                    android:path="/callback"
+52-->/home/zen/Andohub/app/src/main/AndroidManifest.xml:35:21-45
+53                    android:scheme="gitforge" />
+53-->/home/zen/Andohub/app/src/main/AndroidManifest.xml:36:21-46
+54            </intent-filter>
+55        </activity>
+56
+57        <service
+57-->[androidx.room:room-runtime-android:2.7.2] /home/zen/.gradle/caches/8.13/transforms/a838bca78367484cfc30653ea507ecf3/transformed/room-runtime-release/AndroidManifest.xml:24:9-28:63
+58            android:name="androidx.room.MultiInstanceInvalidationService"
+58-->[androidx.room:room-runtime-android:2.7.2] /home/zen/.gradle/caches/8.13/transforms/a838bca78367484cfc30653ea507ecf3/transformed/room-runtime-release/AndroidManifest.xml:25:13-74
+59            android:directBootAware="true"
+59-->[androidx.room:room-runtime-android:2.7.2] /home/zen/.gradle/caches/8.13/transforms/a838bca78367484cfc30653ea507ecf3/transformed/room-runtime-release/AndroidManifest.xml:26:13-43
+60            android:exported="false" />
+60-->[androidx.room:room-runtime-android:2.7.2] /home/zen/.gradle/caches/8.13/transforms/a838bca78367484cfc30653ea507ecf3/transformed/room-runtime-release/AndroidManifest.xml:27:13-37
+61
+62        <provider
+62-->[androidx.emoji2:emoji2:1.4.0] /home/zen/.gradle/caches/8.13/transforms/5be4f9dfe0da4527ebae2e0773f121b2/transformed/emoji2-1.4.0/AndroidManifest.xml:24:9-32:20
+63            android:name="androidx.startup.InitializationProvider"
+63-->[androidx.emoji2:emoji2:1.4.0] /home/zen/.gradle/caches/8.13/transforms/5be4f9dfe0da4527ebae2e0773f121b2/transformed/emoji2-1.4.0/AndroidManifest.xml:25:13-67
+64            android:authorities="io.gitforge.app.androidx-startup"
+64-->[androidx.emoji2:emoji2:1.4.0] /home/zen/.gradle/caches/8.13/transforms/5be4f9dfe0da4527ebae2e0773f121b2/transformed/emoji2-1.4.0/AndroidManifest.xml:26:13-68
+65            android:exported="false" >
+65-->[androidx.emoji2:emoji2:1.4.0] /home/zen/.gradle/caches/8.13/transforms/5be4f9dfe0da4527ebae2e0773f121b2/transformed/emoji2-1.4.0/AndroidManifest.xml:27:13-37
+66            <meta-data
+66-->[androidx.emoji2:emoji2:1.4.0] /home/zen/.gradle/caches/8.13/transforms/5be4f9dfe0da4527ebae2e0773f121b2/transformed/emoji2-1.4.0/AndroidManifest.xml:29:13-31:52
+67                android:name="androidx.emoji2.text.EmojiCompatInitializer"
+67-->[androidx.emoji2:emoji2:1.4.0] /home/zen/.gradle/caches/8.13/transforms/5be4f9dfe0da4527ebae2e0773f121b2/transformed/emoji2-1.4.0/AndroidManifest.xml:30:17-75
+68                android:value="androidx.startup" />
+68-->[androidx.emoji2:emoji2:1.4.0] /home/zen/.gradle/caches/8.13/transforms/5be4f9dfe0da4527ebae2e0773f121b2/transformed/emoji2-1.4.0/AndroidManifest.xml:31:17-49
+69            <meta-data
+69-->[androidx.lifecycle:lifecycle-process:2.10.0] /home/zen/.gradle/caches/8.13/transforms/e9a3c471eab883b8cd75c4790a155c72/transformed/lifecycle-process-2.10.0/AndroidManifest.xml:29:13-31:52
+70                android:name="androidx.lifecycle.ProcessLifecycleInitializer"
+70-->[androidx.lifecycle:lifecycle-process:2.10.0] /home/zen/.gradle/caches/8.13/transforms/e9a3c471eab883b8cd75c4790a155c72/transformed/lifecycle-process-2.10.0/AndroidManifest.xml:30:17-78
+71                android:value="androidx.startup" />
+71-->[androidx.lifecycle:lifecycle-process:2.10.0] /home/zen/.gradle/caches/8.13/transforms/e9a3c471eab883b8cd75c4790a155c72/transformed/lifecycle-process-2.10.0/AndroidManifest.xml:31:17-49
+72            <meta-data
+72-->[androidx.profileinstaller:profileinstaller:1.4.0] /home/zen/.gradle/caches/8.13/transforms/c5ea1d0aca1a0d60ec257d915f395921/transformed/profileinstaller-1.4.0/AndroidManifest.xml:29:13-31:52
+73                android:name="androidx.profileinstaller.ProfileInstallerInitializer"
+73-->[androidx.profileinstaller:profileinstaller:1.4.0] /home/zen/.gradle/caches/8.13/transforms/c5ea1d0aca1a0d60ec257d915f395921/transformed/profileinstaller-1.4.0/AndroidManifest.xml:30:17-85
+74                android:value="androidx.startup" />
+74-->[androidx.profileinstaller:profileinstaller:1.4.0] /home/zen/.gradle/caches/8.13/transforms/c5ea1d0aca1a0d60ec257d915f395921/transformed/profileinstaller-1.4.0/AndroidManifest.xml:31:17-49
+75        </provider>
+76
+77        <uses-library
+77-->[androidx.window:window:1.5.0] /home/zen/.gradle/caches/8.13/transforms/4c48707d1bb74f04575c9eec0c5407cc/transformed/window-1.5.0/AndroidManifest.xml:23:9-25:40
+78            android:name="androidx.window.extensions"
+78-->[androidx.window:window:1.5.0] /home/zen/.gradle/caches/8.13/transforms/4c48707d1bb74f04575c9eec0c5407cc/transformed/window-1.5.0/AndroidManifest.xml:24:13-54
+79            android:required="false" />
+79-->[androidx.window:window:1.5.0] /home/zen/.gradle/caches/8.13/transforms/4c48707d1bb74f04575c9eec0c5407cc/transformed/window-1.5.0/AndroidManifest.xml:25:13-37
+80        <uses-library
+80-->[androidx.window:window:1.5.0] /home/zen/.gradle/caches/8.13/transforms/4c48707d1bb74f04575c9eec0c5407cc/transformed/window-1.5.0/AndroidManifest.xml:26:9-28:40
+81            android:name="androidx.window.sidecar"
+81-->[androidx.window:window:1.5.0] /home/zen/.gradle/caches/8.13/transforms/4c48707d1bb74f04575c9eec0c5407cc/transformed/window-1.5.0/AndroidManifest.xml:27:13-51
+82            android:required="false" />
+82-->[androidx.window:window:1.5.0] /home/zen/.gradle/caches/8.13/transforms/4c48707d1bb74f04575c9eec0c5407cc/transformed/window-1.5.0/AndroidManifest.xml:28:13-37
+83
+84        <receiver
+84-->[androidx.profileinstaller:profileinstaller:1.4.0] /home/zen/.gradle/caches/8.13/transforms/c5ea1d0aca1a0d60ec257d915f395921/transformed/profileinstaller-1.4.0/AndroidManifest.xml:34:9-52:20
+85            android:name="androidx.profileinstaller.ProfileInstallReceiver"
+85-->[androidx.profileinstaller:profileinstaller:1.4.0] /home/zen/.gradle/caches/8.13/transforms/c5ea1d0aca1a0d60ec257d915f395921/transformed/profileinstaller-1.4.0/AndroidManifest.xml:35:13-76
+86            android:directBootAware="false"
+86-->[androidx.profileinstaller:profileinstaller:1.4.0] /home/zen/.gradle/caches/8.13/transforms/c5ea1d0aca1a0d60ec257d915f395921/transformed/profileinstaller-1.4.0/AndroidManifest.xml:36:13-44
+87            android:enabled="true"
+87-->[androidx.profileinstaller:profileinstaller:1.4.0] /home/zen/.gradle/caches/8.13/transforms/c5ea1d0aca1a0d60ec257d915f395921/transformed/profileinstaller-1.4.0/AndroidManifest.xml:37:13-35
+88            android:exported="true"
+88-->[androidx.profileinstaller:profileinstaller:1.4.0] /home/zen/.gradle/caches/8.13/transforms/c5ea1d0aca1a0d60ec257d915f395921/transformed/profileinstaller-1.4.0/AndroidManifest.xml:38:13-36
+89            android:permission="android.permission.DUMP" >
+89-->[androidx.profileinstaller:profileinstaller:1.4.0] /home/zen/.gradle/caches/8.13/transforms/c5ea1d0aca1a0d60ec257d915f395921/transformed/profileinstaller-1.4.0/AndroidManifest.xml:39:13-57
+90            <intent-filter>
+90-->[androidx.profileinstaller:profileinstaller:1.4.0] /home/zen/.gradle/caches/8.13/transforms/c5ea1d0aca1a0d60ec257d915f395921/transformed/profileinstaller-1.4.0/AndroidManifest.xml:40:13-42:29
+91                <action android:name="androidx.profileinstaller.action.INSTALL_PROFILE" />
+91-->[androidx.profileinstaller:profileinstaller:1.4.0] /home/zen/.gradle/caches/8.13/transforms/c5ea1d0aca1a0d60ec257d915f395921/transformed/profileinstaller-1.4.0/AndroidManifest.xml:41:17-91
+91-->[androidx.profileinstaller:profileinstaller:1.4.0] /home/zen/.gradle/caches/8.13/transforms/c5ea1d0aca1a0d60ec257d915f395921/transformed/profileinstaller-1.4.0/AndroidManifest.xml:41:25-88
+92            </intent-filter>
+93            <intent-filter>
+93-->[androidx.profileinstaller:profileinstaller:1.4.0] /home/zen/.gradle/caches/8.13/transforms/c5ea1d0aca1a0d60ec257d915f395921/transformed/profileinstaller-1.4.0/AndroidManifest.xml:43:13-45:29
+94                <action android:name="androidx.profileinstaller.action.SKIP_FILE" />
+94-->[androidx.profileinstaller:profileinstaller:1.4.0] /home/zen/.gradle/caches/8.13/transforms/c5ea1d0aca1a0d60ec257d915f395921/transformed/profileinstaller-1.4.0/AndroidManifest.xml:44:17-85
+94-->[androidx.profileinstaller:profileinstaller:1.4.0] /home/zen/.gradle/caches/8.13/transforms/c5ea1d0aca1a0d60ec257d915f395921/transformed/profileinstaller-1.4.0/AndroidManifest.xml:44:25-82
+95            </intent-filter>
+96            <intent-filter>
+96-->[androidx.profileinstaller:profileinstaller:1.4.0] /home/zen/.gradle/caches/8.13/transforms/c5ea1d0aca1a0d60ec257d915f395921/transformed/profileinstaller-1.4.0/AndroidManifest.xml:46:13-48:29
+97                <action android:name="androidx.profileinstaller.action.SAVE_PROFILE" />
+97-->[androidx.profileinstaller:profileinstaller:1.4.0] /home/zen/.gradle/caches/8.13/transforms/c5ea1d0aca1a0d60ec257d915f395921/transformed/profileinstaller-1.4.0/AndroidManifest.xml:47:17-88
+97-->[androidx.profileinstaller:profileinstaller:1.4.0] /home/zen/.gradle/caches/8.13/transforms/c5ea1d0aca1a0d60ec257d915f395921/transformed/profileinstaller-1.4.0/AndroidManifest.xml:47:25-85
+98            </intent-filter>
+99            <intent-filter>
+99-->[androidx.profileinstaller:profileinstaller:1.4.0] /home/zen/.gradle/caches/8.13/transforms/c5ea1d0aca1a0d60ec257d915f395921/transformed/profileinstaller-1.4.0/AndroidManifest.xml:49:13-51:29
+100                <action android:name="androidx.profileinstaller.action.BENCHMARK_OPERATION" />
+100-->[androidx.profileinstaller:profileinstaller:1.4.0] /home/zen/.gradle/caches/8.13/transforms/c5ea1d0aca1a0d60ec257d915f395921/transformed/profileinstaller-1.4.0/AndroidManifest.xml:50:17-95
+100-->[androidx.profileinstaller:profileinstaller:1.4.0] /home/zen/.gradle/caches/8.13/transforms/c5ea1d0aca1a0d60ec257d915f395921/transformed/profileinstaller-1.4.0/AndroidManifest.xml:50:25-92
+101            </intent-filter>
+102        </receiver>
+103    </application>
+104
+105</manifest>
