@@ -221,7 +221,7 @@ fun CodeStudioTabScreen(
 
         // Workspace Selector Row if multiple workspaces
         if (uiState.workspaces.size > 1) {
-            ScrollableTabRow(
+            PrimaryScrollableTabRow(
                 selectedTabIndex = uiState.workspaces.indexOfFirst { it.id == uiState.selectedWorkspace?.id }.coerceAtLeast(0),
                 edgePadding = 0.dp
             ) {

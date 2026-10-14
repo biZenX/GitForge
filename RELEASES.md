@@ -5,7 +5,7 @@
 **Release Date:** October 14, 2026  
 **Artifact:** `releases/GitForge-v1.0.0.apk`  
 **Size:** ~17 MB  
-**SHA-256 Checksum:** `9f674e9c961627c70e38a9b222c78af8af0223d46c569fc85fdfb9037721631d`
+**SHA-256 Checksum:** `5d84f3139f207c8d49d0624afddaf2694b4918feca8c6f301b9f2553d9757422`
 
 ---
 

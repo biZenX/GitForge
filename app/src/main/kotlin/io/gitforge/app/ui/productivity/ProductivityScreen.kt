@@ -7,6 +7,7 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.automirrored.filled.MergeType
 import androidx.compose.material.icons.filled.*
 import androidx.compose.material.icons.outlined.BugReport
 import androidx.compose.material3.*
@@ -141,7 +142,7 @@ fun ProductivityScreen(
                 .fillMaxSize()
                 .padding(padding)
         ) {
-            TabRow(selectedTabIndex = selectedSection) {
+            PrimaryTabRow(selectedTabIndex = selectedSection) {
                 Tab(
                     selected = selectedSection == 0,
                     onClick = { selectedSection = 0 },
@@ -152,7 +153,7 @@ fun ProductivityScreen(
                     selected = selectedSection == 1,
                     onClick = { selectedSection = 1 },
                     text = { Text("Pull Requests") },
-                    icon = { Icon(Icons.Default.MergeType, contentDescription = null) }
+                    icon = { Icon(Icons.AutoMirrored.Filled.MergeType, contentDescription = null) }
                 )
                 Tab(
                     selected = selectedSection == 2,
