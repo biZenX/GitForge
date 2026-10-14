@@ -12,47 +12,63 @@ import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 
-private val DarkColorScheme = darkColorScheme(
-    primary = ForgeIndigoDark,
-    onPrimary = Color.Black,
-    primaryContainer = Color(0xFF3730A3),
-    onPrimaryContainer = Color(0xFFE0E7FF),
-    secondary = ForgeCyanDark,
-    onSecondary = Color.Black,
-    secondaryContainer = Color(0xFF164E63),
-    onSecondaryContainer = Color(0xFFCFFAFE),
-    tertiary = ForgeEmeraldDark,
-    onTertiary = Color.Black,
-    background = Color(0xFF0F172A),
-    onBackground = Color(0xFFF8FAFC),
-    surface = Color(0xFF1E293B),
-    onSurface = Color(0xFFF1F5F9),
-    surfaceVariant = Color(0xFF334155),
-    onSurfaceVariant = Color(0xFF94A3B8),
-    outline = Color(0xFF64748B),
-    error = ForgeRoseDark,
-    onError = Color.Black
+private val ExpressiveDarkColorScheme = darkColorScheme(
+    primary = TerracottaPrimaryDark,
+    onPrimary = Color(0xFF381404),
+    primaryContainer = TerracottaContainerDark,
+    onPrimaryContainer = TerracottaOnContainerDark,
+    secondary = CyanAccentDark,
+    onSecondary = Color(0xFF00364F),
+    secondaryContainer = CyanContainerDark,
+    onSecondaryContainer = Color(0xFFC7E7FF),
+    tertiary = EmeraldAccentDark,
+    onTertiary = Color(0xFF003823),
+    tertiaryContainer = EmeraldContainerDark,
+    onTertiaryContainer = EmeraldOnContainerDark,
+    background = CharcoalBackgroundDark,
+    onBackground = WarmOnSurfaceDark,
+    surface = CharcoalSurfaceDark,
+    onSurface = WarmOnSurfaceDark,
+    surfaceVariant = CharcoalSurfaceContainerDark,
+    onSurfaceVariant = WarmOnSurfaceVariantDark,
+    surfaceContainerLowest = CharcoalSurfaceContainerLowestDark,
+    surfaceContainerLow = CharcoalSurfaceContainerLowDark,
+    surfaceContainer = CharcoalSurfaceContainerDark,
+    surfaceContainerHigh = CharcoalSurfaceContainerHighDark,
+    surfaceContainerHighest = CharcoalSurfaceContainerHighestDark,
+    outline = WarmOutlineDark,
+    outlineVariant = WarmOutlineVariantDark,
+    error = RoseAccentDark,
+    onError = Color(0xFF4C0012)
 )
 
-private val LightColorScheme = lightColorScheme(
-    primary = ForgeIndigo,
+private val ExpressiveLightColorScheme = lightColorScheme(
+    primary = TerracottaPrimary,
     onPrimary = Color.White,
-    primaryContainer = Color(0xFFE0E7FF),
-    onPrimaryContainer = Color(0xFF312E81),
-    secondary = ForgeCyan,
+    primaryContainer = Color(0xFFFFDBCF),
+    onPrimaryContainer = Color(0xFF381404),
+    secondary = CyanAccent,
     onSecondary = Color.White,
-    secondaryContainer = Color(0xFFCFFAFE),
-    onSecondaryContainer = Color(0xFF155E75),
-    tertiary = ForgeEmerald,
+    secondaryContainer = Color(0xFFC7E7FF),
+    onSecondaryContainer = Color(0xFF001E2E),
+    tertiary = EmeraldAccent,
     onTertiary = Color.White,
-    background = Color(0xFFF8FAFC),
-    onBackground = Color(0xFF0F172A),
-    surface = Color.White,
-    onSurface = Color(0xFF0F172A),
-    surfaceVariant = Color(0xFFF1F5F9),
-    onSurfaceVariant = Color(0xFF475569),
-    outline = Color(0xFFCBD5E1),
-    error = ForgeRose,
+    tertiaryContainer = Color(0xFFA7F3D0),
+    onTertiaryContainer = Color(0xFF002113),
+    background = WarmSandBackgroundLight,
+    onBackground = WarmSandOnSurfaceLight,
+    surface = WarmSandSurfaceLight,
+    onSurface = WarmSandOnSurfaceLight,
+    surfaceVariant = WarmSandSurfaceContainerLight,
+    onSurfaceVariant = WarmSandOnSurfaceVariantLight,
+    surfaceContainerLowest = Color.White,
+    surfaceContainerLow = Color(0xFFFAF7F3),
+    surfaceContainer = WarmSandSurfaceContainerLight,
+    surfaceContainerHigh = WarmSandSurfaceContainerHighLight,
+    surfaceContainerHighest = Color(0xFFE5DDD7),
+    outline = WarmSandOutlineLight,
+    outlineVariant = Color(0xFFD6D3D1),
+    error = RoseAccent,
     onError = Color.White
 )
 
@@ -67,8 +83,8 @@ fun GitForgeTheme(
             val context = LocalContext.current
             if (darkTheme) dynamicDarkColorScheme(context) else dynamicLightColorScheme(context)
         }
-        darkTheme -> DarkColorScheme
-        else -> LightColorScheme
+        darkTheme -> ExpressiveDarkColorScheme
+        else -> ExpressiveLightColorScheme
     }
 
     CompositionLocalProvider(
@@ -77,6 +93,7 @@ fun GitForgeTheme(
         MaterialTheme(
             colorScheme = colorScheme,
             typography = Typography,
+            shapes = Shapes,
             content = content
         )
     }

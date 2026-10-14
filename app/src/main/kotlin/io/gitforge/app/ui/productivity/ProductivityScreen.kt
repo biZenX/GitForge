@@ -1,19 +1,56 @@
 package io.gitforge.app.ui.productivity
 
-import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.background
+import androidx.compose.foundation.border
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.automirrored.filled.MergeType
-import androidx.compose.material.icons.filled.*
+import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.NewReleases
+import androidx.compose.material.icons.filled.PlayArrow
 import androidx.compose.material.icons.outlined.BugReport
-import androidx.compose.material3.*
-import androidx.compose.runtime.*
+import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedButton
+import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.PrimaryTabRow
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Surface
+import androidx.compose.material3.Tab
+import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
+import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.TopAppBarDefaults
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -22,7 +59,15 @@ import io.gitforge.core.designsystem.component.GitForgeEmptyView
 import io.gitforge.core.designsystem.component.GitForgeLoadingView
 import io.gitforge.core.designsystem.component.GitForgeStatusBadge
 import io.gitforge.core.designsystem.theme.CodeTypography
-import io.gitforge.core.designsystem.theme.ForgeEmerald
+import io.gitforge.core.designsystem.theme.CyanAccentDark
+import io.gitforge.core.designsystem.theme.EmeraldAccentDark
+import io.gitforge.core.designsystem.theme.HeroCardShape
+import io.gitforge.core.designsystem.theme.IconContainerShape
+import io.gitforge.core.designsystem.theme.ItemCardShape
+import io.gitforge.core.designsystem.theme.PillBadgeShape
+import io.gitforge.core.designsystem.theme.RoseAccentDark
+import io.gitforge.core.designsystem.theme.SubCardShape
+import io.gitforge.core.designsystem.theme.TerracottaPrimaryDark
 import io.gitforge.core.model.Issue
 import io.gitforge.core.model.PullRequest
 
@@ -36,7 +81,7 @@ fun ProductivityScreen(
 ) {
     val uiState by viewModel.uiState.collectAsState()
     var selectedSection by remember(initialSection) {
-        mutableStateOf(
+        mutableIntStateOf(
             when (initialSection.lowercase()) {
                 "pulls", "pullrequests" -> 1
                 "actions" -> 2
@@ -51,7 +96,6 @@ fun ProductivityScreen(
     var newIssueBody by remember { mutableStateOf("") }
     var activeViewingDiff by remember { mutableStateOf<String?>(null) }
 
-    // Owner and Repo can be prompted or passed; default to active or popular repo
     val owner = remember { "octocat" }
     val repo = remember { "Hello-World" }
 
@@ -63,7 +107,7 @@ fun ProductivityScreen(
         Scaffold(
             topBar = {
                 TopAppBar(
-                    title = { Text("Pull Request Diff") },
+                    title = { Text("Pull Request Diff", fontWeight = FontWeight.Bold) },
                     navigationIcon = {
                         IconButton(onClick = { activeViewingDiff = null }) {
                             Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Close Diff")
@@ -80,21 +124,25 @@ fun ProductivityScreen(
     if (showCreateIssueDialog) {
         AlertDialog(
             onDismissRequest = { showCreateIssueDialog = false },
-            title = { Text("New Issue") },
+            shape = HeroCardShape,
+            containerColor = MaterialTheme.colorScheme.surfaceContainerHigh,
+            title = { Text("New Issue", fontWeight = FontWeight.Bold) },
             text = {
-                Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                Column(verticalArrangement = Arrangement.spacedBy(10.dp)) {
                     OutlinedTextField(
                         value = newIssueTitle,
                         onValueChange = { newIssueTitle = it },
                         label = { Text("Issue Title") },
-                        modifier = Modifier.fillMaxWidth()
+                        modifier = Modifier.fillMaxWidth(),
+                        shape = SubCardShape
                     )
                     OutlinedTextField(
                         value = newIssueBody,
                         onValueChange = { newIssueBody = it },
                         label = { Text("Description") },
                         modifier = Modifier.fillMaxWidth(),
-                        minLines = 3
+                        minLines = 3,
+                        shape = SubCardShape
                     )
                 }
             },
@@ -107,9 +155,11 @@ fun ProductivityScreen(
                             newIssueBody = ""
                             showCreateIssueDialog = false
                         }
-                    }
+                    },
+                    shape = PillBadgeShape,
+                    colors = ButtonDefaults.buttonColors(containerColor = TerracottaPrimaryDark)
                 ) {
-                    Text("Submit")
+                    Text("Submit", fontWeight = FontWeight.Bold)
                 }
             },
             dismissButton = {
@@ -121,16 +171,24 @@ fun ProductivityScreen(
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text("Productivity ($owner/$repo)") },
+                title = {
+                    Column {
+                        Text("Productivity Hub", fontWeight = FontWeight.Bold, style = MaterialTheme.typography.titleMedium)
+                        Text("$owner/$repo", style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
+                    }
+                },
                 navigationIcon = {
                     IconButton(onClick = onBack) {
                         Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Back")
                     }
                 },
+                colors = TopAppBarDefaults.topAppBarColors(
+                    containerColor = MaterialTheme.colorScheme.surface
+                ),
                 actions = {
                     if (selectedSection == 0) {
                         IconButton(onClick = { showCreateIssueDialog = true }) {
-                            Icon(Icons.Default.Add, contentDescription = "Create Issue")
+                            Icon(Icons.Default.Add, contentDescription = "Create Issue", tint = TerracottaPrimaryDark)
                         }
                     }
                 }
@@ -146,25 +204,25 @@ fun ProductivityScreen(
                 Tab(
                     selected = selectedSection == 0,
                     onClick = { selectedSection = 0 },
-                    text = { Text("Issues") },
+                    text = { Text("Issues", fontWeight = FontWeight.SemiBold) },
                     icon = { Icon(Icons.Outlined.BugReport, contentDescription = null) }
                 )
                 Tab(
                     selected = selectedSection == 1,
                     onClick = { selectedSection = 1 },
-                    text = { Text("Pull Requests") },
+                    text = { Text("Pull Requests", fontWeight = FontWeight.SemiBold) },
                     icon = { Icon(Icons.AutoMirrored.Filled.MergeType, contentDescription = null) }
                 )
                 Tab(
                     selected = selectedSection == 2,
                     onClick = { selectedSection = 2 },
-                    text = { Text("Actions") },
+                    text = { Text("Actions", fontWeight = FontWeight.SemiBold) },
                     icon = { Icon(Icons.Default.PlayArrow, contentDescription = null) }
                 )
                 Tab(
                     selected = selectedSection == 3,
                     onClick = { selectedSection = 3 },
-                    text = { Text("Releases") },
+                    text = { Text("Releases", fontWeight = FontWeight.SemiBold) },
                     icon = { Icon(Icons.Default.NewReleases, contentDescription = null) }
                 )
             }
@@ -187,10 +245,10 @@ fun ProductivityScreen(
                     } else {
                         LazyColumn(
                             contentPadding = PaddingValues(16.dp),
-                            verticalArrangement = Arrangement.spacedBy(10.dp)
+                            verticalArrangement = Arrangement.spacedBy(12.dp)
                         ) {
                             items(uiState.issues) { issue ->
-                                IssueCard(issue = issue)
+                                WafeerIssueCard(issue = issue)
                             }
                         }
                     }
@@ -205,10 +263,10 @@ fun ProductivityScreen(
                     } else {
                         LazyColumn(
                             contentPadding = PaddingValues(16.dp),
-                            verticalArrangement = Arrangement.spacedBy(10.dp)
+                            verticalArrangement = Arrangement.spacedBy(12.dp)
                         ) {
                             items(uiState.pullRequests) { pr ->
-                                PullRequestCard(
+                                WafeerPullRequestCard(
                                     pullRequest = pr,
                                     onViewDiff = {
                                         activeViewingDiff = """
@@ -237,27 +295,38 @@ fun ProductivityScreen(
                     } else {
                         LazyColumn(
                             contentPadding = PaddingValues(16.dp),
-                            verticalArrangement = Arrangement.spacedBy(10.dp)
+                            verticalArrangement = Arrangement.spacedBy(12.dp)
                         ) {
                             items(uiState.workflowRuns) { run ->
-                                Card(
+                                Surface(
                                     modifier = Modifier.fillMaxWidth(),
-                                    shape = RoundedCornerShape(10.dp),
-                                    colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface)
+                                    shape = ItemCardShape,
+                                    color = MaterialTheme.colorScheme.surfaceContainer,
+                                    border = androidx.compose.foundation.BorderStroke(1.dp, MaterialTheme.colorScheme.outlineVariant)
                                 ) {
                                     Row(
-                                        modifier = Modifier.padding(14.dp),
+                                        modifier = Modifier.padding(16.dp),
                                         verticalAlignment = Alignment.CenterVertically
                                     ) {
+                                        Box(
+                                            modifier = Modifier
+                                                .size(36.dp)
+                                                .clip(IconContainerShape)
+                                                .background(EmeraldAccentDark.copy(alpha = 0.15f)),
+                                            contentAlignment = Alignment.Center
+                                        ) {
+                                            Icon(Icons.Default.PlayArrow, contentDescription = null, tint = EmeraldAccentDark, modifier = Modifier.size(20.dp))
+                                        }
+                                        Spacer(modifier = Modifier.width(12.dp))
                                         Column(modifier = Modifier.weight(1f)) {
                                             Text(
                                                 text = run.name.ifBlank { "Workflow #${run.runNumber}" },
                                                 style = MaterialTheme.typography.titleSmall,
-                                                fontWeight = FontWeight.SemiBold
+                                                fontWeight = FontWeight.Bold
                                             )
                                             Spacer(modifier = Modifier.height(4.dp))
                                             Text(
-                                                text = "Branch: ${run.headBranch ?: "main"} • Event: ${run.event}",
+                                                text = "${run.headBranch ?: "main"} • ${run.event}",
                                                 style = MaterialTheme.typography.bodySmall,
                                                 color = MaterialTheme.colorScheme.onSurfaceVariant
                                             )
@@ -279,28 +348,33 @@ fun ProductivityScreen(
                     } else {
                         LazyColumn(
                             contentPadding = PaddingValues(16.dp),
-                            verticalArrangement = Arrangement.spacedBy(10.dp)
+                            verticalArrangement = Arrangement.spacedBy(12.dp)
                         ) {
                             items(uiState.releases) { release ->
-                                Card(
+                                Surface(
                                     modifier = Modifier.fillMaxWidth(),
-                                    shape = RoundedCornerShape(10.dp),
-                                    colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface)
+                                    shape = ItemCardShape,
+                                    color = MaterialTheme.colorScheme.surfaceContainer,
+                                    border = androidx.compose.foundation.BorderStroke(1.dp, MaterialTheme.colorScheme.outlineVariant)
                                 ) {
-                                    Column(modifier = Modifier.padding(14.dp)) {
+                                    Column(modifier = Modifier.padding(18.dp)) {
+                                        Row(verticalAlignment = Alignment.CenterVertically) {
+                                            Text(
+                                                text = release.name ?: release.tagName,
+                                                style = MaterialTheme.typography.titleMedium,
+                                                fontWeight = FontWeight.Bold,
+                                                modifier = Modifier.weight(1f)
+                                            )
+                                            GitForgeStatusBadge(status = if (release.prerelease) "Pre-release" else "Stable")
+                                        }
+                                        Spacer(modifier = Modifier.height(6.dp))
                                         Text(
-                                            text = release.name ?: release.tagName,
-                                            style = MaterialTheme.typography.titleMedium,
-                                            fontWeight = FontWeight.Bold
-                                        )
-                                        Spacer(modifier = Modifier.height(4.dp))
-                                        Text(
-                                            text = "Tag: ${release.tagName} • ${if (release.prerelease) "Pre-release" else "Stable"}",
-                                            style = MaterialTheme.typography.bodySmall,
-                                            color = MaterialTheme.colorScheme.primary
+                                            text = "Tag: ${release.tagName}",
+                                            style = CodeTypography,
+                                            color = TerracottaPrimaryDark
                                         )
                                         if (!release.body.isNullOrBlank()) {
-                                            Spacer(modifier = Modifier.height(8.dp))
+                                            Spacer(modifier = Modifier.height(10.dp))
                                             Text(
                                                 text = release.body ?: "",
                                                 style = MaterialTheme.typography.bodyMedium,
@@ -319,30 +393,43 @@ fun ProductivityScreen(
 }
 
 @Composable
-fun IssueCard(issue: Issue) {
-    Card(
+fun WafeerIssueCard(issue: Issue) {
+    Surface(
         modifier = Modifier.fillMaxWidth(),
-        shape = RoundedCornerShape(10.dp),
-        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface)
+        shape = ItemCardShape,
+        color = MaterialTheme.colorScheme.surfaceContainer,
+        border = androidx.compose.foundation.BorderStroke(1.dp, MaterialTheme.colorScheme.outlineVariant)
     ) {
-        Column(modifier = Modifier.padding(14.dp)) {
+        Column(modifier = Modifier.padding(16.dp)) {
             Row(verticalAlignment = Alignment.CenterVertically) {
+                Box(
+                    modifier = Modifier
+                        .size(32.dp)
+                        .clip(IconContainerShape)
+                        .background(RoseAccentDark.copy(alpha = 0.12f)),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Icon(Icons.Outlined.BugReport, contentDescription = null, tint = RoseAccentDark, modifier = Modifier.size(18.dp))
+                }
+                Spacer(modifier = Modifier.width(10.dp))
                 Text(
                     text = "#${issue.number}",
                     style = CodeTypography,
-                    color = MaterialTheme.colorScheme.primary
+                    color = TerracottaPrimaryDark,
+                    fontWeight = FontWeight.Bold
                 )
                 Spacer(modifier = Modifier.width(8.dp))
                 Text(
                     text = issue.title,
                     style = MaterialTheme.typography.titleSmall,
-                    fontWeight = FontWeight.SemiBold,
+                    fontWeight = FontWeight.Bold,
+                    color = MaterialTheme.colorScheme.onSurface,
                     modifier = Modifier.weight(1f)
                 )
                 GitForgeStatusBadge(status = issue.state)
             }
             if (!issue.body.isNullOrBlank()) {
-                Spacer(modifier = Modifier.height(6.dp))
+                Spacer(modifier = Modifier.height(8.dp))
                 Text(
                     text = issue.body ?: "",
                     style = MaterialTheme.typography.bodySmall,
@@ -355,55 +442,79 @@ fun IssueCard(issue: Issue) {
 }
 
 @Composable
-fun PullRequestCard(
+fun WafeerPullRequestCard(
     pullRequest: PullRequest,
     onViewDiff: () -> Unit,
     onMerge: () -> Unit
 ) {
-    Card(
+    Surface(
         modifier = Modifier.fillMaxWidth(),
-        shape = RoundedCornerShape(10.dp),
-        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface)
+        shape = ItemCardShape,
+        color = MaterialTheme.colorScheme.surfaceContainer,
+        border = androidx.compose.foundation.BorderStroke(1.dp, MaterialTheme.colorScheme.outlineVariant)
     ) {
-        Column(modifier = Modifier.padding(14.dp)) {
+        Column(modifier = Modifier.padding(16.dp)) {
             Row(verticalAlignment = Alignment.CenterVertically) {
+                Box(
+                    modifier = Modifier
+                        .size(32.dp)
+                        .clip(IconContainerShape)
+                        .background(CyanAccentDark.copy(alpha = 0.12f)),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Icon(Icons.AutoMirrored.Filled.MergeType, contentDescription = null, tint = CyanAccentDark, modifier = Modifier.size(18.dp))
+                }
+                Spacer(modifier = Modifier.width(10.dp))
                 Text(
                     text = "#${pullRequest.number}",
                     style = CodeTypography,
-                    color = MaterialTheme.colorScheme.primary
+                    color = TerracottaPrimaryDark,
+                    fontWeight = FontWeight.Bold
                 )
                 Spacer(modifier = Modifier.width(8.dp))
                 Text(
                     text = pullRequest.title,
                     style = MaterialTheme.typography.titleSmall,
-                    fontWeight = FontWeight.SemiBold,
+                    fontWeight = FontWeight.Bold,
+                    color = MaterialTheme.colorScheme.onSurface,
                     modifier = Modifier.weight(1f)
                 )
                 GitForgeStatusBadge(status = pullRequest.state)
             }
 
-            Spacer(modifier = Modifier.height(8.dp))
+            Spacer(modifier = Modifier.height(10.dp))
 
             Row(verticalAlignment = Alignment.CenterVertically) {
-                Text(
-                    text = "+${pullRequest.additions} -${pullRequest.deletions}",
-                    style = CodeTypography,
-                    color = ForgeEmerald
-                )
+                Box(
+                    modifier = Modifier
+                        .clip(PillBadgeShape)
+                        .background(MaterialTheme.colorScheme.surfaceContainerHigh)
+                        .padding(horizontal = 8.dp, vertical = 3.dp)
+                ) {
+                    Text(
+                        text = "+${pullRequest.additions} -${pullRequest.deletions}",
+                        style = CodeTypography,
+                        color = EmeraldAccentDark,
+                        fontWeight = FontWeight.Bold
+                    )
+                }
                 Spacer(modifier = Modifier.weight(1f))
                 OutlinedButton(
                     onClick = onViewDiff,
-                    contentPadding = PaddingValues(horizontal = 8.dp, vertical = 2.dp)
+                    shape = PillBadgeShape,
+                    contentPadding = PaddingValues(horizontal = 12.dp, vertical = 4.dp)
                 ) {
-                    Text("View Diff", fontSize = 12.sp)
+                    Text("Diff", fontSize = 12.sp, fontWeight = FontWeight.SemiBold)
                 }
                 Spacer(modifier = Modifier.width(8.dp))
                 if (pullRequest.state == "open") {
                     Button(
                         onClick = onMerge,
-                        contentPadding = PaddingValues(horizontal = 8.dp, vertical = 2.dp)
+                        shape = PillBadgeShape,
+                        colors = ButtonDefaults.buttonColors(containerColor = EmeraldAccentDark, contentColor = MaterialTheme.colorScheme.onPrimary),
+                        contentPadding = PaddingValues(horizontal = 12.dp, vertical = 4.dp)
                     ) {
-                        Text("Merge", fontSize = 12.sp)
+                        Text("Merge", fontSize = 12.sp, fontWeight = FontWeight.Bold)
                     }
                 }
             }

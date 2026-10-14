@@ -1,37 +1,69 @@
 package io.gitforge.app.ui.home
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.MergeType
-import androidx.compose.material.icons.filled.*
-import androidx.compose.material.icons.outlined.*
-import androidx.compose.material3.*
+import androidx.compose.material.icons.filled.Code
+import androidx.compose.material.icons.filled.EditNote
+import androidx.compose.material.icons.filled.ForkRight
+import androidx.compose.material.icons.filled.Lock
+import androidx.compose.material.icons.filled.PlayArrow
+import androidx.compose.material.icons.filled.Star
+import androidx.compose.material.icons.filled.Terminal
+import androidx.compose.material.icons.outlined.BugReport
+import androidx.compose.material.icons.outlined.Folder
+import androidx.compose.material.icons.outlined.Star
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
 import io.gitforge.core.designsystem.component.GitForgeEmptyView
 import io.gitforge.core.designsystem.component.GitForgeErrorView
 import io.gitforge.core.designsystem.component.GitForgeLanguageDot
 import io.gitforge.core.designsystem.component.GitForgeLoadingView
-import io.gitforge.core.designsystem.theme.ForgeCyan
-import io.gitforge.core.designsystem.theme.ForgeEmerald
-import io.gitforge.core.designsystem.theme.ForgeIndigo
-import io.gitforge.core.designsystem.theme.ForgeRose
+import io.gitforge.core.designsystem.component.GitForgeMetricCard
+import io.gitforge.core.designsystem.component.GitForgeStatusBadge
+import io.gitforge.core.designsystem.theme.AmberAccentDark
+import io.gitforge.core.designsystem.theme.CyanAccentDark
+import io.gitforge.core.designsystem.theme.EmeraldAccentDark
+import io.gitforge.core.designsystem.theme.HeroCardShape
+import io.gitforge.core.designsystem.theme.IconContainerShape
+import io.gitforge.core.designsystem.theme.ItemCardShape
+import io.gitforge.core.designsystem.theme.PillBadgeShape
+import io.gitforge.core.designsystem.theme.RoseAccentDark
+import io.gitforge.core.designsystem.theme.SubCardShape
+import io.gitforge.core.designsystem.theme.TerracottaPrimaryDark
 import io.gitforge.core.model.Repository
 
 @Composable
@@ -66,155 +98,246 @@ fun HomeScreen(
         contentPadding = PaddingValues(vertical = 16.dp),
         verticalArrangement = Arrangement.spacedBy(16.dp)
     ) {
-        // User Profile Card / Guest Header
+        // Hero Card (Wafeer / Zenith caliber)
         item {
-            Card(
+            Surface(
                 modifier = Modifier.fillMaxWidth(),
-                colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceVariant),
-                shape = RoundedCornerShape(16.dp)
+                shape = HeroCardShape,
+                color = MaterialTheme.colorScheme.surfaceContainer,
+                border = androidx.compose.foundation.BorderStroke(1.dp, MaterialTheme.colorScheme.outlineVariant)
             ) {
-                Row(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(16.dp),
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    if (uiState.user != null) {
-                        AsyncImage(
-                            model = uiState.user?.avatarUrl,
-                            contentDescription = "User Avatar",
-                            modifier = Modifier
-                                .size(56.dp)
-                                .clip(CircleShape)
-                        )
-                        Spacer(modifier = Modifier.width(16.dp))
-                        Column(modifier = Modifier.weight(1f)) {
-                            Text(
-                                text = uiState.user?.name ?: uiState.user?.login ?: "Developer",
-                                style = MaterialTheme.typography.titleLarge,
-                                fontWeight = FontWeight.Bold
+                Column(modifier = Modifier.padding(20.dp)) {
+                    // Profile Header Row
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        if (uiState.user != null) {
+                            AsyncImage(
+                                model = uiState.user?.avatarUrl,
+                                contentDescription = "User Avatar",
+                                modifier = Modifier
+                                    .size(54.dp)
+                                    .clip(IconContainerShape)
+                                    .border(1.dp, MaterialTheme.colorScheme.outlineVariant, IconContainerShape)
                             )
-                            Text(
-                                text = "@${uiState.user?.login}",
-                                style = MaterialTheme.typography.bodyMedium,
-                                color = MaterialTheme.colorScheme.primary
-                            )
-                            if (!uiState.user?.bio.isNullOrBlank()) {
-                                Spacer(modifier = Modifier.height(4.dp))
+                            Spacer(modifier = Modifier.width(14.dp))
+                            Column(modifier = Modifier.weight(1f)) {
                                 Text(
-                                    text = uiState.user?.bio ?: "",
+                                    text = uiState.user?.name ?: uiState.user?.login ?: "Developer",
+                                    style = MaterialTheme.typography.titleLarge,
+                                    fontWeight = FontWeight.Bold,
+                                    color = MaterialTheme.colorScheme.onSurface
+                                )
+                                Text(
+                                    text = "@${uiState.user?.login}",
+                                    style = MaterialTheme.typography.bodyMedium,
+                                    color = TerracottaPrimaryDark,
+                                    fontWeight = FontWeight.Medium
+                                )
+                            }
+                            Box(
+                                modifier = Modifier
+                                    .clip(PillBadgeShape)
+                                    .background(EmeraldAccentDark.copy(alpha = 0.12f))
+                                    .border(1.dp, EmeraldAccentDark.copy(alpha = 0.3f), PillBadgeShape)
+                                    .padding(horizontal = 10.dp, vertical = 5.dp)
+                            ) {
+                                Row(verticalAlignment = Alignment.CenterVertically) {
+                                    Box(
+                                        modifier = Modifier
+                                            .size(6.dp)
+                                            .clip(CircleShape)
+                                            .background(EmeraldAccentDark)
+                                    )
+                                    Spacer(modifier = Modifier.width(6.dp))
+                                    Text(
+                                        text = "Active",
+                                        style = MaterialTheme.typography.labelSmall,
+                                        color = EmeraldAccentDark,
+                                        fontWeight = FontWeight.Bold
+                                    )
+                                }
+                            }
+                        } else {
+                            Box(
+                                modifier = Modifier
+                                    .size(54.dp)
+                                    .clip(IconContainerShape)
+                                    .background(TerracottaPrimaryDark.copy(alpha = 0.15f))
+                                    .border(1.dp, TerracottaPrimaryDark.copy(alpha = 0.3f), IconContainerShape),
+                                contentAlignment = Alignment.Center
+                            ) {
+                                Icon(
+                                    imageVector = Icons.Default.Code,
+                                    contentDescription = null,
+                                    tint = TerracottaPrimaryDark,
+                                    modifier = Modifier.size(28.dp)
+                                )
+                            }
+                            Spacer(modifier = Modifier.width(14.dp))
+                            Column(modifier = Modifier.weight(1f)) {
+                                Text(
+                                    text = "GitForge Workspace",
+                                    style = MaterialTheme.typography.titleLarge,
+                                    fontWeight = FontWeight.Bold,
+                                    color = MaterialTheme.colorScheme.onSurface
+                                )
+                                Text(
+                                    text = "Native GitHub & Local Git",
                                     style = MaterialTheme.typography.bodySmall,
                                     color = MaterialTheme.colorScheme.onSurfaceVariant
                                 )
                             }
+                            Button(
+                                onClick = onNavigateToSettings,
+                                shape = PillBadgeShape,
+                                colors = ButtonDefaults.buttonColors(
+                                    containerColor = TerracottaPrimaryDark,
+                                    contentColor = Color.Black
+                                ),
+                                contentPadding = PaddingValues(horizontal = 16.dp, vertical = 6.dp)
+                            ) {
+                                Text("Sign In", fontWeight = FontWeight.Bold)
+                            }
                         }
-                    } else {
-                        Box(
-                            modifier = Modifier
-                                .size(56.dp)
-                                .clip(CircleShape)
-                                .background(ForgeIndigo.copy(alpha = 0.2f)),
-                            contentAlignment = Alignment.Center
-                        ) {
-                            Icon(
-                                imageVector = Icons.Default.Code,
-                                contentDescription = null,
-                                tint = ForgeIndigo,
-                                modifier = Modifier.size(32.dp)
-                            )
-                        }
-                        Spacer(modifier = Modifier.width(16.dp))
-                        Column(modifier = Modifier.weight(1f)) {
-                            Text(
-                                text = "Welcome to GitForge",
-                                style = MaterialTheme.typography.titleLarge,
-                                fontWeight = FontWeight.Bold
-                            )
-                            Text(
-                                text = "Explore GitHub repositories or sign in for private access.",
-                                style = MaterialTheme.typography.bodySmall,
-                                color = MaterialTheme.colorScheme.onSurfaceVariant
-                            )
-                        }
-                        Button(onClick = onNavigateToSettings) {
-                            Text("Sign In")
-                        }
+                    }
+
+                    Spacer(modifier = Modifier.height(18.dp))
+
+                    // 4 Expressive Stat Metric Cards (Wafeer / Mowatib style)
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.spacedBy(10.dp)
+                    ) {
+                        val repoCount = uiState.user?.publicRepos ?: uiState.recentRepositories.size
+                        GitForgeMetricCard(
+                            title = "Repos",
+                            value = "$repoCount",
+                            icon = Icons.Outlined.Folder,
+                            iconTint = TerracottaPrimaryDark,
+                            modifier = Modifier.weight(1f)
+                        )
+                        GitForgeMetricCard(
+                            title = "Followers",
+                            value = "${uiState.user?.followers ?: 0}",
+                            icon = Icons.Default.Star,
+                            iconTint = AmberAccentDark,
+                            modifier = Modifier.weight(1f)
+                        )
+                    }
+
+                    Spacer(modifier = Modifier.height(10.dp))
+
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.spacedBy(10.dp)
+                    ) {
+                        GitForgeMetricCard(
+                            title = "Git Engine",
+                            value = "JGit",
+                            icon = Icons.Default.Terminal,
+                            iconTint = EmeraldAccentDark,
+                            badgeText = "v6.10",
+                            modifier = Modifier.weight(1f),
+                            onClick = onNavigateToTerminal
+                        )
+                        GitForgeMetricCard(
+                            title = "Code Studio",
+                            value = "Ready",
+                            icon = Icons.Default.EditNote,
+                            iconTint = CyanAccentDark,
+                            badgeText = "Editor",
+                            modifier = Modifier.weight(1f),
+                            onClick = onNavigateToStudio
+                        )
                     }
                 }
             }
         }
 
-        // Quick Workspace & Tool Shortcuts
+        // Quick Tools (Expressive Pill Chips)
         item {
             Text(
-                text = "Quick Tools",
+                text = "Workspace Tools",
                 style = MaterialTheme.typography.titleMedium,
-                fontWeight = FontWeight.SemiBold
+                fontWeight = FontWeight.Bold,
+                color = MaterialTheme.colorScheme.onSurface
             )
             Spacer(modifier = Modifier.height(8.dp))
             LazyRow(
-                horizontalArrangement = Arrangement.spacedBy(12.dp)
+                horizontalArrangement = Arrangement.spacedBy(10.dp)
             ) {
                 item {
-                    QuickActionChip(
+                    ExpressiveActionPill(
                         title = "Code Studio",
                         icon = Icons.Default.EditNote,
-                        color = ForgeIndigo,
+                        tint = CyanAccentDark,
                         onClick = onNavigateToStudio
                     )
                 }
                 item {
-                    QuickActionChip(
+                    ExpressiveActionPill(
                         title = "Terminal",
                         icon = Icons.Default.Terminal,
-                        color = ForgeEmerald,
+                        tint = EmeraldAccentDark,
                         onClick = onNavigateToTerminal
                     )
                 }
                 item {
-                    QuickActionChip(
+                    ExpressiveActionPill(
                         title = "Issues",
                         icon = Icons.Outlined.BugReport,
-                        color = ForgeRose,
+                        tint = RoseAccentDark,
                         onClick = { onNavigateToProductivity("issues") }
                     )
                 }
                 item {
-                    QuickActionChip(
+                    ExpressiveActionPill(
                         title = "Pull Requests",
                         icon = Icons.AutoMirrored.Filled.MergeType,
-                        color = ForgeCyan,
+                        tint = TerracottaPrimaryDark,
                         onClick = { onNavigateToProductivity("pulls") }
                     )
                 }
                 item {
-                    QuickActionChip(
-                        title = "Actions",
+                    ExpressiveActionPill(
+                        title = "Actions CI",
                         icon = Icons.Default.PlayArrow,
-                        color = MaterialTheme.colorScheme.primary,
+                        tint = AmberAccentDark,
                         onClick = { onNavigateToProductivity("actions") }
                     )
                 }
             }
         }
 
-        // Repositories Section Header
+        // Repositories Header
         item {
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Text(
-                    text = if (uiState.isAuthenticated) "Your Repositories" else "Trending Repositories",
+                    text = if (uiState.isAuthenticated) "Your Repositories" else "Featured Repositories",
                     style = MaterialTheme.typography.titleMedium,
-                    fontWeight = FontWeight.SemiBold
+                    fontWeight = FontWeight.Bold,
+                    color = MaterialTheme.colorScheme.onSurface
                 )
                 Spacer(modifier = Modifier.weight(1f))
-                Text(
-                    text = "${uiState.recentRepositories.size} repositories",
-                    style = MaterialTheme.typography.bodySmall,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant
-                )
+                Box(
+                    modifier = Modifier
+                        .clip(PillBadgeShape)
+                        .background(MaterialTheme.colorScheme.surfaceContainerHigh)
+                        .border(1.dp, MaterialTheme.colorScheme.outlineVariant, PillBadgeShape)
+                        .padding(horizontal = 10.dp, vertical = 4.dp)
+                ) {
+                    Text(
+                        text = "${uiState.recentRepositories.size} Repos",
+                        style = MaterialTheme.typography.labelSmall,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        fontWeight = FontWeight.Medium
+                    )
+                }
             }
         }
 
@@ -223,13 +346,13 @@ fun HomeScreen(
             item {
                 GitForgeEmptyView(
                     title = "No repositories found",
-                    description = "Search or clone repositories to get started.",
+                    description = "Search or clone repositories to get started with your workspace.",
                     icon = Icons.Outlined.Folder
                 )
             }
         } else {
             items(uiState.recentRepositories) { repo ->
-                RepositoryCard(
+                WafeerRepositoryCard(
                     repository = repo,
                     onClick = {
                         val owner = repo.owner?.login ?: ""
@@ -242,61 +365,104 @@ fun HomeScreen(
 }
 
 @Composable
-fun QuickActionChip(
+fun ExpressiveActionPill(
     title: String,
     icon: ImageVector,
-    color: androidx.compose.ui.graphics.Color,
+    tint: Color,
     onClick: () -> Unit
 ) {
     Surface(
         onClick = onClick,
-        shape = RoundedCornerShape(12.dp),
-        color = color.copy(alpha = 0.12f),
-        modifier = Modifier.height(48.dp)
+        shape = PillBadgeShape,
+        color = MaterialTheme.colorScheme.surfaceContainerHigh,
+        border = androidx.compose.foundation.BorderStroke(1.dp, MaterialTheme.colorScheme.outlineVariant),
+        modifier = Modifier.height(44.dp)
     ) {
         Row(
             modifier = Modifier.padding(horizontal = 14.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            Icon(imageVector = icon, contentDescription = null, tint = color, modifier = Modifier.size(20.dp))
+            Box(
+                modifier = Modifier
+                    .size(26.dp)
+                    .clip(CircleShape)
+                    .background(tint.copy(alpha = 0.15f)),
+                contentAlignment = Alignment.Center
+            ) {
+                Icon(
+                    imageVector = icon,
+                    contentDescription = null,
+                    tint = tint,
+                    modifier = Modifier.size(15.dp)
+                )
+            }
             Spacer(modifier = Modifier.width(8.dp))
-            Text(text = title, style = MaterialTheme.typography.labelLarge, color = color, fontWeight = FontWeight.Medium)
+            Text(
+                text = title,
+                style = MaterialTheme.typography.labelLarge,
+                color = MaterialTheme.colorScheme.onSurface,
+                fontWeight = FontWeight.SemiBold
+            )
         }
     }
 }
 
 @Composable
-fun RepositoryCard(
+fun WafeerRepositoryCard(
     repository: Repository,
     onClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
-    Card(
+    Surface(
         modifier = modifier
             .fillMaxWidth()
+            .clip(ItemCardShape)
             .clickable(onClick = onClick),
-        shape = RoundedCornerShape(12.dp),
-        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface)
+        shape = ItemCardShape,
+        color = MaterialTheme.colorScheme.surfaceContainer,
+        border = androidx.compose.foundation.BorderStroke(1.dp, MaterialTheme.colorScheme.outlineVariant)
     ) {
-        Column(modifier = Modifier.padding(16.dp)) {
-            Row(verticalAlignment = Alignment.CenterVertically) {
-                Icon(
-                    imageVector = if (repository.private) Icons.Default.Lock else Icons.Outlined.Folder,
-                    contentDescription = null,
-                    tint = MaterialTheme.colorScheme.primary,
-                    modifier = Modifier.size(18.dp)
-                )
-                Spacer(modifier = Modifier.width(8.dp))
-                Text(
-                    text = repository.fullName,
-                    style = MaterialTheme.typography.titleMedium,
-                    fontWeight = FontWeight.SemiBold,
-                    color = MaterialTheme.colorScheme.onSurface
+        Column(modifier = Modifier.padding(18.dp)) {
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Box(
+                    modifier = Modifier
+                        .size(36.dp)
+                        .clip(IconContainerShape)
+                        .background(TerracottaPrimaryDark.copy(alpha = 0.12f)),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Icon(
+                        imageVector = if (repository.private) Icons.Default.Lock else Icons.Outlined.Folder,
+                        contentDescription = null,
+                        tint = TerracottaPrimaryDark,
+                        modifier = Modifier.size(20.dp)
+                    )
+                }
+                Spacer(modifier = Modifier.width(12.dp))
+                Column(modifier = Modifier.weight(1f)) {
+                    Text(
+                        text = repository.name,
+                        style = MaterialTheme.typography.titleMedium,
+                        fontWeight = FontWeight.Bold,
+                        color = MaterialTheme.colorScheme.onSurface
+                    )
+                    Text(
+                        text = repository.fullName,
+                        style = MaterialTheme.typography.bodySmall,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                    )
+                }
+                GitForgeStatusBadge(
+                    status = if (repository.private) "Private" else "Public",
+                    showDot = false
                 )
             }
 
             if (!repository.description.isNullOrBlank()) {
-                Spacer(modifier = Modifier.height(6.dp))
+                Spacer(modifier = Modifier.height(10.dp))
                 Text(
                     text = repository.description ?: "",
                     style = MaterialTheme.typography.bodyMedium,
@@ -305,36 +471,61 @@ fun RepositoryCard(
                 )
             }
 
-            Spacer(modifier = Modifier.height(12.dp))
+            Spacer(modifier = Modifier.height(14.dp))
 
             Row(verticalAlignment = Alignment.CenterVertically) {
                 GitForgeLanguageDot(language = repository.language)
-                Spacer(modifier = Modifier.width(16.dp))
-                Icon(
-                    imageVector = Icons.Outlined.Star,
-                    contentDescription = "Stars",
-                    tint = MaterialTheme.colorScheme.onSurfaceVariant,
-                    modifier = Modifier.size(16.dp)
-                )
-                Spacer(modifier = Modifier.width(4.dp))
-                Text(
-                    text = "${repository.stargazersCount}",
-                    style = MaterialTheme.typography.bodySmall,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant
-                )
-                Spacer(modifier = Modifier.width(16.dp))
-                Icon(
-                    imageVector = Icons.Default.ForkRight,
-                    contentDescription = "Forks",
-                    tint = MaterialTheme.colorScheme.onSurfaceVariant,
-                    modifier = Modifier.size(16.dp)
-                )
-                Spacer(modifier = Modifier.width(4.dp))
-                Text(
-                    text = "${repository.forksCount}",
-                    style = MaterialTheme.typography.bodySmall,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant
-                )
+                Spacer(modifier = Modifier.width(10.dp))
+
+                Box(
+                    modifier = Modifier
+                        .clip(PillBadgeShape)
+                        .background(MaterialTheme.colorScheme.surfaceContainerHigh)
+                        .border(1.dp, MaterialTheme.colorScheme.outlineVariant, PillBadgeShape)
+                        .padding(horizontal = 8.dp, vertical = 3.dp)
+                ) {
+                    Row(verticalAlignment = Alignment.CenterVertically) {
+                        Icon(
+                            imageVector = Icons.Default.Star,
+                            contentDescription = "Stars",
+                            tint = AmberAccentDark,
+                            modifier = Modifier.size(13.dp)
+                        )
+                        Spacer(modifier = Modifier.width(4.dp))
+                        Text(
+                            text = "${repository.stargazersCount}",
+                            style = MaterialTheme.typography.labelSmall,
+                            color = MaterialTheme.colorScheme.onSurface,
+                            fontWeight = FontWeight.Medium
+                        )
+                    }
+                }
+
+                Spacer(modifier = Modifier.width(8.dp))
+
+                Box(
+                    modifier = Modifier
+                        .clip(PillBadgeShape)
+                        .background(MaterialTheme.colorScheme.surfaceContainerHigh)
+                        .border(1.dp, MaterialTheme.colorScheme.outlineVariant, PillBadgeShape)
+                        .padding(horizontal = 8.dp, vertical = 3.dp)
+                ) {
+                    Row(verticalAlignment = Alignment.CenterVertically) {
+                        Icon(
+                            imageVector = Icons.Default.ForkRight,
+                            contentDescription = "Forks",
+                            tint = CyanAccentDark,
+                            modifier = Modifier.size(13.dp)
+                        )
+                        Spacer(modifier = Modifier.width(4.dp))
+                        Text(
+                            text = "${repository.forksCount}",
+                            style = MaterialTheme.typography.labelSmall,
+                            color = MaterialTheme.colorScheme.onSurface,
+                            fontWeight = FontWeight.Medium
+                        )
+                    }
+                }
             }
         }
     }

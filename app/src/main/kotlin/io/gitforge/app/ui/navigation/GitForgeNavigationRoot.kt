@@ -101,12 +101,15 @@ fun GitForgeNavigationRoot(
                             color = MaterialTheme.colorScheme.primary
                         )
                     },
+                    colors = TopAppBarDefaults.topAppBarColors(
+                        containerColor = MaterialTheme.colorScheme.surface
+                    ),
                     actions = {
                         IconButton(onClick = { navController.navigate(Screen.Terminal.route) }) {
-                            Icon(Icons.Default.Terminal, contentDescription = "Terminal", tint = ForgeEmerald)
+                            Icon(Icons.Default.Terminal, contentDescription = "Terminal", tint = MaterialTheme.colorScheme.tertiary)
                         }
                         IconButton(onClick = { navController.navigate(Screen.Settings.route) }) {
-                            Icon(Icons.Default.Settings, contentDescription = "Settings")
+                            Icon(Icons.Default.Settings, contentDescription = "Settings", tint = MaterialTheme.colorScheme.onSurface)
                         }
                     }
                 )
@@ -114,13 +117,23 @@ fun GitForgeNavigationRoot(
         },
         bottomBar = {
             if (isPrimaryScreen) {
-                NavigationBar {
+                NavigationBar(
+                    containerColor = MaterialTheme.colorScheme.surfaceContainer,
+                    tonalElevation = 6.dp
+                ) {
                     primaryDestinations.forEach { screen ->
                         val selected = currentRoute == screen.route
                         NavigationBarItem(
                             icon = { Icon(screen.icon, contentDescription = screen.title, modifier = Modifier.size(24.dp)) },
-                            label = { Text(screen.title) },
+                            label = { Text(screen.title, fontWeight = if (selected) FontWeight.Bold else FontWeight.Medium) },
                             selected = selected,
+                            colors = NavigationBarItemDefaults.colors(
+                                indicatorColor = MaterialTheme.colorScheme.primary.copy(alpha = 0.2f),
+                                selectedIconColor = MaterialTheme.colorScheme.primary,
+                                selectedTextColor = MaterialTheme.colorScheme.primary,
+                                unselectedIconColor = MaterialTheme.colorScheme.onSurfaceVariant,
+                                unselectedTextColor = MaterialTheme.colorScheme.onSurfaceVariant
+                            ),
                             onClick = {
                                 if (currentRoute != screen.route) {
                                     navController.navigate(screen.route) {
