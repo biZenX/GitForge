@@ -1,1 +1,0 @@
--keep,allowobfuscation,allowshrinking class io.gitforge.app.ui.repos.RepositoriesViewModel

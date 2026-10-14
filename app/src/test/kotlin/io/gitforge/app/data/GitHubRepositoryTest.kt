@@ -7,6 +7,9 @@ import io.gitforge.core.database.RepoDao
 import io.gitforge.core.database.RepoEntity
 import io.gitforge.core.model.*
 import io.gitforge.core.network.GitHubApiService
+import okhttp3.MediaType.Companion.toMediaTypeOrNull
+import okhttp3.ResponseBody
+import okhttp3.ResponseBody.Companion.toResponseBody
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.runBlocking
@@ -116,4 +119,6 @@ class FakeGitHubApiService : GitHubApiService {
     override suspend fun getWorkflowRuns(owner: String, repo: String, page: Int, perPage: Int): WorkflowRunsResponse = WorkflowRunsResponse()
     override suspend fun getNotifications(all: Boolean, page: Int, perPage: Int): List<Notification> = emptyList()
     override suspend fun getReleases(owner: String, repo: String, page: Int, perPage: Int): List<Release> = emptyList()
+    override suspend fun downloadArchive(owner: String, repo: String, ref: String): ResponseBody =
+        byteArrayOf().toResponseBody("application/zip".toMediaTypeOrNull())
 }

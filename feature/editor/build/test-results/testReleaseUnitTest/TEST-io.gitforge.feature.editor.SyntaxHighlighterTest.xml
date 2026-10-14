@@ -1,8 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<testsuite name="io.gitforge.feature.editor.SyntaxHighlighterTest" tests="2" skipped="0" failures="0" errors="0" timestamp="2026-10-14T17:44:16.038Z" hostname="fedora" time="0.124">
-  <properties/>
-  <testcase name="highlight applies styles to Kotlin keywords and strings" classname="io.gitforge.feature.editor.SyntaxHighlighterTest" time="0.122"/>
-  <testcase name="highlight handles empty and plain text safely" classname="io.gitforge.feature.editor.SyntaxHighlighterTest" time="0.001"/>
-  <system-out><![CDATA[]]></system-out>
-  <system-err><![CDATA[]]></system-err>
-</testsuite>

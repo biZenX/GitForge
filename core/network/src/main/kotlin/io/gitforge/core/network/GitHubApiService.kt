@@ -198,4 +198,13 @@ interface GitHubApiService {
         @Query("page") page: Int = 1,
         @Query("per_page") perPage: Int = 30
     ): List<Release>
+
+    // Repository Archive Download
+    @Streaming
+    @GET("repos/{owner}/{repo}/zipball/{ref}")
+    suspend fun downloadArchive(
+        @Path("owner") owner: String,
+        @Path("repo") repo: String,
+        @Path("ref") ref: String = "main"
+    ): okhttp3.ResponseBody
 }

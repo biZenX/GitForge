@@ -54,12 +54,18 @@ object AppModule {
 
     @Provides
     @Singleton
+    fun provideWorkManager(@ApplicationContext context: Context): androidx.work.WorkManager {
+        return androidx.work.WorkManager.getInstance(context)
+    }
+
+    @Provides
+    @Singleton
     fun provideDatabase(@ApplicationContext context: Context): GitForgeDatabase {
         return Room.databaseBuilder(
             context,
             GitForgeDatabase::class.java,
             "gitforge_local.db"
-        ).fallbackToDestructiveMigration().build()
+        ).fallbackToDestructiveMigration(true).build()
     }
 
     @Provides

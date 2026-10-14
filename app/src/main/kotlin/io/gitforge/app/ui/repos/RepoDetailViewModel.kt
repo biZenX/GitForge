@@ -16,6 +16,10 @@ import kotlinx.coroutines.launch
 import java.util.Base64
 import javax.inject.Inject
 
+import io.gitforge.app.work.RepoArchiveDownloadWorker
+import io.gitforge.app.work.WorkManagerHelper
+import java.util.UUID
+
 data class RepoDetailUiState(
     val isLoading: Boolean = false,
     val repository: Repository? = null,
@@ -28,17 +32,56 @@ data class RepoDetailUiState(
     val activeViewingFile: FileNode? = null,
     val activeFileContent: String? = null,
     val isCommittingFile: Boolean = false,
+    val isDownloadingArchive: Boolean = false,
+    val downloadProgress: Int = 0,
+    val downloadedFilePath: String? = null,
     val errorMessage: String? = null,
     val successMessage: String? = null
 )
 
 @HiltViewModel
 class RepoDetailViewModel @Inject constructor(
-    private val repository: GitHubRepository
+    private val repository: GitHubRepository,
+    private val workManagerHelper: WorkManagerHelper
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(RepoDetailUiState())
     val uiState: StateFlow<RepoDetailUiState> = _uiState.asStateFlow()
+    private var currentDownloadWorkId: UUID? = null
+
+    fun downloadArchive() {
+        val repo = _uiState.value.repository ?: return
+        val owner = repo.owner?.login ?: ""
+        val branch = _uiState.value.currentBranch
+        val workId = workManagerHelper.enqueueArchiveDownload(owner, repo.name, branch)
+        currentDownloadWorkId = workId
+
+        viewModelScope.launch {
+            _uiState.update { it.copy(isDownloadingArchive = true, downloadProgress = 0) }
+            workManagerHelper.observeWorkInfo(workId).collect { workInfo ->
+                if (workInfo != null) {
+                    val progress = workInfo.progress.getInt(RepoArchiveDownloadWorker.KEY_PROGRESS, 0)
+                    _uiState.update { it.copy(downloadProgress = progress) }
+
+                    if (workInfo.state.isFinished) {
+                        val path = workInfo.outputData.getString(RepoArchiveDownloadWorker.KEY_OUTPUT_PATH)
+                        _uiState.update {
+                            it.copy(
+                                isDownloadingArchive = false,
+                                downloadedFilePath = path,
+                                successMessage = if (path != null) "ZIP archive downloaded successfully!" else null
+                            )
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    fun cancelDownload() {
+        currentDownloadWorkId?.let { workManagerHelper.cancelWork(it) }
+        _uiState.update { it.copy(isDownloadingArchive = false, downloadProgress = 0) }
+    }
 
     fun loadRepositoryDetails(owner: String, repo: String) {
         viewModelScope.launch {

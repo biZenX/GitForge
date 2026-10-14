@@ -1,8 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<testsuite name="io.gitforge.core.security.OAuthManagerTest" tests="2" skipped="0" failures="0" errors="0" timestamp="2026-10-14T17:41:17.757Z" hostname="fedora" time="0.072">
-  <properties/>
-  <testcase name="validatePersonalAccessToken correctly validates tokens" classname="io.gitforge.core.security.OAuthManagerTest" time="0.03"/>
-  <testcase name="generateAuthorizationUrl contains required scopes and valid state" classname="io.gitforge.core.security.OAuthManagerTest" time="0.041"/>
-  <system-out><![CDATA[]]></system-out>
-  <system-err><![CDATA[]]></system-err>
-</testsuite>

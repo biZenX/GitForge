@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<testsuite name="io.gitforge.app.data.GitHubRepositoryTest" tests="3" skipped="0" failures="0" errors="0" timestamp="2026-10-14T17:43:51.141Z" hostname="fedora" time="0.109">
-  <properties/>
-  <testcase name="getAuthenticatedUser returns user from api" classname="io.gitforge.app.data.GitHubRepositoryTest" time="0.08"/>
-  <testcase name="getRepositories caches items into local Room DAO" classname="io.gitforge.app.data.GitHubRepositoryTest" time="0.018"/>
-  <testcase name="searchRepositories returns matching search items" classname="io.gitforge.app.data.GitHubRepositoryTest" time="0.009"/>
-  <system-out><![CDATA[]]></system-out>
-  <system-err><![CDATA[]]></system-err>
-</testsuite>

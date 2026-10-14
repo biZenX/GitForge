@@ -16,6 +16,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import io.gitforge.core.designsystem.component.GitForgeDiffViewer
 import io.gitforge.core.designsystem.component.GitForgeEmptyView
 import io.gitforge.core.designsystem.component.GitForgeErrorView
@@ -65,6 +66,33 @@ fun RepoDetailScreen(
                     }
                 },
                 actions = {
+                    // Archive Download Action & Progress
+                    if (uiState.isDownloadingArchive) {
+                        Row(
+                            verticalAlignment = Alignment.CenterVertically,
+                            modifier = Modifier.padding(end = 8.dp)
+                        ) {
+                            CircularProgressIndicator(
+                                progress = { uiState.downloadProgress / 100f },
+                                modifier = Modifier.size(20.dp),
+                                strokeWidth = 2.dp
+                            )
+                            Spacer(modifier = Modifier.width(6.dp))
+                            Text(
+                                text = "${uiState.downloadProgress}%",
+                                style = CodeTypography,
+                                fontSize = 11.sp
+                            )
+                            IconButton(onClick = { viewModel.cancelDownload() }) {
+                                Icon(Icons.Default.Cancel, contentDescription = "Cancel Download", modifier = Modifier.size(18.dp))
+                            }
+                        }
+                    } else {
+                        IconButton(onClick = { viewModel.downloadArchive() }) {
+                            Icon(Icons.Default.Download, contentDescription = "Download ZIP Archive")
+                        }
+                    }
+
                     // Branch Selector
                     Box {
                         OutlinedButton(
