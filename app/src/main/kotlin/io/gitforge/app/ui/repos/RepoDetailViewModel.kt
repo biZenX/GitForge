@@ -18,6 +18,9 @@ import javax.inject.Inject
 
 import io.gitforge.app.work.RepoArchiveDownloadWorker
 import io.gitforge.app.work.WorkManagerHelper
+import io.gitforge.core.database.WatchedReleaseDao
+import io.gitforge.core.database.WatchedReleaseEntity
+import io.gitforge.core.model.Release
 import java.util.UUID
 
 data class RepoDetailUiState(
@@ -26,6 +29,8 @@ data class RepoDetailUiState(
     val branches: List<Branch> = emptyList(),
     val currentBranch: String = "main",
     val commits: List<CommitInfo> = emptyList(),
+    val releases: List<Release> = emptyList(),
+    val isWatched: Boolean = false,
     val currentPath: String = "",
     val fileTree: List<FileNode> = emptyList(),
     val readmeContent: String? = null,
@@ -42,7 +47,8 @@ data class RepoDetailUiState(
 @HiltViewModel
 class RepoDetailViewModel @Inject constructor(
     private val repository: GitHubRepository,
-    private val workManagerHelper: WorkManagerHelper
+    private val workManagerHelper: WorkManagerHelper,
+    private val watchedReleaseDao: WatchedReleaseDao
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(RepoDetailUiState())
@@ -87,6 +93,15 @@ class RepoDetailViewModel @Inject constructor(
         viewModelScope.launch {
             _uiState.update { it.copy(isLoading = true, errorMessage = null) }
 
+            val fullName = "$owner/$repo"
+
+            // Observe watch status
+            launch {
+                watchedReleaseDao.isWatchedFlow(fullName).collect { entity ->
+                    _uiState.update { it.copy(isWatched = entity != null) }
+                }
+            }
+
             val repoRes = repository.getRepository(owner, repo)
             val branchesRes = repository.getBranches(owner, repo)
             val defaultBranch = repoRes.getOrNull()?.defaultBranch ?: "main"
@@ -94,6 +109,7 @@ class RepoDetailViewModel @Inject constructor(
             val commitsRes = repository.getCommits(owner, repo, branch = defaultBranch)
             val treeRes = repository.getContents(owner, repo, path = "", ref = defaultBranch)
             val readmeRes = repository.getReadme(owner, repo, ref = defaultBranch)
+            val releasesRes = repository.getReleases(owner, repo)
 
             val decodedReadme = readmeRes.getOrNull()?.content?.let { raw ->
                 try {
@@ -110,10 +126,50 @@ class RepoDetailViewModel @Inject constructor(
                     branches = branchesRes.getOrDefault(emptyList()),
                     currentBranch = defaultBranch,
                     commits = commitsRes.getOrDefault(emptyList()),
+                    releases = releasesRes.getOrDefault(emptyList()),
                     fileTree = treeRes.getOrDefault(emptyList()),
                     readmeContent = decodedReadme,
                     errorMessage = repoRes.exceptionOrNull()?.message
                 )
+            }
+        }
+    }
+
+    fun toggleWatch() {
+        val repo = _uiState.value.repository ?: return
+        val ownerLogin = repo.owner?.login ?: ""
+        val fullName = repo.fullName
+        val currentWatched = _uiState.value.isWatched
+
+        viewModelScope.launch {
+            if (currentWatched) {
+                watchedReleaseDao.unwatch(fullName)
+                _uiState.update { it.copy(successMessage = "Unwatched releases for $fullName") }
+            } else {
+                val latestTag = _uiState.value.releases.firstOrNull()?.tagName
+                val latest = _uiState.value.releases.firstOrNull()
+                val entity = WatchedReleaseEntity(
+                    repoFullName = fullName,
+                    repoName = repo.name,
+                    ownerLogin = ownerLogin,
+                    ownerAvatarUrl = repo.owner?.avatarUrl ?: "",
+                    lastKnownTag = latestTag,
+                    latestReleaseName = latest?.name,
+                    latestReleaseUrl = latest?.htmlUrl,
+                    latestReleaseBody = latest?.body,
+                    isNotifyEnabled = true
+                )
+                watchedReleaseDao.insertWatched(entity)
+                _uiState.update { it.copy(successMessage = "🔔 Now following releases for $fullName! You'll be notified of new releases.") }
+            }
+        }
+    }
+
+    fun loadReleases(owner: String, repo: String) {
+        viewModelScope.launch {
+            val res = repository.getReleases(owner, repo)
+            if (res.isSuccess) {
+                _uiState.update { it.copy(releases = res.getOrDefault(emptyList())) }
             }
         }
     }

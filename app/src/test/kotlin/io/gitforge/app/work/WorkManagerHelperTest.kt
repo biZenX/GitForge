@@ -94,4 +94,46 @@ class WorkManagerHelperTest {
         assertThat(policySlot.captured).isEqualTo(ExistingPeriodicWorkPolicy.KEEP)
         assertThat(requestSlot.captured).isNotNull()
     }
+
+    @Test
+    fun `schedulePeriodicAppUpdateCheck enqueues periodic work`() {
+        val uniqueNameSlot = slot<String>()
+        val policySlot = slot<ExistingPeriodicWorkPolicy>()
+        val requestSlot = slot<PeriodicWorkRequest>()
+
+        every {
+            mockWorkManager.enqueueUniquePeriodicWork(
+                capture(uniqueNameSlot),
+                capture(policySlot),
+                capture(requestSlot)
+            )
+        } returns mockk(relaxed = true)
+
+        helper.schedulePeriodicAppUpdateCheck()
+
+        assertThat(uniqueNameSlot.captured).isEqualTo("gitforge_periodic_app_update_check")
+        assertThat(policySlot.captured).isEqualTo(ExistingPeriodicWorkPolicy.KEEP)
+        assertThat(requestSlot.captured).isNotNull()
+    }
+
+    @Test
+    fun `schedulePeriodicWatchedReleaseCheck enqueues periodic work`() {
+        val uniqueNameSlot = slot<String>()
+        val policySlot = slot<ExistingPeriodicWorkPolicy>()
+        val requestSlot = slot<PeriodicWorkRequest>()
+
+        every {
+            mockWorkManager.enqueueUniquePeriodicWork(
+                capture(uniqueNameSlot),
+                capture(policySlot),
+                capture(requestSlot)
+            )
+        } returns mockk(relaxed = true)
+
+        helper.schedulePeriodicWatchedReleaseCheck()
+
+        assertThat(uniqueNameSlot.captured).isEqualTo(WatchedReleaseCheckWorker.UNIQUE_WORK_NAME)
+        assertThat(policySlot.captured).isEqualTo(ExistingPeriodicWorkPolicy.KEEP)
+        assertThat(requestSlot.captured).isNotNull()
+    }
 }

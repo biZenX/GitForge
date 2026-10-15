@@ -14,5 +14,7 @@ class GitForgeApplication : Application() {
     override fun onCreate() {
         super.onCreate()
         workManagerHelper.schedulePeriodicRepoSync()
+        workManagerHelper.schedulePeriodicAppUpdateCheck()
+        workManagerHelper.schedulePeriodicWatchedReleaseCheck()
     }
 }

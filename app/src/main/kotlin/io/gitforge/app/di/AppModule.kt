@@ -11,6 +11,7 @@ import io.gitforge.core.database.GitForgeDatabase
 import io.gitforge.core.database.IssueDao
 import io.gitforge.core.database.RepoDao
 import io.gitforge.core.database.WorkspaceDao
+import io.gitforge.core.database.WatchedReleaseDao
 import io.gitforge.core.network.GitHubApiService
 import io.gitforge.core.network.NetworkClientFactory
 import io.gitforge.core.security.EncryptedTokenStorage
@@ -76,6 +77,9 @@ object AppModule {
 
     @Provides
     fun provideWorkspaceDao(database: GitForgeDatabase): WorkspaceDao = database.workspaceDao()
+
+    @Provides
+    fun provideWatchedReleaseDao(database: GitForgeDatabase): WatchedReleaseDao = database.watchedReleaseDao()
 
     @Provides
     @Singleton

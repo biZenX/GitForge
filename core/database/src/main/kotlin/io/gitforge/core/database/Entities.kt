@@ -101,3 +101,18 @@ data class WorkspaceEntity(
         )
     }
 }
+
+@Entity(tableName = "watched_releases")
+data class WatchedReleaseEntity(
+    @PrimaryKey val repoFullName: String,
+    val repoName: String,
+    val ownerLogin: String,
+    val ownerAvatarUrl: String,
+    val lastKnownTag: String? = null,
+    val latestReleaseName: String? = null,
+    val latestReleaseUrl: String? = null,
+    val latestReleaseBody: String? = null,
+    val lastChecked: Long = System.currentTimeMillis(),
+    val isNotifyEnabled: Boolean = true
+)
+

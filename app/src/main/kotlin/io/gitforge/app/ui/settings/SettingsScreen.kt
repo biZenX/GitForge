@@ -171,6 +171,63 @@ fun SettingsScreen(
                 }
             }
 
+            // In-App Updates Card
+            Card(
+                modifier = Modifier.fillMaxWidth(),
+                shape = RoundedCornerShape(16.dp),
+                colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface)
+            ) {
+                Column(modifier = Modifier.padding(16.dp)) {
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.SpaceBetween
+                    ) {
+                        Row(verticalAlignment = Alignment.CenterVertically) {
+                            Icon(Icons.Default.RocketLaunch, contentDescription = null, tint = MaterialTheme.colorScheme.primary)
+                            Spacer(modifier = Modifier.width(8.dp))
+                            Text(
+                                text = "Updates & Releases",
+                                style = MaterialTheme.typography.titleMedium,
+                                fontWeight = FontWeight.Bold
+                            )
+                        }
+                        Text(
+                            text = "v1.0.2",
+                            style = CodeTypography,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant
+                        )
+                    }
+
+                    Spacer(modifier = Modifier.height(8.dp))
+                    Text(
+                        text = "GitForge features native in-app updates with automated background checks and direct APK installation via FileProvider.",
+                        style = MaterialTheme.typography.bodyMedium,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                    )
+
+                    Spacer(modifier = Modifier.height(14.dp))
+                    Button(
+                        onClick = { viewModel.checkForAppUpdates() },
+                        enabled = !uiState.isCheckingUpdate
+                    ) {
+                        if (uiState.isCheckingUpdate) {
+                            CircularProgressIndicator(
+                                modifier = Modifier.size(16.dp),
+                                strokeWidth = 2.dp,
+                                color = MaterialTheme.colorScheme.onPrimary
+                            )
+                            Spacer(modifier = Modifier.width(8.dp))
+                            Text("Checking GitHub...")
+                        } else {
+                            Icon(Icons.Default.Refresh, contentDescription = null, modifier = Modifier.size(16.dp))
+                            Spacer(modifier = Modifier.width(8.dp))
+                            Text("Check for Updates")
+                        }
+                    }
+                }
+            }
+
             // Creator & Author Credits (Arkim @biZenX)
             GitForgeCreatorCard()
 
@@ -188,7 +245,7 @@ fun SettingsScreen(
                     )
                     Spacer(modifier = Modifier.height(4.dp))
                     Text(
-                        text = "Version 1.0.1 • Native Android Material 3 Expressive",
+                        text = "Version 1.0.2 • Native Android Material 3 Expressive",
                         style = MaterialTheme.typography.bodySmall,
                         color = MaterialTheme.colorScheme.primary
                     )
@@ -236,5 +293,90 @@ fun SettingsScreen(
                 }
             }
         }
+    }
+
+    if (uiState.updateInfo != null) {
+        val info = uiState.updateInfo!!
+        AlertDialog(
+            onDismissRequest = {
+                if (!uiState.isDownloadingUpdate) {
+                    viewModel.dismissUpdateDialog()
+                }
+            },
+            icon = {
+                Icon(Icons.Default.RocketLaunch, contentDescription = null, tint = MaterialTheme.colorScheme.primary)
+            },
+            title = {
+                Text(
+                    text = "New Update Available (v${info.versionName})",
+                    style = MaterialTheme.typography.titleMedium,
+                    fontWeight = FontWeight.Bold
+                )
+            },
+            text = {
+                Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                    Text(
+                        text = "Released on ${info.releaseDate}",
+                        style = MaterialTheme.typography.labelMedium,
+                        color = MaterialTheme.colorScheme.primary
+                    )
+
+                    if (info.mainFeatures.isNotEmpty()) {
+                        Text(
+                            text = "What's New:",
+                            fontWeight = FontWeight.Bold,
+                            style = MaterialTheme.typography.bodySmall
+                        )
+                        info.mainFeatures.forEach { feature ->
+                            Text(
+                                text = "• $feature",
+                                style = MaterialTheme.typography.bodySmall,
+                                color = MaterialTheme.colorScheme.onSurfaceVariant
+                            )
+                        }
+                    }
+
+                    if (uiState.isDownloadingUpdate) {
+                        Spacer(modifier = Modifier.height(8.dp))
+                        LinearProgressIndicator(
+                            progress = { uiState.updateDownloadProgress / 100f },
+                            modifier = Modifier.fillMaxWidth()
+                        )
+                        Text(
+                            text = "Downloading APK: ${uiState.updateDownloadProgress}%",
+                            style = CodeTypography,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant
+                        )
+                    }
+                }
+            },
+            confirmButton = {
+                Button(
+                    onClick = { viewModel.downloadAndInstallUpdate() },
+                    enabled = !uiState.isDownloadingUpdate
+                ) {
+                    if (uiState.isDownloadingUpdate) {
+                        CircularProgressIndicator(
+                            modifier = Modifier.size(16.dp),
+                            strokeWidth = 2.dp,
+                            color = MaterialTheme.colorScheme.onPrimary
+                        )
+                        Spacer(modifier = Modifier.width(6.dp))
+                        Text("Installing...")
+                    } else {
+                        Icon(Icons.Default.Download, contentDescription = null, modifier = Modifier.size(16.dp))
+                        Spacer(modifier = Modifier.width(6.dp))
+                        Text("Download & Install")
+                    }
+                }
+            },
+            dismissButton = {
+                if (!uiState.isDownloadingUpdate) {
+                    TextButton(onClick = { viewModel.dismissUpdateDialog() }) {
+                        Text("Later")
+                    }
+                }
+            }
+        )
     }
 }

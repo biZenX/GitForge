@@ -1,5 +1,7 @@
 package io.gitforge.app.ui.repos
 
+import android.content.Intent
+import android.net.Uri
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -25,8 +27,14 @@ import androidx.compose.material.icons.filled.Download
 import androidx.compose.material.icons.filled.Folder
 import androidx.compose.material.icons.filled.ForkRight
 import androidx.compose.material.icons.filled.History
+import androidx.compose.material.icons.filled.NotificationsActive
+import androidx.compose.material.icons.filled.NotificationsNone
+import androidx.compose.material.icons.filled.RocketLaunch
 import androidx.compose.material.icons.outlined.Description
 import androidx.compose.material.icons.outlined.Folder
+import androidx.compose.material.icons.outlined.NewReleases
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
@@ -37,6 +45,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.PrimaryTabRow
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Snackbar
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Tab
 import androidx.compose.material3.Text
@@ -54,12 +63,14 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import io.gitforge.core.designsystem.component.GitForgeEmptyView
 import io.gitforge.core.designsystem.component.GitForgeErrorView
 import io.gitforge.core.designsystem.component.GitForgeLoadingView
+import io.gitforge.core.designsystem.component.GitForgeMarkdownView
 import io.gitforge.core.designsystem.theme.CodeTypography
 import io.gitforge.core.designsystem.theme.CyanAccentDark
 import io.gitforge.core.designsystem.theme.EmeraldAccentDark
@@ -83,7 +94,8 @@ fun RepoDetailScreen(
     modifier: Modifier = Modifier
 ) {
     val uiState by viewModel.uiState.collectAsState()
-    var selectedTab by remember { mutableIntStateOf(0) } // 0: Files, 1: Commits, 2: README
+    val context = LocalContext.current
+    var selectedTab by remember { mutableIntStateOf(0) } // 0: Files, 1: Commits, 2: README, 3: Releases
     var branchMenuExpanded by remember { mutableStateOf(false) }
 
     LaunchedEffect(owner, repo) {
@@ -121,6 +133,15 @@ fun RepoDetailScreen(
                     containerColor = MaterialTheme.colorScheme.surface
                 ),
                 actions = {
+                    // Watch / Follow Releases Toggle Button
+                    IconButton(onClick = { viewModel.toggleWatch() }) {
+                        Icon(
+                            imageVector = if (uiState.isWatched) Icons.Default.NotificationsActive else Icons.Default.NotificationsNone,
+                            contentDescription = if (uiState.isWatched) "Unwatch Releases" else "Watch Releases",
+                            tint = if (uiState.isWatched) TerracottaPrimaryDark else MaterialTheme.colorScheme.onSurfaceVariant
+                        )
+                    }
+
                     // Archive Download Action & Progress
                     if (uiState.isDownloadingArchive) {
                         Row(
@@ -184,7 +205,7 @@ fun RepoDetailScreen(
                 .fillMaxSize()
                 .padding(paddingValues)
         ) {
-            // Tabs: Files, Commits, README
+            // Tabs: Files, Commits, README, Releases
             PrimaryTabRow(selectedTabIndex = selectedTab) {
                 Tab(
                     selected = selectedTab == 0,
@@ -203,6 +224,12 @@ fun RepoDetailScreen(
                     onClick = { selectedTab = 2 },
                     text = { Text("README", fontWeight = FontWeight.SemiBold) },
                     icon = { Icon(Icons.Outlined.Description, contentDescription = null) }
+                )
+                Tab(
+                    selected = selectedTab == 3,
+                    onClick = { selectedTab = 3 },
+                    text = { Text("Releases", fontWeight = FontWeight.SemiBold) },
+                    icon = { Icon(Icons.Default.RocketLaunch, contentDescription = null) }
                 )
             }
 
@@ -324,7 +351,7 @@ fun RepoDetailScreen(
                     }
                 }
                 2 -> {
-                    // README Tab
+                    // README Tab with rich Markdown & Copy Buttons
                     if (!uiState.readmeContent.isNullOrBlank()) {
                         LazyColumn(
                             modifier = Modifier
@@ -354,10 +381,9 @@ fun RepoDetailScreen(
                                             )
                                         }
                                         Spacer(modifier = Modifier.height(14.dp))
-                                        Text(
-                                            text = uiState.readmeContent ?: "",
-                                            style = CodeTypography,
-                                            color = MaterialTheme.colorScheme.onSurface
+                                        GitForgeMarkdownView(
+                                            markdownContent = uiState.readmeContent ?: "",
+                                            modifier = Modifier.fillMaxWidth()
                                         )
                                     }
                                 }
@@ -370,6 +396,169 @@ fun RepoDetailScreen(
                             icon = Icons.Outlined.Description
                         )
                     }
+                }
+                3 -> {
+                    // Releases Tab
+                    if (uiState.releases.isNotEmpty()) {
+                        LazyColumn(
+                            modifier = Modifier.fillMaxSize(),
+                            contentPadding = PaddingValues(16.dp),
+                            verticalArrangement = Arrangement.spacedBy(16.dp)
+                        ) {
+                            // Watch Releases Banner
+                            item {
+                                Surface(
+                                    modifier = Modifier.fillMaxWidth(),
+                                    shape = ItemCardShape,
+                                    color = if (uiState.isWatched) EmeraldAccentDark.copy(alpha = 0.12f) else MaterialTheme.colorScheme.surfaceContainer,
+                                    border = androidx.compose.foundation.BorderStroke(
+                                        1.dp,
+                                        if (uiState.isWatched) EmeraldAccentDark.copy(alpha = 0.35f) else MaterialTheme.colorScheme.outlineVariant
+                                    )
+                                ) {
+                                    Row(
+                                        modifier = Modifier
+                                            .fillMaxWidth()
+                                            .padding(16.dp),
+                                        verticalAlignment = Alignment.CenterVertically,
+                                        horizontalArrangement = Arrangement.SpaceBetween
+                                    ) {
+                                        Row(
+                                            verticalAlignment = Alignment.CenterVertically,
+                                            modifier = Modifier.weight(1f)
+                                        ) {
+                                            Icon(
+                                                imageVector = if (uiState.isWatched) Icons.Default.NotificationsActive else Icons.Default.NotificationsNone,
+                                                contentDescription = null,
+                                                tint = if (uiState.isWatched) EmeraldAccentDark else TerracottaPrimaryDark,
+                                                modifier = Modifier.size(24.dp)
+                                            )
+                                            Spacer(modifier = Modifier.width(12.dp))
+                                            Column {
+                                                Text(
+                                                    text = if (uiState.isWatched) "Release Notifications Active" else "Follow Repository Releases",
+                                                    style = MaterialTheme.typography.titleSmall,
+                                                    fontWeight = FontWeight.Bold,
+                                                    color = MaterialTheme.colorScheme.onSurface
+                                                )
+                                                Text(
+                                                    text = if (uiState.isWatched) "You'll be notified when new releases are published." else "Receive notifications whenever $repo publishes a new release.",
+                                                    style = MaterialTheme.typography.bodySmall,
+                                                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                                                )
+                                            }
+                                        }
+                                        Spacer(modifier = Modifier.width(8.dp))
+                                        Button(
+                                            onClick = { viewModel.toggleWatch() },
+                                            shape = PillBadgeShape,
+                                            colors = if (uiState.isWatched) {
+                                                ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.surfaceContainerHighest, contentColor = MaterialTheme.colorScheme.onSurface)
+                                            } else {
+                                                ButtonDefaults.buttonColors(containerColor = TerracottaPrimaryDark)
+                                            }
+                                        ) {
+                                            Text(if (uiState.isWatched) "Following" else "Follow")
+                                        }
+                                    }
+                                }
+                            }
+
+                            items(uiState.releases) { release ->
+                                Surface(
+                                    modifier = Modifier.fillMaxWidth(),
+                                    shape = HeroCardShape,
+                                    color = MaterialTheme.colorScheme.surfaceContainer,
+                                    border = androidx.compose.foundation.BorderStroke(1.dp, MaterialTheme.colorScheme.outlineVariant)
+                                ) {
+                                    Column(modifier = Modifier.padding(18.dp)) {
+                                        Row(
+                                            modifier = Modifier.fillMaxWidth(),
+                                            verticalAlignment = Alignment.CenterVertically,
+                                            horizontalArrangement = Arrangement.SpaceBetween
+                                        ) {
+                                            Column(modifier = Modifier.weight(1f)) {
+                                                Text(
+                                                    text = release.name ?: release.tagName,
+                                                    style = MaterialTheme.typography.titleMedium,
+                                                    fontWeight = FontWeight.Bold,
+                                                    color = MaterialTheme.colorScheme.onSurface
+                                                )
+                                                Text(
+                                                    text = release.tagName,
+                                                    style = CodeTypography,
+                                                    color = TerracottaPrimaryDark,
+                                                    fontWeight = FontWeight.SemiBold
+                                                )
+                                            }
+                                            val pubAt = release.publishedAt
+                                            if (pubAt != null) {
+                                                Box(
+                                                    modifier = Modifier
+                                                        .clip(PillBadgeShape)
+                                                        .background(MaterialTheme.colorScheme.surfaceContainerHighest)
+                                                        .padding(horizontal = 8.dp, vertical = 3.dp)
+                                                ) {
+                                                    Text(
+                                                        text = pubAt.take(10),
+                                                        style = MaterialTheme.typography.labelSmall,
+                                                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                                                    )
+                                                }
+                                            }
+                                        }
+
+                                        val releaseBody = release.body
+                                        if (!releaseBody.isNullOrBlank()) {
+                                            Spacer(modifier = Modifier.height(12.dp))
+                                            GitForgeMarkdownView(
+                                                markdownContent = releaseBody,
+                                                modifier = Modifier.fillMaxWidth()
+                                            )
+                                        }
+
+                                        Spacer(modifier = Modifier.height(14.dp))
+                                        Row(
+                                            modifier = Modifier.fillMaxWidth(),
+                                            horizontalArrangement = Arrangement.End
+                                        ) {
+                                            OutlinedButton(
+                                                onClick = {
+                                                    val intent = Intent(Intent.ACTION_VIEW, Uri.parse(release.htmlUrl))
+                                                    context.startActivity(intent)
+                                                },
+                                                shape = PillBadgeShape
+                                            ) {
+                                                Icon(Icons.Default.Download, contentDescription = null, modifier = Modifier.size(16.dp))
+                                                Spacer(modifier = Modifier.width(6.dp))
+                                                Text("View Release Assets", style = MaterialTheme.typography.bodySmall)
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    } else {
+                        GitForgeEmptyView(
+                            title = "No Releases Found",
+                            description = "This repository doesn't have any published releases yet.",
+                            icon = Icons.Outlined.NewReleases
+                        )
+                    }
+                }
+            }
+
+            // Message feedback snackbars
+            if (uiState.successMessage != null) {
+                Snackbar(
+                    modifier = Modifier.padding(16.dp),
+                    action = {
+                        TextButton(onClick = { viewModel.clearMessages() }) {
+                            Text("OK", color = MaterialTheme.colorScheme.inversePrimary)
+                        }
+                    }
+                ) {
+                    Text(uiState.successMessage ?: "")
                 }
             }
         }

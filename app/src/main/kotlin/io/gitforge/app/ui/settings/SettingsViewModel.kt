@@ -4,6 +4,8 @@ import android.net.Uri
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
+import io.gitforge.app.data.updater.AppUpdateInfo
+import io.gitforge.app.data.updater.AppUpdateManager
 import io.gitforge.core.database.RepoDao
 import io.gitforge.core.security.OAuthManager
 import io.gitforge.core.security.TokenStorage
@@ -17,6 +19,10 @@ import javax.inject.Inject
 data class SettingsUiState(
     val isAuthenticated: Boolean = false,
     val tokenPreview: String = "",
+    val isCheckingUpdate: Boolean = false,
+    val updateInfo: AppUpdateInfo? = null,
+    val isDownloadingUpdate: Boolean = false,
+    val updateDownloadProgress: Int = 0,
     val errorMessage: String? = null,
     val successMessage: String? = null
 )
@@ -25,7 +31,8 @@ data class SettingsUiState(
 class SettingsViewModel @Inject constructor(
     private val tokenStorage: TokenStorage,
     private val oauthManager: OAuthManager,
-    private val repoDao: RepoDao
+    private val repoDao: RepoDao,
+    private val updateManager: AppUpdateManager
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(SettingsUiState())
@@ -99,5 +106,44 @@ class SettingsViewModel @Inject constructor(
 
     fun clearMessages() {
         _uiState.update { it.copy(errorMessage = null, successMessage = null) }
+    }
+
+    fun checkForAppUpdates() {
+        viewModelScope.launch {
+            _uiState.update { it.copy(isCheckingUpdate = true, errorMessage = null) }
+            val result = updateManager.checkForUpdates(currentVersionName = "1.0.2", currentVersionCode = 3)
+            _uiState.update { it.copy(isCheckingUpdate = false) }
+
+            if (result.isSuccess) {
+                val info = result.getOrNull()
+                if (info != null) {
+                    _uiState.update { it.copy(updateInfo = info) }
+                } else {
+                    _uiState.update { it.copy(successMessage = "GitForge is up to date (v1.0.2).") }
+                }
+            } else {
+                _uiState.update { it.copy(errorMessage = "Update check failed: ${result.exceptionOrNull()?.message}") }
+            }
+        }
+    }
+
+    fun downloadAndInstallUpdate() {
+        val info = _uiState.value.updateInfo ?: return
+        viewModelScope.launch {
+            _uiState.update { it.copy(isDownloadingUpdate = true, updateDownloadProgress = 0) }
+            val result = updateManager.downloadAndInstallApk(info) { progress ->
+                _uiState.update { it.copy(updateDownloadProgress = progress) }
+            }
+            _uiState.update { it.copy(isDownloadingUpdate = false) }
+            if (result.isSuccess) {
+                _uiState.update { it.copy(updateInfo = null, successMessage = "Installer launched! Follow on-screen prompts.") }
+            } else {
+                _uiState.update { it.copy(errorMessage = "Download failed: ${result.exceptionOrNull()?.message}") }
+            }
+        }
+    }
+
+    fun dismissUpdateDialog() {
+        _uiState.update { it.copy(updateInfo = null) }
     }
 }

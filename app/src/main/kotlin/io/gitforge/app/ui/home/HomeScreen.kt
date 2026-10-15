@@ -21,6 +21,7 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.MergeType
+import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Code
 import androidx.compose.material.icons.filled.EditNote
 import androidx.compose.material.icons.filled.ForkRight
@@ -34,6 +35,7 @@ import androidx.compose.material.icons.outlined.Star
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -99,6 +101,70 @@ fun HomeScreen(
         contentPadding = PaddingValues(vertical = 16.dp),
         verticalArrangement = Arrangement.spacedBy(16.dp)
     ) {
+        // In-App Update Available Banner
+        if (uiState.updateAvailable != null) {
+            val update = uiState.updateAvailable!!
+            item {
+                Surface(
+                    modifier = Modifier.fillMaxWidth(),
+                    shape = ItemCardShape,
+                    color = TerracottaPrimaryDark.copy(alpha = 0.12f),
+                    border = androidx.compose.foundation.BorderStroke(1.dp, TerracottaPrimaryDark.copy(alpha = 0.35f))
+                ) {
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(16.dp),
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.SpaceBetween
+                    ) {
+                        Row(
+                            verticalAlignment = Alignment.CenterVertically,
+                            modifier = Modifier.weight(1f)
+                        ) {
+                            Box(
+                                modifier = Modifier
+                                    .size(38.dp)
+                                    .clip(CircleShape)
+                                    .background(TerracottaPrimaryDark.copy(alpha = 0.2f)),
+                                contentAlignment = Alignment.Center
+                            ) {
+                                Text("🚀", style = MaterialTheme.typography.titleMedium)
+                            }
+                            Spacer(modifier = Modifier.width(12.dp))
+                            Column {
+                                Text(
+                                    text = "GitForge v${update.versionName} Available!",
+                                    style = MaterialTheme.typography.titleSmall,
+                                    fontWeight = FontWeight.Bold,
+                                    color = MaterialTheme.colorScheme.onSurface
+                                )
+                                Text(
+                                    text = "Tap Update to install directly via native updater.",
+                                    style = MaterialTheme.typography.bodySmall,
+                                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                                )
+                            }
+                        }
+                        Spacer(modifier = Modifier.width(8.dp))
+                        Row(verticalAlignment = Alignment.CenterVertically) {
+                            Button(
+                                onClick = onNavigateToSettings,
+                                shape = PillBadgeShape,
+                                colors = ButtonDefaults.buttonColors(containerColor = TerracottaPrimaryDark),
+                                contentPadding = PaddingValues(horizontal = 14.dp, vertical = 6.dp)
+                            ) {
+                                Text("Update", style = MaterialTheme.typography.labelMedium)
+                            }
+                            IconButton(onClick = { viewModel.dismissUpdateBanner() }) {
+                                Icon(Icons.Default.Close, contentDescription = "Dismiss", modifier = Modifier.size(18.dp))
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
         // Hero Card (Wafeer / Zenith caliber)
         item {
             Surface(

@@ -62,4 +62,36 @@ class WorkManagerHelper @Inject constructor(
             periodicSyncRequest
         )
     }
+
+    fun schedulePeriodicAppUpdateCheck() {
+        val constraints = Constraints.Builder()
+            .setRequiredNetworkType(NetworkType.CONNECTED)
+            .build()
+
+        val updateRequest = PeriodicWorkRequestBuilder<io.gitforge.app.data.updater.AppUpdateCheckWorker>(12, TimeUnit.HOURS)
+            .setConstraints(constraints)
+            .build()
+
+        workManager.enqueueUniquePeriodicWork(
+            "gitforge_periodic_app_update_check",
+            ExistingPeriodicWorkPolicy.KEEP,
+            updateRequest
+        )
+    }
+
+    fun schedulePeriodicWatchedReleaseCheck() {
+        val constraints = Constraints.Builder()
+            .setRequiredNetworkType(NetworkType.CONNECTED)
+            .build()
+
+        val watchedRequest = PeriodicWorkRequestBuilder<WatchedReleaseCheckWorker>(6, TimeUnit.HOURS)
+            .setConstraints(constraints)
+            .build()
+
+        workManager.enqueueUniquePeriodicWork(
+            WatchedReleaseCheckWorker.UNIQUE_WORK_NAME,
+            ExistingPeriodicWorkPolicy.KEEP,
+            watchedRequest
+        )
+    }
 }

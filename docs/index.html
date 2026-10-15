@@ -924,6 +924,152 @@
       font-size: 0.85rem;
     }
 
+    /* CLI Terminal Card & Touch-Friendly Copy */
+    .cli-terminal-card {
+      background: var(--md-sys-color-surface-container-low);
+      border: 1px solid var(--md-sys-color-outline);
+      border-radius: var(--radius-card);
+      overflow: hidden;
+      margin-top: 1rem;
+    }
+
+    .cli-card-header {
+      background: var(--md-sys-color-surface-container);
+      padding: 0.85rem 1.25rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 1px solid var(--md-sys-color-outline-variant);
+    }
+
+    .terminal-dot {
+      display: inline-block;
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+    }
+
+    .cli-commands-list {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .cli-cmd-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 1rem 1.25rem;
+      gap: 1rem;
+      border-bottom: 1px solid var(--md-sys-color-outline-variant);
+      transition: background 0.2s;
+    }
+
+    .cli-cmd-row:last-child {
+      border-bottom: none;
+    }
+
+    .cli-cmd-row:hover {
+      background: var(--md-sys-color-surface-container);
+    }
+
+    .cli-cmd-content {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      font-family: var(--font-mono);
+      font-size: 0.9rem;
+      overflow-x: auto;
+      white-space: nowrap;
+      flex: 1;
+    }
+
+    .cli-prompt {
+      color: var(--primary-color);
+      font-weight: 700;
+      user-select: none;
+    }
+
+    .cli-text {
+      color: var(--md-sys-color-on-surface);
+    }
+
+    .cli-copy-btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.4rem;
+      padding: 0.6rem 1.1rem;
+      min-height: 44px;
+      min-width: 90px;
+      border-radius: var(--radius-pill);
+      background: var(--md-sys-color-surface-container-highest);
+      border: 1px solid var(--md-sys-color-outline);
+      color: var(--md-sys-color-on-surface);
+      font-size: 0.82rem;
+      font-weight: 600;
+      cursor: pointer;
+      user-select: none;
+      -webkit-tap-highlight-color: transparent;
+      touch-action: manipulation;
+      transition: all 0.2s var(--motion-standard);
+      flex-shrink: 0;
+    }
+
+    .cli-copy-btn:hover {
+      background: var(--primary-container);
+      color: var(--primary-color);
+      border-color: rgba(255, 158, 121, 0.4);
+      transform: translateY(-1px);
+    }
+
+    .cli-copy-btn:active {
+      transform: scale(0.96);
+    }
+
+    .cli-copy-btn.copied {
+      background: rgba(52, 211, 153, 0.15) !important;
+      border-color: var(--emerald-accent) !important;
+      color: var(--emerald-accent) !important;
+    }
+
+    /* Markdown Showcase Card */
+    .markdown-showcase-box {
+      background: #090B0E;
+      border-radius: 20px;
+      padding: 1.25rem;
+      color: #E2E8F0;
+      font-size: 0.88rem;
+      line-height: 1.6;
+    }
+
+    .markdown-code-block {
+      background: #050608;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 14px;
+      margin: 0.85rem 0;
+      overflow: hidden;
+    }
+
+    .markdown-code-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0.5rem 0.85rem;
+      background: rgba(255, 255, 255, 0.03);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+      font-family: var(--font-mono);
+      font-size: 0.75rem;
+      color: var(--primary-color);
+    }
+
+    .markdown-code-body {
+      padding: 0.85rem;
+      font-family: var(--font-mono);
+      font-size: 0.8rem;
+      line-height: 1.5;
+      overflow-x: auto;
+    }
+
     @media (max-width: 640px) {
       nav#nav {
         width: calc(100% - 2rem);
@@ -971,6 +1117,7 @@
       <li><a href="#intro" class="active"><span class="material-symbols-rounded">home</span><span class="caption">Home</span></a></li>
       <li><a href="#showcase"><span class="material-symbols-rounded">category</span><span class="caption">Showcase</span></a></li>
       <li><a href="#interactive"><span class="material-symbols-rounded">smartphone</span><span class="caption">Interactive</span></a></li>
+      <li><a href="#cli-setup"><span class="material-symbols-rounded">terminal</span><span class="caption">CLI</span></a></li>
       <li><a href="#architecture"><span class="material-symbols-rounded">account_tree</span><span class="caption">Architecture</span></a></li>
       <li><a href="#creator"><span class="material-symbols-rounded">person</span><span class="caption">Creator</span></a></li>
       <li><a href="#download"><span class="material-symbols-rounded">download</span><span class="caption">Download</span></a></li>
@@ -1006,7 +1153,7 @@
             </a>
             <a href="#download" class="socials-chip highlight">
               <span class="material-symbols-rounded">download</span>
-              <span>Release v1.0.1 APK</span>
+              <span>Release v1.0.2 APK</span>
             </a>
             <span class="socials-chip">
               <span class="material-symbols-rounded">palette</span>
@@ -1156,6 +1303,48 @@
             <span class="tag-pill">SAF Access</span>
             <span class="tag-pill">Encrypted Keystore</span>
             <span class="tag-pill">WorkManager</span>
+          </div>
+        </div>
+
+        <!-- Card 7: In-App Updater Engine -->
+        <div class="highlight-card">
+          <div>
+            <div class="highlight-top">
+              <div class="highlight-icon-box" style="background: rgba(52, 211, 153, 0.15); color: var(--emerald-accent);">
+                <span class="material-symbols-rounded">system_update</span>
+              </div>
+              <span class="highlight-badge" style="background: rgba(52, 211, 153, 0.15); color: var(--emerald-accent);">FileProvider</span>
+            </div>
+            <h3>In-App Updater Engine</h3>
+            <p class="highlight-description">
+              Seamlessly upgrade with one tap. GitForge compares version codes against GitHub Releases, parses markdown changelogs, streams the APK with progress feedback, and launches the native Android installer.
+            </p>
+          </div>
+          <div class="highlight-tags">
+            <span class="tag-pill">In-App Update</span>
+            <span class="tag-pill">FileProvider</span>
+            <span class="tag-pill">Changelog Parser</span>
+          </div>
+        </div>
+
+        <!-- Card 8: Follow Repository Releases -->
+        <div class="highlight-card">
+          <div>
+            <div class="highlight-top">
+              <div class="highlight-icon-box" style="background: rgba(255, 158, 121, 0.15); color: var(--primary-color);">
+                <span class="material-symbols-rounded">notifications_active</span>
+              </div>
+              <span class="highlight-badge" style="background: rgba(255, 158, 121, 0.15); color: var(--primary-color);">Release Watcher</span>
+            </div>
+            <h3>Follow Repository Releases</h3>
+            <p class="highlight-description">
+              Follow your favorite GitHub projects directly from the app. Background WorkManager tasks monitor upstream releases and trigger high-priority push notifications whenever new APKs or tags are published.
+            </p>
+          </div>
+          <div class="highlight-tags">
+            <span class="tag-pill">Release Alerts</span>
+            <span class="tag-pill">Background Worker</span>
+            <span class="tag-pill">APK Tracker</span>
           </div>
         </div>
       </div>
@@ -1322,6 +1511,50 @@ $ </div>
     }
 }</pre>
             </div>
+            <!-- VIEW 4: README & MARKDOWN SIMULATOR -->
+            <div id="sim-view-readme" style="display:none;flex-direction:column;gap:0.75rem;">
+              <div style="background:#1E222A;border-radius:20px;padding:1rem;border:1px solid rgba(255,255,255,0.06);">
+                <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:0.75rem;">
+                  <div style="display:flex;align-items:center;gap:6px;">
+                    <span class="material-symbols-rounded" style="color:var(--primary-color);font-size:1.1rem;">description</span>
+                    <span style="font-weight:700;font-size:0.95rem;">README.md</span>
+                  </div>
+                  <span class="app-badge-pill" style="background:rgba(255,158,121,0.15);color:var(--primary-color);">Markdown</span>
+                </div>
+
+                <h4 style="font-size:1.05rem;font-weight:700;margin-bottom:0.35rem;">🚀 GitForge Quickstart</h4>
+                <p style="font-size:0.8rem;color:#94A3B8;line-height:1.45;margin-bottom:0.75rem;">
+                  Full GitHub development environment directly on your Android phone. Clone, commit, edit, and push.
+                </p>
+
+                <!-- Code block with touch copy button -->
+                <div class="markdown-code-block">
+                  <div class="markdown-code-header">
+                    <span>bash • clone</span>
+                    <button class="copy-btn" onclick="copySimCode('git clone https://github.com/biZenX/GitForge.git', this)">
+                      <span class="material-symbols-rounded" style="font-size:0.95rem;">content_copy</span>
+                      <span>Copy</span>
+                    </button>
+                  </div>
+                  <div class="markdown-code-body">
+                    git clone https://github.com/biZenX/GitForge.git
+                  </div>
+                </div>
+
+                <div class="markdown-code-block">
+                  <div class="markdown-code-header">
+                    <span>kotlin • update</span>
+                    <button class="copy-btn" onclick="copySimCode('appUpdateManager.checkForUpdates()', this)">
+                      <span class="material-symbols-rounded" style="font-size:0.95rem;">content_copy</span>
+                      <span>Copy</span>
+                    </button>
+                  </div>
+                  <div class="markdown-code-body">
+                    val info = updateManager.checkForUpdates()
+                  </div>
+                </div>
+              </div>
+            </div>
           </div>
 
           <!-- Bottom Navigation Bar inside Phone -->
@@ -1338,14 +1571,84 @@ $ </div>
               <span class="material-symbols-rounded">terminal</span>
               <span>Terminal</span>
             </div>
-            <div class="phone-nav-item" onclick="alert('Navigating to Notifications inbox')">
-              <span class="material-symbols-rounded">notifications</span>
-              <span>Inbox</span>
+            <div class="phone-nav-item" id="nav-btn-readme" onclick="switchSimTab('readme')">
+              <span class="material-symbols-rounded">description</span>
+              <span>README</span>
             </div>
-            <div class="phone-nav-item" onclick="alert('Viewing Profile & Settings')">
-              <span class="material-symbols-rounded">person</span>
-              <span>Profile</span>
+            <div class="phone-nav-item" onclick="alert('GitForge v1.0.2 is up to date')">
+              <span class="material-symbols-rounded">system_update</span>
+              <span>Update</span>
             </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Quick Developer CLI & Markdown Showcase Section -->
+    <section id="cli-setup">
+      <div class="section-heading">
+        <h2>Developer CLI & Quick Start</h2>
+        <span class="pill-badge">Touch-Friendly Commands</span>
+      </div>
+
+      <div class="cli-terminal-card">
+        <div class="cli-card-header">
+          <div style="display:flex;align-items:center;gap:8px;">
+            <span class="terminal-dot" style="background:#EF4444;"></span>
+            <span class="terminal-dot" style="background:#F59E0B;"></span>
+            <span class="terminal-dot" style="background:#10B981;"></span>
+            <span style="font-family:var(--font-mono);font-size:0.82rem;color:var(--md-sys-color-on-surface-variant);margin-left:8px;">bash • quick-install</span>
+          </div>
+          <span class="pill-badge" style="font-size:0.75rem;">One-Touch Copy</span>
+        </div>
+
+        <div class="cli-commands-list">
+          <!-- Command 1: Clone -->
+          <div class="cli-cmd-row">
+            <div class="cli-cmd-content">
+              <span class="cli-prompt">$</span>
+              <span class="cli-text" id="cmd-clone">git clone https://github.com/biZenX/GitForge.git</span>
+            </div>
+            <button class="cli-copy-btn" onclick="copyFromElement('cmd-clone', this)" title="Copy Command">
+              <span class="material-symbols-rounded">content_copy</span>
+              <span>Copy</span>
+            </button>
+          </div>
+
+          <!-- Command 2: Install APK -->
+          <div class="cli-cmd-row">
+            <div class="cli-cmd-content">
+              <span class="cli-prompt">$</span>
+              <span class="cli-text" id="cmd-adb">adb install -r GitForge-v1.0.2.apk</span>
+            </div>
+            <button class="cli-copy-btn" onclick="copyFromElement('cmd-adb', this)" title="Copy Command">
+              <span class="material-symbols-rounded">content_copy</span>
+              <span>Copy</span>
+            </button>
+          </div>
+
+          <!-- Command 3: Verify SHA -->
+          <div class="cli-cmd-row">
+            <div class="cli-cmd-content">
+              <span class="cli-prompt">$</span>
+              <span class="cli-text" id="cmd-sha">sha256sum -c GitForge-v1.0.2.apk.sha256</span>
+            </div>
+            <button class="cli-copy-btn" onclick="copyFromElement('cmd-sha', this)" title="Copy Command">
+              <span class="material-symbols-rounded">content_copy</span>
+              <span>Copy</span>
+            </button>
+          </div>
+
+          <!-- Command 4: Build Release -->
+          <div class="cli-cmd-row">
+            <div class="cli-cmd-content">
+              <span class="cli-prompt">$</span>
+              <span class="cli-text" id="cmd-build">./gradlew assembleRelease --no-daemon</span>
+            </div>
+            <button class="cli-copy-btn" onclick="copyFromElement('cmd-build', this)" title="Copy Command">
+              <span class="material-symbols-rounded">content_copy</span>
+              <span>Copy</span>
+            </button>
           </div>
         </div>
       </div>
@@ -1444,7 +1747,7 @@ $ </div>
     <section id="download">
       <div class="section-heading">
         <h2>Download & Installation</h2>
-        <span class="pill-badge">Release v1.0.1</span>
+        <span class="pill-badge">Release v1.0.2</span>
       </div>
 
       <div class="download-card">
@@ -1458,12 +1761,12 @@ $ </div>
         </div>
 
         <div class="download-cta-row">
-          <a href="https://github.com/biZenX/GitForge/releases/download/v1.0.1/GitForge-v1.0.1.apk" class="download-btn-primary">
+          <a href="https://github.com/biZenX/GitForge/releases/download/v1.0.2/GitForge-v1.0.2.apk" class="download-btn-primary">
             <span class="material-symbols-rounded">download</span>
-            <span>Download GitForge APK (16.9 MB)</span>
+            <span>Download GitForge APK (18.6 MB)</span>
           </a>
 
-          <a href="https://github.com/biZenX/GitForge/releases/tag/v1.0.1" target="_blank" rel="noopener noreferrer" class="socials-chip" style="padding:0.9rem 1.4rem;">
+          <a href="https://github.com/biZenX/GitForge/releases/tag/v1.0.2" target="_blank" rel="noopener noreferrer" class="socials-chip" style="padding:0.9rem 1.4rem;">
             <span class="material-symbols-rounded">open_in_new</span>
             <span>View Release on GitHub</span>
           </a>
@@ -1475,7 +1778,7 @@ $ </div>
             SHA-256 Checksum Verification
           </div>
           <div class="hash-box">
-            <span class="hash-text" id="apk-sha256">3da2aefa2dcf0056cf239ac9c27bc26648d47262c3ad88c60a64e4329c6ccb1f</span>
+            <span class="hash-text" id="apk-sha256">bef1b7e1d50a3f6f079502bf8e490f25408cd6663b3356842cd19a675739e080</span>
             <button class="copy-btn" onclick="copyChecksum()">
               <span class="material-symbols-rounded" id="copy-icon" style="font-size:1.1rem">content_copy</span>
               <span id="copy-label">Copy</span>
@@ -1500,17 +1803,59 @@ $ </div>
   </div>
 
   <script>
+    // Robust Touch & Desktop Copy Implementation with Fallback
+    function copyTextWithFeedback(text, btnElement) {
+      const showSuccess = () => {
+        const oldHtml = btnElement.innerHTML;
+        btnElement.classList.add('copied');
+        btnElement.innerHTML = '<span class="material-symbols-rounded" style="font-size:1.05rem;color:var(--emerald-accent)">check</span> <span style="color:var(--emerald-accent)">Copied!</span>';
+        setTimeout(() => {
+          btnElement.innerHTML = oldHtml;
+          btnElement.classList.remove('copied');
+        }, 2200);
+      };
+
+      if (navigator.clipboard && window.isSecureContext) {
+        navigator.clipboard.writeText(text).then(showSuccess).catch(() => fallbackCopy(text, showSuccess));
+      } else {
+        fallbackCopy(text, showSuccess);
+      }
+    }
+
+    function fallbackCopy(text, callback) {
+      const textArea = document.createElement("textarea");
+      textArea.value = text;
+      textArea.style.position = "fixed";
+      textArea.style.left = "-999999px";
+      textArea.style.top = "-999999px";
+      document.body.appendChild(textArea);
+      textArea.focus();
+      textArea.select();
+      try {
+        document.execCommand('copy');
+        callback();
+      } catch (err) {
+        console.error('Fallback copy error:', err);
+      }
+      document.body.removeChild(textArea);
+    }
+
+    function copyFromElement(elementId, btnElement) {
+      const el = document.getElementById(elementId);
+      if (!el) return;
+      const text = el.innerText || el.textContent;
+      copyTextWithFeedback(text.trim(), btnElement);
+    }
+
+    function copySimCode(codeText, btnElement) {
+      copyTextWithFeedback(codeText, btnElement);
+    }
+
     // Copy Checksum Script
     function copyChecksum() {
       const hash = document.getElementById('apk-sha256').innerText;
-      navigator.clipboard.writeText(hash).then(() => {
-        document.getElementById('copy-label').innerText = 'Copied!';
-        document.getElementById('copy-icon').innerText = 'check';
-        setTimeout(() => {
-          document.getElementById('copy-label').innerText = 'Copy';
-          document.getElementById('copy-icon').innerText = 'content_copy';
-        }, 2500);
-      });
+      const btn = document.querySelector('.hash-box .copy-btn');
+      copyTextWithFeedback(hash.trim(), btn);
     }
 
     // Interactive Phone Simulator Tab Switching
@@ -1518,18 +1863,23 @@ $ </div>
       document.getElementById('sim-view-home').style.display = 'none';
       document.getElementById('sim-view-terminal').style.display = 'none';
       document.getElementById('sim-view-editor').style.display = 'none';
+      const readmeView = document.getElementById('sim-view-readme');
+      if (readmeView) readmeView.style.display = 'none';
 
       document.querySelectorAll('.phone-nav-item').forEach(el => el.classList.remove('active'));
 
       if (tab === 'home') {
         document.getElementById('sim-view-home').style.display = 'block';
-        document.getElementById('nav-btn-home').classList.add('active');
+        document.getElementById('nav-btn-home')?.classList.add('active');
       } else if (tab === 'terminal') {
         document.getElementById('sim-view-terminal').style.display = 'flex';
-        document.getElementById('nav-btn-terminal').classList.add('active');
+        document.getElementById('nav-btn-terminal')?.classList.add('active');
       } else if (tab === 'editor') {
         document.getElementById('sim-view-editor').style.display = 'block';
-        document.getElementById('nav-btn-editor').classList.add('active');
+        document.getElementById('nav-btn-editor')?.classList.add('active');
+      } else if (tab === 'readme') {
+        if (readmeView) readmeView.style.display = 'flex';
+        document.getElementById('nav-btn-readme')?.classList.add('active');
       }
     }
 

@@ -48,13 +48,36 @@ interface WorkspaceDao {
     suspend fun deleteWorkspaceById(id: String)
 }
 
+@Dao
+interface WatchedReleaseDao {
+    @Query("SELECT * FROM watched_releases ORDER BY lastChecked DESC")
+    fun getAllWatched(): Flow<List<WatchedReleaseEntity>>
+
+    @Query("SELECT * FROM watched_releases WHERE repoFullName = :repoFullName LIMIT 1")
+    fun isWatchedFlow(repoFullName: String): Flow<WatchedReleaseEntity?>
+
+    @Query("SELECT * FROM watched_releases WHERE repoFullName = :repoFullName LIMIT 1")
+    suspend fun getWatched(repoFullName: String): WatchedReleaseEntity?
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insertWatched(watched: WatchedReleaseEntity)
+
+    @Query("DELETE FROM watched_releases WHERE repoFullName = :repoFullName")
+    suspend fun unwatch(repoFullName: String)
+
+    @Query("UPDATE watched_releases SET lastKnownTag = :tag, latestReleaseName = :name, latestReleaseUrl = :url, latestReleaseBody = :body, lastChecked = :time WHERE repoFullName = :repoFullName")
+    suspend fun updateReleaseInfo(repoFullName: String, tag: String, name: String?, url: String?, body: String?, time: Long = System.currentTimeMillis())
+}
+
 @Database(
-    entities = [RepoEntity::class, IssueEntity::class, WorkspaceEntity::class],
-    version = 1,
+    entities = [RepoEntity::class, IssueEntity::class, WorkspaceEntity::class, WatchedReleaseEntity::class],
+    version = 2,
     exportSchema = false
 )
 abstract class GitForgeDatabase : RoomDatabase() {
     abstract fun repoDao(): RepoDao
     abstract fun issueDao(): IssueDao
     abstract fun workspaceDao(): WorkspaceDao
+    abstract fun watchedReleaseDao(): WatchedReleaseDao
 }
+

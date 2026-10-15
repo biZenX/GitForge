@@ -4,6 +4,8 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import io.gitforge.app.data.GitHubRepository
+import io.gitforge.app.data.updater.AppUpdateInfo
+import io.gitforge.app.data.updater.AppUpdateManager
 import io.gitforge.core.model.Repository
 import io.gitforge.core.model.User
 import io.gitforge.core.security.TokenStorage
@@ -19,13 +21,15 @@ data class HomeUiState(
     val isAuthenticated: Boolean = false,
     val user: User? = null,
     val recentRepositories: List<Repository> = emptyList(),
+    val updateAvailable: AppUpdateInfo? = null,
     val errorMessage: String? = null
 )
 
 @HiltViewModel
 class HomeViewModel @Inject constructor(
     private val repository: GitHubRepository,
-    private val tokenStorage: TokenStorage
+    private val tokenStorage: TokenStorage,
+    private val updateManager: AppUpdateManager
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(HomeUiState())
@@ -33,6 +37,20 @@ class HomeViewModel @Inject constructor(
 
     init {
         observeAuthentication()
+        checkForUpdates()
+    }
+
+    fun checkForUpdates() {
+        viewModelScope.launch {
+            val res = updateManager.checkForUpdates(currentVersionName = "1.0.2", currentVersionCode = 3)
+            if (res.isSuccess) {
+                _uiState.update { it.copy(updateAvailable = res.getOrNull()) }
+            }
+        }
+    }
+
+    fun dismissUpdateBanner() {
+        _uiState.update { it.copy(updateAvailable = null) }
     }
 
     private fun observeAuthentication() {
