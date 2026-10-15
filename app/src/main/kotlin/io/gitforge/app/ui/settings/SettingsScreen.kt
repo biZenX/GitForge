@@ -198,7 +198,7 @@ fun SettingsScreen(
                             )
                         }
                         Text(
-                            text = "v1.0.5",
+                            text = "v1.0.6",
                             style = CodeTypography,
                             color = MaterialTheme.colorScheme.onSurfaceVariant
                         )
@@ -242,8 +242,8 @@ fun SettingsScreen(
             )
 
             EssentialsGroupedItem(
-                title = "What's New in v1.0.5",
-                subtitle = "Explore the pure Material 3 pastels and Essentials floating dock overhaul",
+                title = "What's New in v1.0.6",
+                subtitle = "Supercharged Markdown tap-to-copy, authentic Developer Hub & 1-tap APK updates",
                 icon = Icons.Default.AutoAwesome,
                 iconBackgroundColor = Color(0xFF1E2822),
                 iconTintColor = Color(0xFFB7F397),
@@ -265,7 +265,7 @@ fun SettingsScreen(
 
             // Essentials-Style About Card (photo_2026-10-15_19-28-47.jpg)
             GitForgeAboutCard(
-                version = "GitForge v1.0.5",
+                version = "GitForge v1.0.6",
                 onWhatsNewClick = { showWhatsNew = true }
             )
 

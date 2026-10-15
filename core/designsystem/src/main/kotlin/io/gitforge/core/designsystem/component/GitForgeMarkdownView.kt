@@ -26,6 +26,7 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.ClickableText
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.CheckBox
@@ -68,24 +69,19 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
-import io.gitforge.core.designsystem.theme.AmberAccentDark
 import io.gitforge.core.designsystem.theme.CodeTypography
-import io.gitforge.core.designsystem.theme.CyanAccentDark
-import io.gitforge.core.designsystem.theme.EmeraldAccentDark
 import io.gitforge.core.designsystem.theme.GoogleSansCodeFamily
 import io.gitforge.core.designsystem.theme.GoogleSansFlexFamily
-import io.gitforge.core.designsystem.theme.ItemCardShape
 import io.gitforge.core.designsystem.theme.PillBadgeShape
-import io.gitforge.core.designsystem.theme.RoseAccentDark
 import io.gitforge.core.designsystem.theme.SubCardShape
-import io.gitforge.core.designsystem.theme.TerracottaPrimaryDark
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 /**
  * Supercharged Material 3 Expressive Markdown & README Viewer.
- * Features full rich-text rendering, badges, tables, admonitions, checklists,
- * syntax-colored code snippets, clickable links, and a Rendered vs Raw view toggle.
+ * Features full rich-text rendering, interactive tap-to-copy code snippets,
+ * large touch-friendly code block copy buttons, tables, admonitions, checklists,
+ * calibrated syntax-coloring, and a Rendered vs Raw view toggle with full document copy.
  */
 @Composable
 fun GitForgeMarkdownView(
@@ -94,18 +90,20 @@ fun GitForgeMarkdownView(
 ) {
     var showRawMode by remember { mutableStateOf(false) }
     val blocks = remember(markdownContent) { parseMarkdownBlocks(markdownContent) }
+    val clipboardManager = LocalClipboardManager.current
+    val context = LocalContext.current
 
     Column(
         modifier = modifier.fillMaxWidth(),
         verticalArrangement = Arrangement.spacedBy(12.dp)
     ) {
-        // Mode Switcher Header: Rendered Document vs Raw Markdown
+        // Mode Switcher Header: Rendered Document vs Raw Markdown + One-Tap Copy All
         Row(
             modifier = Modifier
                 .fillMaxWidth()
                 .clip(PillBadgeShape)
-                .background(Color(0xFF161B22))
-                .border(1.dp, Color(0x228B949E), PillBadgeShape)
+                .background(Color(0xFF1E2128))
+                .border(1.dp, Color(0x14FFFFFF), PillBadgeShape)
                 .padding(4.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
@@ -114,8 +112,8 @@ fun GitForgeMarkdownView(
                 modifier = Modifier
                     .weight(1f)
                     .clip(PillBadgeShape)
-                    .background(if (!showRawMode) TerracottaPrimaryDark else Color.Transparent)
-                    .clickable { showRawMode = false }
+                    .background(if (!showRawMode) Color(0xFFA8C7FA) else Color.Transparent)
+                    .bounceClick { showRawMode = false }
                     .padding(vertical = 8.dp),
                 contentAlignment = Alignment.Center
             ) {
@@ -127,14 +125,14 @@ fun GitForgeMarkdownView(
                         imageVector = Icons.Default.Description,
                         contentDescription = null,
                         modifier = Modifier.size(15.dp),
-                        tint = if (!showRawMode) Color(0xFF2E1003) else MaterialTheme.colorScheme.onSurfaceVariant
+                        tint = if (!showRawMode) Color(0xFF041E49) else Color(0xFF9AA0A6)
                     )
                     Text(
                         text = "Rendered View",
                         fontFamily = GoogleSansFlexFamily,
                         fontWeight = FontWeight.Bold,
                         fontSize = 12.sp,
-                        color = if (!showRawMode) Color(0xFF2E1003) else MaterialTheme.colorScheme.onSurfaceVariant
+                        color = if (!showRawMode) Color(0xFF041E49) else Color(0xFF9AA0A6)
                     )
                 }
             }
@@ -144,8 +142,8 @@ fun GitForgeMarkdownView(
                 modifier = Modifier
                     .weight(1f)
                     .clip(PillBadgeShape)
-                    .background(if (showRawMode) TerracottaPrimaryDark else Color.Transparent)
-                    .clickable { showRawMode = true }
+                    .background(if (showRawMode) Color(0xFFA8C7FA) else Color.Transparent)
+                    .bounceClick { showRawMode = true }
                     .padding(vertical = 8.dp),
                 contentAlignment = Alignment.Center
             ) {
@@ -157,20 +155,42 @@ fun GitForgeMarkdownView(
                         imageVector = Icons.Default.Code,
                         contentDescription = null,
                         modifier = Modifier.size(15.dp),
-                        tint = if (showRawMode) Color(0xFF2E1003) else MaterialTheme.colorScheme.onSurfaceVariant
+                        tint = if (showRawMode) Color(0xFF041E49) else Color(0xFF9AA0A6)
                     )
                     Text(
                         text = "Raw Markdown",
                         fontFamily = GoogleSansFlexFamily,
                         fontWeight = FontWeight.Bold,
                         fontSize = 12.sp,
-                        color = if (showRawMode) Color(0xFF2E1003) else MaterialTheme.colorScheme.onSurfaceVariant
+                        color = if (showRawMode) Color(0xFF041E49) else Color(0xFF9AA0A6)
                     )
                 }
             }
+
+            Spacer(modifier = Modifier.width(4.dp))
+
+            // Quick One-Tap Copy Document Button
+            Box(
+                modifier = Modifier
+                    .size(34.dp)
+                    .clip(CircleShape)
+                    .background(Color(0x14FFFFFF))
+                    .bounceClick {
+                        clipboardManager.setText(AnnotatedString(markdownContent))
+                        Toast.makeText(context, "Full document copied to clipboard!", Toast.LENGTH_SHORT).show()
+                    },
+                contentAlignment = Alignment.Center
+            ) {
+                Icon(
+                    imageVector = Icons.Default.ContentCopy,
+                    contentDescription = "Copy all",
+                    tint = Color(0xFFEDF0F5),
+                    modifier = Modifier.size(15.dp)
+                )
+            }
         }
 
-        Spacer(modifier = Modifier.height(4.dp))
+        Spacer(modifier = Modifier.height(2.dp))
 
         AnimatedContent(
             targetState = showRawMode,
@@ -200,8 +220,7 @@ fun GitForgeMarkdownView(
                                     modifier = Modifier
                                         .fillMaxWidth()
                                         .height(1.dp)
-                                        .background(Color(0x228B949E))
-                                        .padding(vertical = 4.dp)
+                                        .background(Color(0x14FFFFFF))
                                 )
                             }
                         }
@@ -216,10 +235,10 @@ fun GitForgeMarkdownView(
 private fun MarkdownHeaderView(header: MarkdownBlock.Header) {
     Column(modifier = Modifier.padding(top = if (header.level <= 2) 10.dp else 4.dp)) {
         val (fontSize, color, isH1) = when (header.level) {
-            1 -> Triple(22.sp, MaterialTheme.colorScheme.onSurface, true)
-            2 -> Triple(18.sp, TerracottaPrimaryDark, true)
-            3 -> Triple(16.sp, CyanAccentDark, false)
-            else -> Triple(14.sp, EmeraldAccentDark, false)
+            1 -> Triple(22.sp, Color(0xFFF5F7FA), true)
+            2 -> Triple(18.sp, Color(0xFFEDF0F5), true)
+            3 -> Triple(16.sp, Color(0xFFD8DDE6), false)
+            else -> Triple(14.5.sp, Color(0xFFB0B7C3), false)
         }
 
         Text(
@@ -237,8 +256,8 @@ private fun MarkdownHeaderView(header: MarkdownBlock.Header) {
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(2.dp)
-                    .background(Color(0x338B949E))
+                    .height(1.5.dp)
+                    .background(Color(0x1FFFFFFF))
             )
         }
     }
@@ -247,24 +266,93 @@ private fun MarkdownHeaderView(header: MarkdownBlock.Header) {
 @Composable
 private fun MarkdownParagraphView(paragraph: MarkdownBlock.Paragraph) {
     val uriHandler = LocalUriHandler.current
+    val context = LocalContext.current
+    val clipboardManager = LocalClipboardManager.current
     val annotated = renderInlineFormatting(paragraph.text)
 
-    Text(
-        text = annotated,
-        style = MaterialTheme.typography.bodyMedium.copy(
-            fontFamily = GoogleSansFlexFamily,
-            color = Color(0xFFE6EDF3),
-            lineHeight = 22.sp
-        ),
-        modifier = Modifier.clickable {
-            // If text contains a URL, open first URL found
-            val urlRegex = Regex("""https?://[^\s)\]]+""")
-            val match = urlRegex.find(paragraph.text)
-            match?.let {
-                try { uriHandler.openUri(it.value) } catch (_: Exception) {}
+    // Check if paragraph is a single terminal command e.g. `$ git clone` or `npm install`
+    val trimmed = paragraph.text.trim()
+    val isCommandPrompt = trimmed.startsWith("$ ") || trimmed.startsWith("> ") ||
+            trimmed.startsWith("git ") || trimmed.startsWith("npm ") ||
+            trimmed.startsWith("pip ") || trimmed.startsWith("docker ") ||
+            trimmed.startsWith("curl ")
+
+    if (isCommandPrompt) {
+        Surface(
+            modifier = Modifier.fillMaxWidth(),
+            shape = RoundedCornerShape(14.dp),
+            color = Color(0xFF16181D),
+            border = androidx.compose.foundation.BorderStroke(1.dp, Color(0x1AFFFFFF))
+        ) {
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 14.dp, vertical = 10.dp),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.SpaceBetween
+            ) {
+                Text(
+                    text = trimmed,
+                    style = CodeTypography.copy(
+                        fontSize = 12.5.sp,
+                        color = Color(0xFFEDF0F5),
+                        fontFamily = GoogleSansCodeFamily
+                    ),
+                    modifier = Modifier.weight(1f)
+                )
+                Spacer(modifier = Modifier.width(8.dp))
+                Box(
+                    modifier = Modifier
+                        .clip(PillBadgeShape)
+                        .background(Color(0x22A8C7FA))
+                        .clickable {
+                            val cleanCmd = trimmed.removePrefix("$ ").removePrefix("> ").trim()
+                            clipboardManager.setText(AnnotatedString(cleanCmd))
+                            Toast.makeText(context, "Command copied!", Toast.LENGTH_SHORT).show()
+                        }
+                        .padding(horizontal = 10.dp, vertical = 6.dp)
+                ) {
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.spacedBy(4.dp)
+                    ) {
+                        Icon(
+                            Icons.Default.ContentCopy,
+                            contentDescription = "Copy command",
+                            tint = Color(0xFFA8C7FA),
+                            modifier = Modifier.size(13.dp)
+                        )
+                        Text(
+                            "Copy",
+                            fontFamily = GoogleSansCodeFamily,
+                            fontSize = 11.sp,
+                            fontWeight = FontWeight.Bold,
+                            color = Color(0xFFA8C7FA)
+                        )
+                    }
+                }
             }
         }
-    )
+    } else {
+        ClickableText(
+            text = annotated,
+            style = MaterialTheme.typography.bodyMedium.copy(
+                fontFamily = GoogleSansFlexFamily,
+                color = Color(0xFFEDF0F5),
+                lineHeight = 23.sp,
+                fontSize = 14.5.sp
+            ),
+            onClick = { offset ->
+                annotated.getStringAnnotations(tag = "URL", start = offset, end = offset).firstOrNull()?.let {
+                    try { uriHandler.openUri(it.item) } catch (_: Exception) {}
+                }
+                annotated.getStringAnnotations(tag = "CODE", start = offset, end = offset).firstOrNull()?.let {
+                    clipboardManager.setText(AnnotatedString(it.item))
+                    Toast.makeText(context, "Copied snippet: \"${it.item}\"", Toast.LENGTH_SHORT).show()
+                }
+            }
+        )
+    }
 }
 
 @OptIn(ExperimentalLayoutApi::class)
@@ -304,18 +392,18 @@ private fun MarkdownBadgeRowView(badgeRow: MarkdownBlock.BadgeRow) {
 @Composable
 private fun MarkdownAdmonitionView(admonition: MarkdownBlock.Admonition) {
     val (accentColor, containerBg, icon) = when (admonition.type) {
-        AdmonitionType.NOTE -> Triple(CyanAccentDark, Color(0xFF0C2433), Icons.Outlined.Info)
-        AdmonitionType.TIP -> Triple(EmeraldAccentDark, Color(0xFF082F22), Icons.Outlined.Lightbulb)
-        AdmonitionType.IMPORTANT -> Triple(Color(0xFFA855F7), Color(0xFF28133C), Icons.Outlined.CheckCircle)
-        AdmonitionType.WARNING -> Triple(AmberAccentDark, Color(0xFF332007), Icons.Outlined.Warning)
-        AdmonitionType.CAUTION -> Triple(RoseAccentDark, Color(0xFF380C16), Icons.Outlined.Dangerous)
+        AdmonitionType.NOTE -> Triple(Color(0xFF90CAF9), Color(0xFF102030), Icons.Outlined.Info)
+        AdmonitionType.TIP -> Triple(Color(0xFF81C784), Color(0xFF0F2618), Icons.Outlined.Lightbulb)
+        AdmonitionType.IMPORTANT -> Triple(Color(0xFFD0BCFF), Color(0xFF231838), Icons.Outlined.CheckCircle)
+        AdmonitionType.WARNING -> Triple(Color(0xFFFFE082), Color(0xFF2C220E), Icons.Outlined.Warning)
+        AdmonitionType.CAUTION -> Triple(Color(0xFFE57373), Color(0xFF2E1218), Icons.Outlined.Dangerous)
     }
 
     Surface(
         modifier = Modifier.fillMaxWidth(),
         shape = SubCardShape,
         color = containerBg,
-        border = androidx.compose.foundation.BorderStroke(1.dp, accentColor.copy(alpha = 0.4f))
+        border = androidx.compose.foundation.BorderStroke(1.dp, accentColor.copy(alpha = 0.35f))
     ) {
         Row(
             modifier = Modifier.padding(14.dp),
@@ -350,7 +438,7 @@ private fun MarkdownAdmonitionView(admonition: MarkdownBlock.Admonition) {
                     fontFamily = GoogleSansFlexFamily,
                     fontSize = 13.sp,
                     lineHeight = 19.sp,
-                    color = Color(0xFFE6EDF3)
+                    color = Color(0xFFEDF0F5)
                 )
             }
         }
@@ -364,8 +452,8 @@ private fun MarkdownTableView(table: MarkdownBlock.Table) {
     Surface(
         modifier = Modifier.fillMaxWidth(),
         shape = SubCardShape,
-        color = Color(0xFF161B22),
-        border = androidx.compose.foundation.BorderStroke(1.dp, Color(0x228B949E))
+        color = Color(0xFF16181D),
+        border = androidx.compose.foundation.BorderStroke(1.dp, Color(0x1AFFFFFF))
     ) {
         Column(
             modifier = Modifier
@@ -375,7 +463,7 @@ private fun MarkdownTableView(table: MarkdownBlock.Table) {
             // Header Row
             Row(
                 modifier = Modifier
-                    .background(Color(0xFF21262D))
+                    .background(Color(0xFF262A33))
                     .padding(horizontal = 14.dp, vertical = 10.dp),
                 horizontalArrangement = Arrangement.spacedBy(16.dp)
             ) {
@@ -385,7 +473,7 @@ private fun MarkdownTableView(table: MarkdownBlock.Table) {
                         fontFamily = GoogleSansFlexFamily,
                         fontWeight = FontWeight.Bold,
                         fontSize = 13.sp,
-                        color = TerracottaPrimaryDark,
+                        color = Color(0xFFF5F7FA),
                         modifier = Modifier.width(130.dp)
                     )
                 }
@@ -395,12 +483,12 @@ private fun MarkdownTableView(table: MarkdownBlock.Table) {
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(1.dp)
-                    .background(Color(0x228B949E))
+                    .background(Color(0x1AFFFFFF))
             )
 
-            // Rows with alternating colors
+            // Rows with alternating subtle colors
             table.rows.forEachIndexed { index, row ->
-                val rowBg = if (index % 2 == 0) Color(0xFF161B22) else Color(0xFF1B2028)
+                val rowBg = if (index % 2 == 0) Color(0xFF16181D) else Color(0xFF1C1F26)
                 Row(
                     modifier = Modifier
                         .background(rowBg)
@@ -412,7 +500,7 @@ private fun MarkdownTableView(table: MarkdownBlock.Table) {
                             text = renderInlineFormatting(cell),
                             fontFamily = GoogleSansFlexFamily,
                             fontSize = 12.5.sp,
-                            color = Color(0xFFE6EDF3),
+                            color = Color(0xFFEDF0F5),
                             modifier = Modifier.width(130.dp)
                         )
                     }
@@ -431,7 +519,7 @@ private fun MarkdownTaskItemView(item: MarkdownBlock.TaskItem) {
         Icon(
             imageVector = if (item.isChecked) Icons.Default.CheckBox else Icons.Default.CheckBoxOutlineBlank,
             contentDescription = null,
-            tint = if (item.isChecked) EmeraldAccentDark else Color(0xFF8B949E),
+            tint = if (item.isChecked) Color(0xFF81C784) else Color(0xFF9AA0A6),
             modifier = Modifier
                 .size(18.dp)
                 .padding(top = 2.dp)
@@ -441,7 +529,7 @@ private fun MarkdownTaskItemView(item: MarkdownBlock.TaskItem) {
             text = renderInlineFormatting(item.text),
             style = MaterialTheme.typography.bodyMedium.copy(
                 fontFamily = GoogleSansFlexFamily,
-                color = if (item.isChecked) Color(0xFF8B949E) else Color(0xFFE6EDF3),
+                color = if (item.isChecked) Color(0xFF9AA0A6) else Color(0xFFEDF0F5),
                 textDecoration = if (item.isChecked) TextDecoration.LineThrough else TextDecoration.None
             ),
             modifier = Modifier.weight(1f)
@@ -460,13 +548,13 @@ private fun MarkdownListItemView(item: MarkdownBlock.ListItem) {
                 .padding(top = 8.dp, end = 10.dp)
                 .size(6.dp)
                 .clip(CircleShape)
-                .background(TerracottaPrimaryDark)
+                .background(Color(0xFFA8C7FA))
         )
         Text(
             text = renderInlineFormatting(item.text),
             style = MaterialTheme.typography.bodyMedium.copy(
                 fontFamily = GoogleSansFlexFamily,
-                color = Color(0xFFE6EDF3),
+                color = Color(0xFFEDF0F5),
                 lineHeight = 21.sp
             ),
             modifier = Modifier.weight(1f)
@@ -479,8 +567,8 @@ private fun MarkdownBlockQuoteView(quote: MarkdownBlock.BlockQuote) {
     Surface(
         modifier = Modifier.fillMaxWidth(),
         shape = RoundedCornerShape(topEnd = 12.dp, bottomEnd = 12.dp),
-        color = Color(0xFF1B2129),
-        border = androidx.compose.foundation.BorderStroke(1.dp, Color(0x1F8B949E))
+        color = Color(0xFF16181D),
+        border = androidx.compose.foundation.BorderStroke(1.dp, Color(0x14FFFFFF))
     ) {
         Row(modifier = Modifier.padding(14.dp)) {
             Box(
@@ -488,7 +576,7 @@ private fun MarkdownBlockQuoteView(quote: MarkdownBlock.BlockQuote) {
                     .width(3.dp)
                     .height(28.dp)
                     .clip(RoundedCornerShape(2.dp))
-                    .background(TerracottaPrimaryDark)
+                    .background(Color(0xFFA8C7FA))
             )
             Spacer(modifier = Modifier.width(12.dp))
             Text(
@@ -496,7 +584,7 @@ private fun MarkdownBlockQuoteView(quote: MarkdownBlock.BlockQuote) {
                 style = MaterialTheme.typography.bodyMedium.copy(
                     fontFamily = GoogleSansFlexFamily,
                     fontStyle = FontStyle.Italic,
-                    color = Color(0xFF8B949E),
+                    color = Color(0xFFB0B7C3),
                     lineHeight = 20.sp
                 )
             )
@@ -514,16 +602,16 @@ private fun MarkdownCodeBlockView(codeBlock: MarkdownBlock.CodeBlock) {
     Surface(
         modifier = Modifier.fillMaxWidth(),
         shape = SubCardShape,
-        color = Color(0xFF0D1117),
-        border = androidx.compose.foundation.BorderStroke(1.dp, Color(0x2E8B949E))
+        color = Color(0xFF16181D),
+        border = androidx.compose.foundation.BorderStroke(1.dp, Color(0x1AFFFFFF))
     ) {
         Column {
-            // Header Bar: Language Badge + Touch-Friendly Copy Button
+            // Header Bar: Language Badge + Touch-Friendly High-Contrast Copy Button
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .background(Color(0xFF161B22))
-                    .padding(horizontal = 14.dp, vertical = 8.dp),
+                    .background(Color(0xFF1E2128))
+                    .padding(horizontal = 14.dp, vertical = 10.dp),
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {
@@ -531,23 +619,26 @@ private fun MarkdownCodeBlockView(codeBlock: MarkdownBlock.CodeBlock) {
                 Box(
                     modifier = Modifier
                         .clip(PillBadgeShape)
-                        .background(TerracottaPrimaryDark.copy(alpha = 0.15f))
-                        .padding(horizontal = 9.dp, vertical = 3.dp)
+                        .background(Color(0x22A8C7FA))
+                        .padding(horizontal = 10.dp, vertical = 4.dp)
                 ) {
                     Text(
                         text = codeBlock.language.ifBlank { "CODE" }.uppercase(),
                         fontFamily = GoogleSansCodeFamily,
                         fontSize = 11.sp,
                         fontWeight = FontWeight.Bold,
-                        color = TerracottaPrimaryDark
+                        color = Color(0xFFA8C7FA)
                     )
                 }
 
-                // Copy Button (Touch & Laptop accessible)
+                // Copy Button (Large Touch & Laptop Accessible)
                 Row(
                     modifier = Modifier
+                        .height(36.dp)
                         .clip(PillBadgeShape)
-                        .clickable {
+                        .background(if (isCopied) Color(0x3381C784) else Color(0x1FFFFFFF))
+                        .border(1.dp, if (isCopied) Color(0xFF81C784) else Color(0x26FFFFFF), PillBadgeShape)
+                        .bounceClick {
                             clipboardManager.setText(AnnotatedString(codeBlock.code))
                             isCopied = true
                             Toast.makeText(context, "Code copied to clipboard!", Toast.LENGTH_SHORT).show()
@@ -556,23 +647,22 @@ private fun MarkdownCodeBlockView(codeBlock: MarkdownBlock.CodeBlock) {
                                 isCopied = false
                             }
                         }
-                        .background(if (isCopied) EmeraldAccentDark.copy(alpha = 0.2f) else Color(0x1AFFFFFF))
-                        .padding(horizontal = 12.dp, vertical = 6.dp),
+                        .padding(horizontal = 14.dp),
                     verticalAlignment = Alignment.CenterVertically,
                     horizontalArrangement = Arrangement.spacedBy(6.dp)
                 ) {
                     Icon(
                         imageVector = if (isCopied) Icons.Default.Check else Icons.Default.ContentCopy,
                         contentDescription = "Copy code",
-                        tint = if (isCopied) EmeraldAccentDark else Color(0xFFE6EDF3),
-                        modifier = Modifier.size(14.dp)
+                        tint = if (isCopied) Color(0xFF81C784) else Color(0xFFF5F7FA),
+                        modifier = Modifier.size(15.dp)
                     )
                     Text(
-                        text = if (isCopied) "Copied!" else "Copy",
+                        text = if (isCopied) "Copied!" else "Copy Code",
                         style = CodeTypography.copy(
-                            fontSize = 11.5.sp,
-                            fontWeight = FontWeight.SemiBold,
-                            color = if (isCopied) EmeraldAccentDark else Color(0xFFE6EDF3)
+                            fontSize = 12.sp,
+                            fontWeight = FontWeight.Bold,
+                            color = if (isCopied) Color(0xFF81C784) else Color(0xFFF5F7FA)
                         )
                     )
                 }
@@ -589,8 +679,9 @@ private fun MarkdownCodeBlockView(codeBlock: MarkdownBlock.CodeBlock) {
                     text = renderSyntaxHighlightedCode(codeBlock.code, codeBlock.language),
                     style = CodeTypography.copy(
                         fontSize = 12.5.sp,
-                        lineHeight = 18.sp,
-                        fontFamily = GoogleSansCodeFamily
+                        lineHeight = 19.sp,
+                        fontFamily = GoogleSansCodeFamily,
+                        color = Color(0xFFEDF0F5)
                     )
                 )
             }
@@ -606,8 +697,8 @@ private fun RawMarkdownViewer(raw: String) {
     Surface(
         modifier = Modifier.fillMaxWidth(),
         shape = SubCardShape,
-        color = Color(0xFF0D1117),
-        border = androidx.compose.foundation.BorderStroke(1.dp, Color(0x228B949E))
+        color = Color(0xFF16181D),
+        border = androidx.compose.foundation.BorderStroke(1.dp, Color(0x1AFFFFFF))
     ) {
         Column(modifier = Modifier.padding(14.dp)) {
             Row(
@@ -616,10 +707,10 @@ private fun RawMarkdownViewer(raw: String) {
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Text(
-                    text = "${raw.lines().size} lines • UTF-8",
+                    text = "${raw.lines().size} lines • ${raw.length} chars",
                     fontFamily = GoogleSansCodeFamily,
-                    fontSize = 11.sp,
-                    color = Color(0xFF8B949E)
+                    fontSize = 11.5.sp,
+                    color = Color(0xFF9AA0A6)
                 )
                 ElevatedButton(
                     onClick = {
@@ -627,12 +718,15 @@ private fun RawMarkdownViewer(raw: String) {
                         Toast.makeText(context, "Full markdown copied!", Toast.LENGTH_SHORT).show()
                     },
                     shape = PillBadgeShape,
-                    colors = ButtonDefaults.elevatedButtonColors(containerColor = Color(0xFF21262D)),
-                    contentPadding = PaddingValues(horizontal = 10.dp, vertical = 4.dp)
+                    colors = ButtonDefaults.elevatedButtonColors(
+                        containerColor = Color(0xFF262A33),
+                        contentColor = Color.White
+                    ),
+                    contentPadding = PaddingValues(horizontal = 12.dp, vertical = 6.dp)
                 ) {
                     Icon(Icons.Default.ContentCopy, contentDescription = null, modifier = Modifier.size(13.dp), tint = Color.White)
                     Spacer(modifier = Modifier.width(6.dp))
-                    Text("Copy All", fontSize = 11.sp, color = Color.White)
+                    Text("Copy All", fontSize = 11.5.sp, fontWeight = FontWeight.Bold, color = Color.White)
                 }
             }
 
@@ -645,7 +739,7 @@ private fun RawMarkdownViewer(raw: String) {
                         fontFamily = GoogleSansCodeFamily,
                         fontSize = 12.sp,
                         lineHeight = 18.sp,
-                        color = Color(0xFF8B949E)
+                        color = Color(0xFFB0B7C3)
                     )
                 )
             }
@@ -881,6 +975,7 @@ private fun cleanHtml(text: String): String {
 
 /**
  * Rich inline formatting for bold, italics, inline code, and links.
+ * Bold text is crisp white, links are accessible periwinkle, and inline code is tap-to-copy lavender.
  */
 private fun renderInlineFormatting(text: String): AnnotatedString {
     return buildAnnotatedString {
@@ -899,37 +994,44 @@ private fun renderInlineFormatting(text: String): AnnotatedString {
                 // Markdown Link [text](url)
                 full.startsWith("[") && full.contains("](") -> {
                     val label = match.groupValues[2]
+                    val url = match.groupValues[3]
+                    pushStringAnnotation(tag = "URL", annotation = url)
                     pushStyle(
                         SpanStyle(
-                            color = CyanAccentDark,
+                            color = Color(0xFFA8C7FA),
                             fontWeight = FontWeight.Bold,
                             textDecoration = TextDecoration.Underline
                         )
                     )
                     append(label)
                     pop()
+                    pop()
                 }
-                // Bold **text**
+                // Bold **text** -> Crisp high-contrast white
                 full.startsWith("**") && full.endsWith("**") -> {
-                    pushStyle(SpanStyle(fontWeight = FontWeight.Bold, color = TerracottaPrimaryDark))
+                    pushStyle(SpanStyle(fontWeight = FontWeight.ExtraBold, color = Color(0xFFF5F7FA)))
                     append(match.groupValues[4])
                     pop()
                 }
-                // Inline Code `text`
+                // Inline Code `text` -> Tap-to-copy lavender badge
                 full.startsWith("`") && full.endsWith("`") -> {
+                    val codeSnippet = match.groupValues[5]
+                    pushStringAnnotation(tag = "CODE", annotation = codeSnippet)
                     pushStyle(
                         SpanStyle(
                             fontFamily = GoogleSansCodeFamily,
-                            color = Color(0xFF7EE787),
-                            background = Color(0x3321262D)
+                            color = Color(0xFFD0BCFF),
+                            background = Color(0x2AD0BCFF),
+                            fontWeight = FontWeight.SemiBold
                         )
                     )
-                    append(" " + match.groupValues[5] + " ")
+                    append(" $codeSnippet ")
+                    pop()
                     pop()
                 }
                 // Italic *text*
                 full.startsWith("*") && full.endsWith("*") -> {
-                    pushStyle(SpanStyle(fontStyle = FontStyle.Italic, color = Color(0xFF8B949E)))
+                    pushStyle(SpanStyle(fontStyle = FontStyle.Italic, color = Color(0xFFB0B7C3)))
                     append(match.groupValues[6])
                     pop()
                 }
@@ -946,6 +1048,7 @@ private fun renderInlineFormatting(text: String): AnnotatedString {
 
 /**
  * Tokenizes code into keywords, strings, comments, numbers, and annotations for syntax styling.
+ * Soft, calibrated colors matching Material 3 slate palette.
  */
 private fun renderSyntaxHighlightedCode(code: String, language: String): AnnotatedString {
     val keywords = setOf(
@@ -962,30 +1065,30 @@ private fun renderSyntaxHighlightedCode(code: String, language: String): Annotat
             val lineLength = line.length
 
             while (col < lineLength) {
-                // Comments
+                // Comments -> Muted Slate Italic
                 if (col + 1 < lineLength && line.substring(col, col + 2) == "//" || line[col] == '#') {
-                    pushStyle(SpanStyle(color = Color(0xFF8B949E), fontStyle = FontStyle.Italic))
+                    pushStyle(SpanStyle(color = Color(0xFF757575), fontStyle = FontStyle.Italic))
                     append(line.substring(col))
                     pop()
                     break
                 }
 
-                // Strings "..." or '...'
+                // Strings "..." or '...' -> Soft Mint Green
                 if (line[col] == '"' || line[col] == '\'') {
                     val quote = line[col]
                     val endQuote = line.indexOf(quote, col + 1)
                     val str = if (endQuote != -1) line.substring(col, endQuote + 1) else line.substring(col)
-                    pushStyle(SpanStyle(color = Color(0xFFA5D6FF)))
+                    pushStyle(SpanStyle(color = Color(0xFF81C784)))
                     append(str)
                     pop()
                     col += str.length
                     continue
                 }
 
-                // Annotations @Composable, @Inject
+                // Annotations @Composable, @Inject -> Soft Amber
                 if (line[col] == '@') {
                     val end = line.indexOfAny(charArrayOf(' ', '(', '\n'), col).takeIf { it != -1 } ?: lineLength
-                    pushStyle(SpanStyle(color = AmberAccentDark, fontWeight = FontWeight.Bold))
+                    pushStyle(SpanStyle(color = Color(0xFFFFE082), fontWeight = FontWeight.Bold))
                     append(line.substring(col, end))
                     pop()
                     col = end
@@ -1000,35 +1103,35 @@ private fun renderSyntaxHighlightedCode(code: String, language: String): Annotat
                     }
                     val word = line.substring(start, col)
                     if (word in keywords) {
-                        pushStyle(SpanStyle(color = Color(0xFFFF7B72), fontWeight = FontWeight.Bold))
+                        pushStyle(SpanStyle(color = Color(0xFFE57373), fontWeight = FontWeight.Bold))
                         append(word)
                         pop()
                     } else if (word.first().isUpperCase()) {
-                        pushStyle(SpanStyle(color = Color(0xFFD2A8FF)))
+                        pushStyle(SpanStyle(color = Color(0xFFD0BCFF)))
                         append(word)
                         pop()
                     } else {
-                        pushStyle(SpanStyle(color = Color(0xFFE6EDF3)))
+                        pushStyle(SpanStyle(color = Color(0xFFEDF0F5)))
                         append(word)
                         pop()
                     }
                     continue
                 }
 
-                // Numbers
+                // Numbers -> Soft Amber Gold
                 if (line[col].isDigit()) {
                     val start = col
                     while (col < lineLength && (line[col].isLetterOrDigit() || line[col] == '.')) {
                         col++
                     }
-                    pushStyle(SpanStyle(color = Color(0xFF79C0FF)))
+                    pushStyle(SpanStyle(color = Color(0xFFFFB74D)))
                     append(line.substring(start, col))
                     pop()
                     continue
                 }
 
                 // Regular character
-                pushStyle(SpanStyle(color = Color(0xFFE6EDF3)))
+                pushStyle(SpanStyle(color = Color(0xFFEDF0F5)))
                 append(line[col])
                 pop()
                 col++

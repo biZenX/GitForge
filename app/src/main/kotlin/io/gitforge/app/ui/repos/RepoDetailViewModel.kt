@@ -26,6 +26,8 @@ import java.util.UUID
 import io.gitforge.core.model.Issue
 import io.gitforge.core.model.PullRequest
 
+import io.gitforge.app.data.updater.AppUpdateManager
+
 data class RepoDetailUiState(
     val isLoading: Boolean = false,
     val repository: Repository? = null,
@@ -54,12 +56,29 @@ data class RepoDetailUiState(
 class RepoDetailViewModel @Inject constructor(
     private val repository: GitHubRepository,
     private val workManagerHelper: WorkManagerHelper,
-    private val watchedReleaseDao: WatchedReleaseDao
+    private val watchedReleaseDao: WatchedReleaseDao,
+    private val updateManager: AppUpdateManager
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(RepoDetailUiState())
     val uiState: StateFlow<RepoDetailUiState> = _uiState.asStateFlow()
     private var currentDownloadWorkId: UUID? = null
+
+    fun installApkAsset(assetUrl: String, fileName: String) {
+        viewModelScope.launch {
+            _uiState.update { it.copy(isDownloadingArchive = true, downloadProgress = 0) }
+            val res = updateManager.downloadAndInstallApkUrl(assetUrl, fileName) { progress ->
+                _uiState.update { it.copy(downloadProgress = progress) }
+            }
+            _uiState.update {
+                it.copy(
+                    isDownloadingArchive = false,
+                    successMessage = if (res.isSuccess) "Installer launched!" else null,
+                    errorMessage = if (res.isFailure) "Download failed: ${res.exceptionOrNull()?.message}" else null
+                )
+            }
+        }
+    }
 
     fun downloadArchive() {
         val repo = _uiState.value.repository ?: return

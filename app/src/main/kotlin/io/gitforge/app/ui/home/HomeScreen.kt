@@ -1,5 +1,9 @@
 package io.gitforge.app.ui.home
 
+import android.content.Intent
+import android.net.Uri
+import android.widget.Toast
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -16,32 +20,35 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowForward
 import androidx.compose.material.icons.automirrored.filled.MergeType
 import androidx.compose.material.icons.filled.Close
-import androidx.compose.material.icons.filled.Code
+import androidx.compose.material.icons.filled.Download
 import androidx.compose.material.icons.filled.EditNote
 import androidx.compose.material.icons.filled.ForkRight
 import androidx.compose.material.icons.filled.Lock
-import androidx.compose.material.icons.filled.PlayArrow
+import androidx.compose.material.icons.filled.NotificationsActive
+import androidx.compose.material.icons.filled.NotificationsNone
+import androidx.compose.material.icons.filled.RocketLaunch
 import androidx.compose.material.icons.filled.Star
 import androidx.compose.material.icons.filled.Terminal
 import androidx.compose.material.icons.outlined.BugReport
 import androidx.compose.material.icons.outlined.Folder
-import androidx.compose.material.icons.outlined.Star
-import androidx.compose.material.icons.outlined.Person
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -51,32 +58,29 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
+import io.gitforge.core.database.WatchedReleaseEntity
+import io.gitforge.core.designsystem.component.EssentialsGroupedItem
+import io.gitforge.core.designsystem.component.GitForgeDeveloperWorkspaceHero
 import io.gitforge.core.designsystem.component.GitForgeEmptyView
 import io.gitforge.core.designsystem.component.GitForgeErrorView
-import io.gitforge.core.designsystem.component.GitForgeLanguageDot
-import io.gitforge.core.designsystem.component.GitForgeLoadingView
-import io.gitforge.core.designsystem.component.GitForgeMetricCard
+import io.gitforge.app.ui.repos.GitForgeRepositoryCard
 import io.gitforge.core.designsystem.component.GitForgeShimmerCard
 import io.gitforge.core.designsystem.component.GitForgeStatusBadge
-import io.gitforge.core.designsystem.component.GitForgeWhatsNewSheet
-import io.gitforge.core.designsystem.component.WafeerHeroBanner
+import io.gitforge.core.designsystem.component.GroupedCardPosition
 import io.gitforge.core.designsystem.component.bounceClick
 import io.gitforge.core.designsystem.theme.AmberAccentDark
+import io.gitforge.core.designsystem.theme.CodeTypography
 import io.gitforge.core.designsystem.theme.CyanAccentDark
-import io.gitforge.core.designsystem.theme.EmeraldAccentDark
-import io.gitforge.core.designsystem.theme.HeroCardShape
-import io.gitforge.core.designsystem.theme.IconContainerShape
+import io.gitforge.core.designsystem.theme.GoogleSansCodeFamily
+import io.gitforge.core.designsystem.theme.GoogleSansFlexFamily
 import io.gitforge.core.designsystem.theme.ItemCardShape
-import io.gitforge.core.designsystem.theme.LavenderAccentDark
 import io.gitforge.core.designsystem.theme.PillBadgeShape
-import io.gitforge.core.designsystem.theme.RoseAccentDark
 import io.gitforge.core.designsystem.theme.SubCardShape
-import io.gitforge.core.designsystem.theme.TerracottaPrimaryDark
 import io.gitforge.core.model.Repository
 
 @Composable
@@ -90,8 +94,17 @@ fun HomeScreen(
     modifier: Modifier = Modifier
 ) {
     val uiState by viewModel.uiState.collectAsState()
+    val context = LocalContext.current
     var selectedFilter by remember { mutableStateOf("All") }
     var searchQuery by remember { mutableStateOf("") }
+
+    // Toast Feedback
+    LaunchedEffect(uiState.toastMessage) {
+        uiState.toastMessage?.let { msg ->
+            Toast.makeText(context, msg, Toast.LENGTH_SHORT).show()
+            viewModel.clearToastMessage()
+        }
+    }
 
     val filteredRepositories = remember(uiState.recentRepositories, selectedFilter, searchQuery) {
         uiState.recentRepositories
@@ -117,7 +130,7 @@ fun HomeScreen(
                 .padding(16.dp),
             verticalArrangement = Arrangement.spacedBy(14.dp)
         ) {
-            GitForgeShimmerCard(height = 140.dp)
+            GitForgeShimmerCard(height = 180.dp)
             GitForgeShimmerCard(height = 84.dp)
             GitForgeShimmerCard(height = 84.dp)
             GitForgeShimmerCard(height = 84.dp)
@@ -137,7 +150,7 @@ fun HomeScreen(
         modifier = modifier
             .fillMaxSize()
             .padding(horizontal = 16.dp),
-        contentPadding = PaddingValues(top = 8.dp, bottom = 80.dp),
+        contentPadding = PaddingValues(top = 8.dp, bottom = 88.dp),
         verticalArrangement = Arrangement.spacedBy(16.dp)
     ) {
         // In-App Update Available Banner
@@ -148,7 +161,7 @@ fun HomeScreen(
                     modifier = Modifier.fillMaxWidth(),
                     shape = ItemCardShape,
                     color = Color(0xFF1E2838),
-                    border = androidx.compose.foundation.BorderStroke(1.dp, Color(0x33A8C7FA))
+                    border = BorderStroke(1.dp, Color(0x33A8C7FA))
                 ) {
                     Row(
                         modifier = Modifier
@@ -163,7 +176,7 @@ fun HomeScreen(
                         ) {
                             Box(
                                 modifier = Modifier
-                                    .size(38.dp)
+                                    .size(40.dp)
                                     .clip(CircleShape)
                                     .background(Color(0x22A8C7FA)),
                                 contentAlignment = Alignment.Center
@@ -176,12 +189,12 @@ fun HomeScreen(
                                     text = "GitForge v${update.versionName} Available!",
                                     style = MaterialTheme.typography.titleSmall,
                                     fontWeight = FontWeight.Bold,
-                                    color = MaterialTheme.colorScheme.onSurface
+                                    color = Color(0xFFEDF0F5)
                                 )
                                 Text(
-                                    text = "Tap Update to install directly via native updater.",
+                                    text = "Direct 1-tap update via native installer.",
                                     style = MaterialTheme.typography.bodySmall,
-                                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                                    color = Color(0xFF9AA0A6)
                                 )
                             }
                         }
@@ -190,13 +203,13 @@ fun HomeScreen(
                             Button(
                                 onClick = onNavigateToSettings,
                                 shape = PillBadgeShape,
-                                colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.primary),
+                                colors = ButtonDefaults.buttonColors(containerColor = Color(0xFFA8C7FA)),
                                 contentPadding = PaddingValues(horizontal = 14.dp, vertical = 6.dp)
                             ) {
-                                Text("Update", style = MaterialTheme.typography.labelMedium, color = Color(0xFF041E49))
+                                Text("Update", fontWeight = FontWeight.Bold, color = Color(0xFF041E49))
                             }
                             IconButton(onClick = { viewModel.dismissUpdateBanner() }) {
-                                Icon(Icons.Default.Close, contentDescription = "Dismiss", modifier = Modifier.size(18.dp))
+                                Icon(Icons.Default.Close, contentDescription = "Dismiss", modifier = Modifier.size(18.dp), tint = Color(0xFF9AA0A6))
                             }
                         }
                     }
@@ -204,268 +217,239 @@ fun HomeScreen(
             }
         }
 
-        // Minimal Profile & Sync Header
-        item {
-            Surface(
-                modifier = Modifier.fillMaxWidth(),
-                shape = RoundedCornerShape(26.dp),
-                color = Color(0xFF1E2128),
-                border = androidx.compose.foundation.BorderStroke(1.dp, Color(0x1AFFFFFF))
-            ) {
-                Row(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(horizontal = 16.dp, vertical = 14.dp),
-                    verticalAlignment = Alignment.CenterVertically
+        // Active APK Downloading / Installing Banner
+        if (uiState.isInstallingApk) {
+            item {
+                Surface(
+                    modifier = Modifier.fillMaxWidth(),
+                    shape = ItemCardShape,
+                    color = Color(0xFF14241B),
+                    border = BorderStroke(1.dp, Color(0x3381C784))
                 ) {
-                    if (uiState.user != null) {
-                        AsyncImage(
-                            model = uiState.user?.avatarUrl,
-                            contentDescription = "User Avatar",
-                            modifier = Modifier
-                                .size(48.dp)
-                                .clip(RoundedCornerShape(16.dp))
-                                .border(1.dp, Color(0x33A8C7FA), RoundedCornerShape(16.dp))
-                        )
-                        Spacer(modifier = Modifier.width(14.dp))
-                        Column(modifier = Modifier.weight(1f)) {
-                            Text(
-                                text = uiState.user?.name ?: uiState.user?.login ?: "Developer",
-                                style = MaterialTheme.typography.titleMedium,
-                                fontWeight = FontWeight.Bold,
-                                color = MaterialTheme.colorScheme.onSurface
-                            )
-                            Text(
-                                text = "@${uiState.user?.login}",
-                                style = MaterialTheme.typography.bodySmall,
-                                color = MaterialTheme.colorScheme.primary,
-                                fontWeight = FontWeight.Medium
-                            )
-                        }
-                    } else {
-                        Box(
-                            modifier = Modifier
-                                .size(48.dp)
-                                .clip(RoundedCornerShape(16.dp))
-                                .background(Color(0xFF262A33))
-                                .border(1.dp, Color(0x14FFFFFF), RoundedCornerShape(16.dp)),
-                            contentAlignment = Alignment.Center
+                    Column(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(16.dp)
+                    ) {
+                        Row(
+                            modifier = Modifier.fillMaxWidth(),
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.SpaceBetween
                         ) {
-                            Icon(
-                                imageVector = Icons.Outlined.Person,
-                                contentDescription = "Developer",
-                                tint = Color(0xFF9AA0A6),
-                                modifier = Modifier.size(24.dp)
-                            )
-                        }
-                        Spacer(modifier = Modifier.width(14.dp))
-                        Column(modifier = Modifier.weight(1f)) {
-                            Text(
-                                text = "Developer Workspace",
-                                style = MaterialTheme.typography.titleMedium,
-                                fontWeight = FontWeight.Bold,
-                                color = MaterialTheme.colorScheme.onSurface
-                            )
-                            Text(
-                                text = "Local offline storage active",
-                                style = MaterialTheme.typography.bodySmall,
-                                color = Color(0xFF9AA0A6)
-                            )
-                        }
-                        Button(
-                            onClick = onNavigateToSettings,
-                            shape = PillBadgeShape,
-                            colors = ButtonDefaults.buttonColors(
-                                containerColor = Color(0xFF234275),
-                                contentColor = Color(0xFFD3E3FD)
-                            ),
-                            contentPadding = PaddingValues(horizontal = 14.dp, vertical = 6.dp)
-                        ) {
-                            Text("Sign In", fontWeight = FontWeight.Bold, fontSize = 12.sp)
-                        }
-                    }
-                }
-            }
-        }
-
-        // Authentic Wafeer Hero Banner ("يافطة وفير الكبرى") - Real Dynamic Functionality
-        item {
-            val userLogin = uiState.user?.login ?: "biZenX"
-            WafeerHeroBanner(
-                title = "Workspace Hub",
-                primaryMetricValue = "${filteredRepositories.size} Repositories",
-                primaryMetricLabel = if (selectedFilter == "All") "All repositories synchronized" else "Filtered by $selectedFilter",
-                primaryMetricAvailable = if (uiState.isAuthenticated) "Cloud Sync: Active" else "Local Workspace: Ready",
-                secondaryLeftTitle = "Active Developer",
-                secondaryLeftValue = userLogin,
-                secondaryLeftSubtext = if (uiState.isAuthenticated) "GitHub Connected" else "Guest Mode",
-                badgeCount = "${filteredRepositories.size}",
-                badgeLabel = if (selectedFilter == "All") "Total" else selectedFilter,
-                filterOptions = listOf("All", "Starred", "Sources", "Forks"),
-                selectedFilter = selectedFilter,
-                onFilterSelected = { selectedFilter = it },
-                onEditClick = { viewModel.refresh() }
-            )
-        }
-
-        // Real-Time Instant Search Filter
-        item {
-            Surface(
-                modifier = Modifier.fillMaxWidth(),
-                shape = PillBadgeShape,
-                color = Color(0xFF1E2128),
-                border = androidx.compose.foundation.BorderStroke(1.dp, Color(0x14FFFFFF))
-            ) {
-                Row(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(horizontal = 14.dp, vertical = 2.dp),
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    Icon(
-                        imageVector = Icons.Outlined.Folder,
-                        contentDescription = "Search",
-                        tint = Color(0xFF9AA0A6),
-                        modifier = Modifier.size(18.dp)
-                    )
-                    Spacer(modifier = Modifier.width(10.dp))
-                    androidx.compose.foundation.text.BasicTextField(
-                        value = searchQuery,
-                        onValueChange = { searchQuery = it },
-                        modifier = Modifier.weight(1f).padding(vertical = 12.dp),
-                        singleLine = true,
-                        textStyle = MaterialTheme.typography.bodyMedium.copy(color = MaterialTheme.colorScheme.onSurface),
-                        decorationBox = { innerTextField ->
-                            if (searchQuery.isEmpty()) {
+                            Row(verticalAlignment = Alignment.CenterVertically) {
+                                CircularProgressIndicator(
+                                    progress = { uiState.installProgress / 100f },
+                                    modifier = Modifier.size(20.dp),
+                                    strokeWidth = 2.5.dp,
+                                    color = Color(0xFF81C784)
+                                )
+                                Spacer(modifier = Modifier.width(10.dp))
                                 Text(
-                                    text = "Quick search in ${filteredRepositories.size} repositories...",
-                                    style = MaterialTheme.typography.bodyMedium,
-                                    color = Color(0xFF6B7280)
+                                    text = "Downloading APK: ${uiState.activeInstallingRepo ?: ""}",
+                                    style = MaterialTheme.typography.titleSmall,
+                                    fontWeight = FontWeight.Bold,
+                                    color = Color(0xFFEDF0F5)
                                 )
                             }
-                            innerTextField()
+                            Text(
+                                text = "${uiState.installProgress}%",
+                                style = CodeTypography,
+                                fontWeight = FontWeight.Bold,
+                                color = Color(0xFF81C784)
+                            )
                         }
-                    )
-                    if (searchQuery.isNotEmpty()) {
-                        IconButton(onClick = { searchQuery = "" }, modifier = Modifier.size(28.dp)) {
-                            Icon(Icons.Default.Close, contentDescription = "Clear", tint = Color(0xFF9AA0A6), modifier = Modifier.size(16.dp))
-                        }
+                        Spacer(modifier = Modifier.height(10.dp))
+                        LinearProgressIndicator(
+                            progress = { uiState.installProgress / 100f },
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .height(6.dp)
+                                .clip(PillBadgeShape),
+                            color = Color(0xFF81C784),
+                            trackColor = Color(0x2281C784)
+                        )
                     }
                 }
             }
         }
 
-        // Quick Tools (Essentials Pill Chips with Soft Pastels)
+        // Authentic Developer Workspace Hero Banner
         item {
-            Text(
-                text = "Developer Studio & Tools",
-                style = MaterialTheme.typography.titleMedium,
-                fontWeight = FontWeight.Bold,
-                color = MaterialTheme.colorScheme.onSurface
+            val devName = uiState.user?.name ?: uiState.user?.login ?: "biZenX"
+            val devHandle = if (uiState.user != null) "@${uiState.user?.login}" else "@biZenX"
+            val avatar = uiState.user?.avatarUrl ?: "https://github.com/biZenX.png"
+
+            GitForgeDeveloperWorkspaceHero(
+                developerName = devName,
+                developerHandle = devHandle,
+                avatarUrl = avatar,
+                repositoryCount = uiState.recentRepositories.size,
+                starredCount = uiState.recentRepositories.count { it.stargazersCount > 0 },
+                trackedReleasesCount = uiState.watchedReleases.size,
+                searchQuery = searchQuery,
+                onSearchQueryChange = { searchQuery = it },
+                filterOptions = listOf("All", "Tracking", "Starred", "Sources", "Forks"),
+                selectedFilter = selectedFilter,
+                onFilterSelected = { selectedFilter = it },
+                onRefresh = { viewModel.refresh() }
             )
-            Spacer(modifier = Modifier.height(8.dp))
-            LazyRow(
-                horizontalArrangement = Arrangement.spacedBy(10.dp)
-            ) {
+        }
+
+        // Watched Releases Section (Active when "Tracking" filter is selected)
+        if (selectedFilter == "Tracking") {
+            item {
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Text(
+                        text = "Followed App Releases",
+                        style = MaterialTheme.typography.titleMedium,
+                        fontWeight = FontWeight.Bold,
+                        color = Color(0xFFEDF0F5)
+                    )
+                    Spacer(modifier = Modifier.weight(1f))
+                    Box(
+                        modifier = Modifier
+                            .clip(PillBadgeShape)
+                            .background(Color(0xFF262A33))
+                            .border(1.dp, Color(0x14FFFFFF), PillBadgeShape)
+                            .padding(horizontal = 10.dp, vertical = 4.dp)
+                    ) {
+                        Text(
+                            text = "${uiState.watchedReleases.size} Apps",
+                            style = MaterialTheme.typography.labelSmall,
+                            color = Color(0xFFB0B7C3),
+                            fontWeight = FontWeight.Bold
+                        )
+                    }
+                }
+            }
+
+            if (uiState.watchedReleases.isEmpty()) {
                 item {
-                    ExpressiveActionPill(
+                    GitForgeEmptyView(
+                        title = "No tracked app releases",
+                        description = "Tap the 🔔 Watch icon on any repository to follow new releases and get 1-tap APK installation!",
+                        icon = Icons.Default.NotificationsActive
+                    )
+                }
+            } else {
+                items(uiState.watchedReleases, key = { it.repoFullName }) { watched ->
+                    WatchedReleaseCard(
+                        watched = watched,
+                        onInstallApk = { apkUrl ->
+                            viewModel.installReleaseApk(apkUrl, watched.repoName, watched.lastKnownTag ?: "latest")
+                        },
+                        onOpenRepo = {
+                            onNavigateToRepo(watched.ownerLogin, watched.repoName)
+                        }
+                    )
+                }
+            }
+        } else {
+            // Essentials Grouped Developer Tools
+            item {
+                Text(
+                    text = "Developer Tools & Actions",
+                    style = MaterialTheme.typography.titleMedium,
+                    fontWeight = FontWeight.Bold,
+                    color = Color(0xFFEDF0F5)
+                )
+                Spacer(modifier = Modifier.height(8.dp))
+
+                Column {
+                    EssentialsGroupedItem(
                         title = "Code Studio",
+                        subtitle = "Integrated offline code editor & syntax engine",
                         icon = Icons.Default.EditNote,
-                        tint = CyanAccentDark,
+                        iconBackgroundColor = Color(0xFFC2E7FF),
+                        iconTintColor = Color(0xFF004A77),
+                        position = GroupedCardPosition.Top,
                         onClick = onNavigateToStudio
                     )
-                }
-                item {
-                    ExpressiveActionPill(
-                        title = "Terminal",
+                    EssentialsGroupedItem(
+                        title = "Sandboxed Terminal",
+                        subtitle = "Local shell environment & JGit execution",
                         icon = Icons.Default.Terminal,
-                        tint = EmeraldAccentDark,
+                        iconBackgroundColor = Color(0xFFC4EED0),
+                        iconTintColor = Color(0xFF00522B),
+                        position = GroupedCardPosition.Middle,
                         onClick = onNavigateToTerminal
                     )
-                }
-                item {
-                    ExpressiveActionPill(
-                        title = "Issues",
+                    EssentialsGroupedItem(
+                        title = "Issues & Bug Tracker",
+                        subtitle = "Inspect discussions, comments, and open tasks",
                         icon = Icons.Outlined.BugReport,
-                        tint = RoseAccentDark,
+                        iconBackgroundColor = Color(0xFFFFD8E4),
+                        iconTintColor = Color(0xFF633B48),
+                        position = GroupedCardPosition.Middle,
                         onClick = { onNavigateToProductivity("issues") }
                     )
-                }
-                item {
-                    ExpressiveActionPill(
-                        title = "Pull Requests",
+                    EssentialsGroupedItem(
+                        title = "Pull Requests & Merges",
+                        subtitle = "Review branch diffs and manage integrations",
                         icon = Icons.AutoMirrored.Filled.MergeType,
-                        tint = TerracottaPrimaryDark,
+                        iconBackgroundColor = Color(0xFFEADDFF),
+                        iconTintColor = Color(0xFF4F378B),
+                        position = GroupedCardPosition.Bottom,
                         onClick = { onNavigateToProductivity("pulls") }
                     )
                 }
-                item {
-                    ExpressiveActionPill(
-                        title = "Actions CI",
-                        icon = Icons.Default.PlayArrow,
-                        tint = AmberAccentDark,
-                        onClick = { onNavigateToProductivity("actions") }
-                    )
-                }
-                item {
-                    ExpressiveActionPill(
-                        title = "Sync",
-                        icon = Icons.Default.Close,
-                        tint = LavenderAccentDark,
-                        onClick = { viewModel.refresh() }
-                    )
-                }
             }
-        }
 
-        // Repositories Section Header
-        item {
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                Text(
-                    text = if (selectedFilter == "All") "Your Repositories" else "$selectedFilter Repositories",
-                    style = MaterialTheme.typography.titleMedium,
-                    fontWeight = FontWeight.Bold,
-                    color = MaterialTheme.colorScheme.onSurface
-                )
-                Spacer(modifier = Modifier.weight(1f))
-                Box(
-                    modifier = Modifier
-                        .clip(PillBadgeShape)
-                        .background(Color(0xFF262A33))
-                        .border(1.dp, Color(0x14FFFFFF), PillBadgeShape)
-                        .padding(horizontal = 10.dp, vertical = 4.dp)
+            // Repositories Section Header
+            item {
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    verticalAlignment = Alignment.CenterVertically
                 ) {
                     Text(
-                        text = "${filteredRepositories.size} Repos",
-                        style = MaterialTheme.typography.labelSmall,
-                        color = Color(0xFFB0B7C3),
-                        fontWeight = FontWeight.Medium
+                        text = if (selectedFilter == "All") "Your Repositories" else "$selectedFilter Repositories",
+                        style = MaterialTheme.typography.titleMedium,
+                        fontWeight = FontWeight.Bold,
+                        color = Color(0xFFEDF0F5)
                     )
+                    Spacer(modifier = Modifier.weight(1f))
+                    Box(
+                        modifier = Modifier
+                            .clip(PillBadgeShape)
+                            .background(Color(0xFF262A33))
+                            .border(1.dp, Color(0x14FFFFFF), PillBadgeShape)
+                            .padding(horizontal = 10.dp, vertical = 4.dp)
+                    ) {
+                        Text(
+                            text = "${filteredRepositories.size} Repos",
+                            style = MaterialTheme.typography.labelSmall,
+                            color = Color(0xFFB0B7C3),
+                            fontWeight = FontWeight.Medium
+                        )
+                    }
                 }
             }
-        }
 
-        // Repositories List
-        if (filteredRepositories.isEmpty()) {
-            item {
-                GitForgeEmptyView(
-                    title = "No repositories matching filter",
-                    description = if (searchQuery.isNotEmpty()) "No results matching \"$searchQuery\"." else "No repositories under $selectedFilter filter.",
-                    icon = Icons.Outlined.Folder
-                )
-            }
-        } else {
-            items(filteredRepositories, key = { it.id }) { repo ->
-                WafeerRepositoryCard(
-                    repository = repo,
-                    onClick = {
-                        val owner = repo.owner?.login ?: ""
-                        onNavigateToRepo(owner, repo.name)
-                    }
-                )
+            // Repositories List
+            if (filteredRepositories.isEmpty()) {
+                item {
+                    GitForgeEmptyView(
+                        title = "No repositories matching filter",
+                        description = if (searchQuery.isNotEmpty()) "No results matching \"$searchQuery\"." else "No repositories under $selectedFilter filter.",
+                        icon = Icons.Outlined.Folder
+                    )
+                }
+            } else {
+                items(filteredRepositories, key = { it.id }) { repo ->
+                    val isWatched = uiState.watchedReleases.any { it.repoFullName == repo.fullName }
+                    GitForgeRepositoryCard(
+                        repository = repo,
+                        isWatched = isWatched,
+                        onToggleWatch = { viewModel.toggleWatch(repo) },
+                        onClick = {
+                            val owner = repo.owner?.login ?: ""
+                            onNavigateToRepo(owner, repo.name)
+                        }
+                    )
+                }
             }
         }
 
@@ -475,168 +459,149 @@ fun HomeScreen(
     }
 }
 
+/**
+ * Authentic Watched Release Card for followed apps.
+ * Allows 1-tap APK downloading and direct opening.
+ */
 @Composable
-fun ExpressiveActionPill(
-    title: String,
-    icon: ImageVector,
-    tint: Color,
-    onClick: () -> Unit
+private fun WatchedReleaseCard(
+    watched: WatchedReleaseEntity,
+    onInstallApk: (String) -> Unit,
+    onOpenRepo: () -> Unit
 ) {
     Surface(
-        shape = PillBadgeShape,
-        color = Color(0xFF1E2128),
-        border = androidx.compose.foundation.BorderStroke(1.dp, Color(0x1AFFFFFF)),
         modifier = Modifier
-            .height(44.dp)
-            .bounceClick(onClick = onClick)
-    ) {
-        Row(
-            modifier = Modifier.padding(horizontal = 14.dp),
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            Box(
-                modifier = Modifier
-                    .size(26.dp)
-                    .clip(CircleShape)
-                    .background(tint.copy(alpha = 0.15f)),
-                contentAlignment = Alignment.Center
-            ) {
-                Icon(
-                    imageVector = icon,
-                    contentDescription = null,
-                    tint = tint,
-                    modifier = Modifier.size(15.dp)
-                )
-            }
-            Spacer(modifier = Modifier.width(8.dp))
-            Text(
-                text = title,
-                style = MaterialTheme.typography.labelLarge,
-                color = MaterialTheme.colorScheme.onSurface,
-                fontWeight = FontWeight.SemiBold
-            )
-        }
-    }
-}
-
-@Composable
-fun WafeerRepositoryCard(
-    repository: Repository,
-    onClick: () -> Unit,
-    modifier: Modifier = Modifier
-) {
-    Surface(
-        modifier = modifier
             .fillMaxWidth()
             .clip(RoundedCornerShape(22.dp))
-            .bounceClick(onClick = onClick),
+            .bounceClick(onClick = onOpenRepo),
         shape = RoundedCornerShape(22.dp),
         color = Color(0xFF1E2128),
-        border = androidx.compose.foundation.BorderStroke(1.dp, Color(0x1AFFFFFF))
+        border = BorderStroke(1.dp, Color(0x1AFFFFFF))
     ) {
         Column(modifier = Modifier.padding(18.dp)) {
+            // Header Row: Avatar, Name, and Tag
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                Box(
+                AsyncImage(
+                    model = watched.ownerAvatarUrl,
+                    contentDescription = null,
                     modifier = Modifier
-                        .size(38.dp)
+                        .size(40.dp)
                         .clip(RoundedCornerShape(12.dp))
-                        .background(Color(0x22A8C7FA)),
-                    contentAlignment = Alignment.Center
-                ) {
-                    Icon(
-                        imageVector = if (repository.private) Icons.Default.Lock else Icons.Outlined.Folder,
-                        contentDescription = null,
-                        tint = Color(0xFFA8C7FA),
-                        modifier = Modifier.size(20.dp)
-                    )
-                }
+                        .border(1.dp, Color(0x33A8C7FA), RoundedCornerShape(12.dp))
+                )
                 Spacer(modifier = Modifier.width(12.dp))
                 Column(modifier = Modifier.weight(1f)) {
                     Text(
-                        text = repository.name,
+                        text = watched.repoName,
                         style = MaterialTheme.typography.titleMedium,
                         fontWeight = FontWeight.Bold,
-                        color = MaterialTheme.colorScheme.onSurface
+                        color = Color(0xFFEDF0F5)
                     )
                     Text(
-                        text = repository.fullName,
+                        text = watched.repoFullName,
                         style = MaterialTheme.typography.bodySmall,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                        color = Color(0xFF9AA0A6)
                     )
                 }
-                GitForgeStatusBadge(
-                    status = if (repository.private) "Private" else "Public",
-                    showDot = false
+
+                if (!watched.lastKnownTag.isNullOrBlank()) {
+                    Box(
+                        modifier = Modifier
+                            .clip(PillBadgeShape)
+                            .background(Color(0x2281C784))
+                            .border(1.dp, Color(0x4481C784), PillBadgeShape)
+                            .padding(horizontal = 10.dp, vertical = 4.dp)
+                    ) {
+                        Text(
+                            text = watched.lastKnownTag ?: "",
+                            style = CodeTypography,
+                            fontWeight = FontWeight.Bold,
+                            fontSize = 11.sp,
+                            color = Color(0xFF81C784)
+                        )
+                    }
+                }
+            }
+
+            if (!watched.latestReleaseName.isNullOrBlank()) {
+                Spacer(modifier = Modifier.height(10.dp))
+                Text(
+                    text = watched.latestReleaseName ?: "",
+                    style = MaterialTheme.typography.bodyMedium,
+                    fontWeight = FontWeight.SemiBold,
+                    color = Color(0xFFEDF0F5),
+                    maxLines = 1
                 )
             }
 
-            if (!repository.description.isNullOrBlank()) {
-                Spacer(modifier = Modifier.height(10.dp))
+            if (!watched.latestReleaseBody.isNullOrBlank()) {
+                Spacer(modifier = Modifier.height(4.dp))
                 Text(
-                    text = repository.description ?: "",
-                    style = MaterialTheme.typography.bodyMedium,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    text = watched.latestReleaseBody ?: "",
+                    style = MaterialTheme.typography.bodySmall,
+                    color = Color(0xFF9AA0A6),
                     maxLines = 2
                 )
             }
 
             Spacer(modifier = Modifier.height(14.dp))
 
-            Row(verticalAlignment = Alignment.CenterVertically) {
-                GitForgeLanguageDot(language = repository.language)
-                Spacer(modifier = Modifier.width(10.dp))
-
-                Box(
-                    modifier = Modifier
-                        .clip(PillBadgeShape)
-                        .background(Color(0xFF262A33))
-                        .border(1.dp, Color(0x14FFFFFF), PillBadgeShape)
-                        .padding(horizontal = 8.dp, vertical = 3.dp)
+            // Action Buttons
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.spacedBy(10.dp)
+            ) {
+                // If release URL or APK is available
+                val apkUrl = watched.latestReleaseUrl
+                Button(
+                    onClick = {
+                        if (!apkUrl.isNullOrBlank()) {
+                            onInstallApk(apkUrl)
+                        } else {
+                            onOpenRepo()
+                        }
+                    },
+                    modifier = Modifier.weight(1f),
+                    shape = PillBadgeShape,
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = Color(0xFFA8C7FA),
+                        contentColor = Color(0xFF041E49)
+                    ),
+                    contentPadding = PaddingValues(horizontal = 14.dp, vertical = 8.dp)
                 ) {
-                    Row(verticalAlignment = Alignment.CenterVertically) {
-                        Icon(
-                            imageVector = Icons.Default.Star,
-                            contentDescription = "Stars",
-                            tint = AmberAccentDark,
-                            modifier = Modifier.size(13.dp)
-                        )
-                        Spacer(modifier = Modifier.width(4.dp))
-                        Text(
-                            text = "${repository.stargazersCount}",
-                            style = MaterialTheme.typography.labelSmall,
-                            color = MaterialTheme.colorScheme.onSurface,
-                            fontWeight = FontWeight.Medium
-                        )
-                    }
+                    Icon(
+                        imageVector = Icons.Default.RocketLaunch,
+                        contentDescription = null,
+                        modifier = Modifier.size(16.dp)
+                    )
+                    Spacer(modifier = Modifier.width(6.dp))
+                    Text(
+                        text = "Install APK",
+                        fontFamily = GoogleSansFlexFamily,
+                        fontWeight = FontWeight.Bold,
+                        fontSize = 12.sp
+                    )
                 }
 
-                Spacer(modifier = Modifier.width(8.dp))
-
-                Box(
-                    modifier = Modifier
-                        .clip(PillBadgeShape)
-                        .background(Color(0xFF262A33))
-                        .border(1.dp, Color(0x14FFFFFF), PillBadgeShape)
-                        .padding(horizontal = 8.dp, vertical = 3.dp)
+                Button(
+                    onClick = onOpenRepo,
+                    modifier = Modifier.weight(1f),
+                    shape = PillBadgeShape,
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = Color(0xFF262A33),
+                        contentColor = Color(0xFFEDF0F5)
+                    ),
+                    contentPadding = PaddingValues(horizontal = 14.dp, vertical = 8.dp)
                 ) {
-                    Row(verticalAlignment = Alignment.CenterVertically) {
-                        Icon(
-                            imageVector = Icons.Default.ForkRight,
-                            contentDescription = "Forks",
-                            tint = CyanAccentDark,
-                            modifier = Modifier.size(13.dp)
-                        )
-                        Spacer(modifier = Modifier.width(4.dp))
-                        Text(
-                            text = "${repository.forksCount}",
-                            style = MaterialTheme.typography.labelSmall,
-                            color = MaterialTheme.colorScheme.onSurface,
-                            fontWeight = FontWeight.Medium
-                        )
-                    }
+                    Text(
+                        text = "View Release",
+                        fontFamily = GoogleSansFlexFamily,
+                        fontWeight = FontWeight.Bold,
+                        fontSize = 12.sp
+                    )
                 }
             }
         }

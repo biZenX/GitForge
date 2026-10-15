@@ -160,6 +160,60 @@ class AppUpdateManager @Inject constructor(
     }
 
     /**
+     * Downloads any APK from a direct URL and triggers the native Android package installer.
+     */
+    suspend fun downloadAndInstallApkUrl(
+        apkUrl: String,
+        fileName: String,
+        onProgress: (Int) -> Unit = {}
+    ): Result<File> = withContext(Dispatchers.IO) {
+        try {
+            val request = Request.Builder().url(apkUrl).build()
+            val response = okHttpClient.newCall(request).execute()
+
+            if (!response.isSuccessful) {
+                return@withContext Result.failure(Exception("Download failed: HTTP ${response.code}"))
+            }
+
+            val body = response.body ?: return@withContext Result.failure(Exception("Empty download body"))
+            val contentLength = body.contentLength()
+            val inputStream: InputStream = body.byteStream()
+
+            val updateDir = File(context.cacheDir, "updates")
+            if (!updateDir.exists()) updateDir.mkdirs()
+
+            val safeName = if (fileName.endsWith(".apk", ignoreCase = true)) fileName else "$fileName.apk"
+            val targetFile = File(updateDir, safeName)
+            if (targetFile.exists()) targetFile.delete()
+
+            val outputStream = FileOutputStream(targetFile)
+            val buffer = ByteArray(8192)
+            var bytesRead: Int
+            var totalBytesRead = 0L
+
+            while (inputStream.read(buffer).also { bytesRead = it } != -1) {
+                outputStream.write(buffer, 0, bytesRead)
+                totalBytesRead += bytesRead
+                if (contentLength > 0) {
+                    val progress = ((totalBytesRead * 100) / contentLength).toInt()
+                    onProgress(progress)
+                }
+            }
+
+            outputStream.flush()
+            outputStream.close()
+            inputStream.close()
+
+            // Launch package installer
+            installApk(targetFile)
+
+            Result.success(targetFile)
+        } catch (e: Exception) {
+            Result.failure(e)
+        }
+    }
+
+    /**
      * Launches Android Package Installer using FileProvider.
      */
     fun installApk(file: File) {

@@ -73,9 +73,9 @@ fun GitForgeAboutCard(
 
     Surface(
         modifier = modifier.fillMaxWidth(),
-        shape = RoundedCornerShape(32.dp),
-        color = Color(0xFF1E232B),
-        border = BorderStroke(1.dp, Color(0xFF30363D))
+        shape = RoundedCornerShape(28.dp),
+        color = Color(0xFF1E2128),
+        border = BorderStroke(1.dp, Color(0x14FFFFFF))
     ) {
         Column(
             modifier = Modifier.padding(24.dp),
@@ -86,7 +86,7 @@ fun GitForgeAboutCard(
                 text = version,
                 fontSize = 26.sp,
                 fontWeight = FontWeight.Bold,
-                color = Color.White
+                color = Color(0xFFEDF0F5)
             )
 
             Spacer(modifier = Modifier.height(4.dp))
@@ -95,7 +95,7 @@ fun GitForgeAboutCard(
             Text(
                 text = "The all-in-one Git client & developer studio for Android",
                 fontSize = 13.sp,
-                color = Color(0xFF9CA3AF),
+                color = Color(0xFF9AA0A6),
                 fontWeight = FontWeight.Normal
             )
 
@@ -106,7 +106,7 @@ fun GitForgeAboutCard(
                 modifier = Modifier
                     .size(116.dp)
                     .clip(ScallopedShape(lobes = 12, amplitudeRatio = 0.12f))
-                    .background(Color(0xFF1F6FEB))
+                    .background(Color(0xFF265EA7))
                     .padding(8.dp),
                 contentAlignment = Alignment.Center
             ) {
@@ -126,13 +126,13 @@ fun GitForgeAboutCard(
                 Text(
                     text = "Crafted by ",
                     fontSize = 14.sp,
-                    color = Color(0xFF9CA3AF)
+                    color = Color(0xFF9AA0A6)
                 )
                 Text(
                     text = "@biZenX",
                     fontSize = 14.sp,
                     fontWeight = FontWeight.Bold,
-                    color = Color(0xFF58A6FF),
+                    color = Color(0xFFA8C7FA),
                     modifier = Modifier.clickable {
                         uriHandler.openUri("https://github.com/biZenX")
                     }
@@ -152,17 +152,20 @@ fun GitForgeAboutCard(
             ) {
                 SocialSquircleButton(
                     icon = Icons.Default.Language,
-                    tint = Color(0xFF58A6FF),
+                    tint = Color(0xFF001D35),
+                    containerColor = Color(0xFFD0E4FF),
                     onClick = { uriHandler.openUri("https://bizenx.github.io/GitForge/") }
                 )
                 SocialSquircleButton(
                     icon = Icons.Default.Code,
-                    tint = Color(0xFFA3E635),
+                    tint = Color(0xFF00391A),
+                    containerColor = Color(0xFFC4EED0),
                     onClick = { uriHandler.openUri("https://github.com/biZenX/GitForge") }
                 )
                 SocialSquircleButton(
                     icon = Icons.Default.NewReleases,
-                    tint = Color(0xFFFF9E79),
+                    tint = Color(0xFF381E72),
+                    containerColor = Color(0xFFEADDFF),
                     onClick = { uriHandler.openUri("https://github.com/biZenX/GitForge/releases") }
                 )
             }
@@ -181,13 +184,16 @@ fun GitForgeAboutCard(
                         .height(44.dp)
                         .bounceClick { uriHandler.openUri("https://github.com/biZenX/GitForge") },
                     shape = PillBadgeShape,
-                    border = BorderStroke(1.dp, Color(0xFF30363D)),
-                    colors = ButtonDefaults.outlinedButtonColors(contentColor = Color(0xFFE5E7EB))
+                    border = BorderStroke(1.dp, Color(0x1FFFFFFF)),
+                    colors = ButtonDefaults.outlinedButtonColors(
+                        containerColor = Color(0xFF232730),
+                        contentColor = Color(0xFFEDF0F5)
+                    )
                 ) {
                     Icon(
                         imageVector = Icons.Default.Star,
                         contentDescription = null,
-                        tint = Color(0xFFFBBF24),
+                        tint = Color(0xFFFFD56B),
                         modifier = Modifier.size(16.dp)
                     )
                     Spacer(modifier = Modifier.width(6.dp))
@@ -201,13 +207,16 @@ fun GitForgeAboutCard(
                         .height(44.dp)
                         .bounceClick(onClick = onWhatsNewClick),
                     shape = PillBadgeShape,
-                    border = BorderStroke(1.dp, Color(0xFF30363D)),
-                    colors = ButtonDefaults.outlinedButtonColors(contentColor = Color(0xFFE5E7EB))
+                    border = BorderStroke(1.dp, Color(0x1FFFFFFF)),
+                    colors = ButtonDefaults.outlinedButtonColors(
+                        containerColor = Color(0xFF232730),
+                        contentColor = Color(0xFFEDF0F5)
+                    )
                 ) {
                     Icon(
                         imageVector = Icons.Default.Widgets,
                         contentDescription = null,
-                        tint = Color(0xFFA3E635),
+                        tint = Color(0xFFA8C7FA),
                         modifier = Modifier.size(16.dp)
                     )
                     Spacer(modifier = Modifier.width(6.dp))
@@ -217,15 +226,15 @@ fun GitForgeAboutCard(
 
             Spacer(modifier = Modifier.height(16.dp))
 
-            // GitHub Repo Pill: [ 🐙 biZenX/GitForge | ★ 1.2k | ⬇ 584k ]
+            // GitHub Repo Pill: [ 🐙 biZenX/GitForge | ★ 3.3k | ⬇ 584k ]
             Surface(
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(46.dp)
                     .bounceClick { uriHandler.openUri("https://github.com/biZenX/GitForge") },
                 shape = PillBadgeShape,
-                color = Color(0xFF161B22),
-                border = BorderStroke(1.dp, Color(0xFF30363D))
+                color = Color(0xFF171920),
+                border = BorderStroke(1.dp, Color(0x14FFFFFF))
             ) {
                 Row(
                     modifier = Modifier
@@ -238,13 +247,13 @@ fun GitForgeAboutCard(
                         Icon(
                             imageVector = Icons.Default.Code,
                             contentDescription = null,
-                            tint = Color.White,
+                            tint = Color(0xFFEDF0F5),
                             modifier = Modifier.size(16.dp)
                         )
                         Spacer(modifier = Modifier.width(8.dp))
                         Text(
                             text = "biZenX/GitForge",
-                            color = Color.White,
+                            color = Color(0xFFEDF0F5),
                             fontSize = 13.sp,
                             fontWeight = FontWeight.Bold
                         )
@@ -257,28 +266,28 @@ fun GitForgeAboutCard(
                         Box(
                             modifier = Modifier
                                 .clip(PillBadgeShape)
-                                .background(Color(0xFF21262D))
+                                .background(Color(0xFF423305))
                                 .padding(horizontal = 8.dp, vertical = 3.dp)
                         ) {
                             Text(
                                 text = "★ 3.3k",
                                 fontSize = 11.sp,
                                 fontWeight = FontWeight.Bold,
-                                color = Color(0xFFFBBF24)
+                                color = Color(0xFFFFD56B)
                             )
                         }
 
                         Box(
                             modifier = Modifier
                                 .clip(PillBadgeShape)
-                                .background(Color(0xFF21262D))
+                                .background(Color(0xFF163354))
                                 .padding(horizontal = 8.dp, vertical = 3.dp)
                         ) {
                             Text(
                                 text = "⬇ 584k",
                                 fontSize = 11.sp,
                                 fontWeight = FontWeight.Bold,
-                                color = Color(0xFF58A6FF)
+                                color = Color(0xFFA8C7FA)
                             )
                         }
                     }
@@ -292,7 +301,7 @@ fun GitForgeAboutCard(
                 text = "Core Contributors & Ecosystem",
                 fontSize = 13.sp,
                 fontWeight = FontWeight.Bold,
-                color = Color(0xFFD1D5DB),
+                color = Color(0xFFEDF0F5),
                 modifier = Modifier.fillMaxWidth()
             )
 
@@ -314,6 +323,7 @@ fun GitForgeAboutCard(
 private fun SocialSquircleButton(
     icon: ImageVector,
     tint: Color,
+    containerColor: Color = Color(0xFFD0E4FF),
     onClick: () -> Unit
 ) {
     Surface(
@@ -321,8 +331,8 @@ private fun SocialSquircleButton(
             .size(48.dp)
             .bounceClick(onClick = onClick),
         shape = RoundedCornerShape(16.dp),
-        color = Color(0xFF161B22),
-        border = BorderStroke(1.dp, Color(0xFF30363D))
+        color = containerColor,
+        border = BorderStroke(1.dp, Color(0x14FFFFFF))
     ) {
         Box(
             modifier = Modifier.fillMaxWidth(),
@@ -344,8 +354,8 @@ private fun ContributorAvatarCard(contributor: ContributorItem) {
         modifier = Modifier
             .size(width = 68.dp, height = 84.dp)
             .clip(RoundedCornerShape(18.dp))
-            .background(Color(0xFF161B22))
-            .border(1.dp, Color(0xFF30363D), RoundedCornerShape(18.dp))
+            .background(Color(0xFF1E2128))
+            .border(1.dp, Color(0x14FFFFFF), RoundedCornerShape(18.dp))
     ) {
         AsyncImage(
             model = contributor.avatarUrl,
@@ -361,14 +371,14 @@ private fun ContributorAvatarCard(contributor: ContributorItem) {
                 .align(Alignment.TopCenter)
                 .padding(top = 4.dp)
                 .clip(PillBadgeShape)
-                .background(Color(0xCC000000))
+                .background(Color(0xCC14161B))
                 .padding(horizontal = 6.dp, vertical = 2.dp)
         ) {
             Text(
                 text = "⚡ ${contributor.score}",
                 fontSize = 9.sp,
                 fontWeight = FontWeight.ExtraBold,
-                color = Color(0xFF58A6FF)
+                color = Color(0xFFA8C7FA)
             )
         }
     }

@@ -776,7 +776,10 @@ fun RepoDetailScreen(
                                 }
 
                                 items(uiState.releases) { release ->
-                                    ReleaseItemCard(release = release)
+                                    ReleaseItemCard(
+                                        release = release,
+                                        onInstallApk = { url, name -> viewModel.installApkAsset(url, name) }
+                                    )
                                 }
                             }
                         } else {
@@ -1242,7 +1245,8 @@ fun WafeerFileNodeItem(
 @Composable
 fun ReleaseItemCard(
     release: Release,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    onInstallApk: (String, String) -> Unit = { _, _ -> }
 ) {
     val context = LocalContext.current
     val releasePublished = release.publishedAt ?: ""
@@ -1252,7 +1256,7 @@ fun ReleaseItemCard(
         modifier = modifier.fillMaxWidth(),
         shape = ItemCardShape,
         color = Color(0xFF1E2128),
-        border = BorderStroke(1.dp, Color(0x338B949E))
+        border = BorderStroke(1.dp, Color(0x14FFFFFF))
     ) {
         Column(modifier = Modifier.padding(18.dp)) {
             Row(
@@ -1264,7 +1268,8 @@ fun ReleaseItemCard(
                     Box(
                         modifier = Modifier
                             .clip(PillBadgeShape)
-                            .background(TerracottaPrimaryDark.copy(alpha = 0.15f))
+                            .background(Color(0x22A8C7FA))
+                            .border(1.dp, Color(0x44A8C7FA), PillBadgeShape)
                             .padding(horizontal = 10.dp, vertical = 4.dp)
                     ) {
                         Text(
@@ -1272,7 +1277,7 @@ fun ReleaseItemCard(
                             fontFamily = GoogleSansCodeFamily,
                             fontWeight = FontWeight.Bold,
                             fontSize = 12.sp,
-                            color = TerracottaPrimaryDark
+                            color = Color(0xFFA8C7FA)
                         )
                     }
                     Spacer(modifier = Modifier.width(8.dp))
@@ -1281,7 +1286,7 @@ fun ReleaseItemCard(
                             text = releasePublished.take(10),
                             fontFamily = GoogleSansFlexFamily,
                             fontSize = 11.sp,
-                            color = Color(0xFF8B949E)
+                            color = Color(0xFF9AA0A6)
                         )
                     }
                 }
@@ -1298,7 +1303,7 @@ fun ReleaseItemCard(
                     fontFamily = GoogleSansFlexFamily,
                     style = MaterialTheme.typography.titleMedium,
                     fontWeight = FontWeight.Bold,
-                    color = Color(0xFFE6EDF3)
+                    color = Color(0xFFEDF0F5)
                 )
             }
 
@@ -1310,7 +1315,7 @@ fun ReleaseItemCard(
                 )
             }
 
-            // Assets Downloads
+            // Assets Downloads & Installation
             val releaseAssets = release.assets
             if (releaseAssets.isNotEmpty()) {
                 Spacer(modifier = Modifier.height(14.dp))
@@ -1319,7 +1324,7 @@ fun ReleaseItemCard(
                     fontFamily = GoogleSansFlexFamily,
                     fontWeight = FontWeight.Bold,
                     fontSize = 12.sp,
-                    color = Color(0xFFE6EDF3)
+                    color = Color(0xFFEDF0F5)
                 )
                 Spacer(modifier = Modifier.height(8.dp))
 
@@ -1332,14 +1337,9 @@ fun ReleaseItemCard(
 
                         Surface(
                             shape = SubCardShape,
-                            color = if (isApk) TerracottaPrimaryDark.copy(alpha = 0.12f) else Color(0xFF21262D),
-                            border = BorderStroke(1.dp, if (isApk) TerracottaPrimaryDark.copy(alpha = 0.35f) else Color(0x228B949E)),
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .bounceClick {
-                                    val intent = Intent(Intent.ACTION_VIEW, Uri.parse(asset.browserDownloadUrl))
-                                    context.startActivity(intent)
-                                }
+                            color = if (isApk) Color(0x22A8C7FA) else Color(0xFF262A33),
+                            border = BorderStroke(1.dp, if (isApk) Color(0x44A8C7FA) else Color(0x14FFFFFF)),
+                            modifier = Modifier.fillMaxWidth()
                         ) {
                             Row(
                                 modifier = Modifier
@@ -1348,12 +1348,15 @@ fun ReleaseItemCard(
                                 verticalAlignment = Alignment.CenterVertically,
                                 horizontalArrangement = Arrangement.SpaceBetween
                             ) {
-                                Row(verticalAlignment = Alignment.CenterVertically) {
+                                Row(
+                                    verticalAlignment = Alignment.CenterVertically,
+                                    modifier = Modifier.weight(1f)
+                                ) {
                                     Icon(
                                         imageVector = if (isApk) Icons.Default.RocketLaunch else Icons.Default.Download,
                                         contentDescription = null,
-                                        tint = if (isApk) TerracottaPrimaryDark else Color(0xFFE6EDF3),
-                                        modifier = Modifier.size(16.dp)
+                                        tint = if (isApk) Color(0xFFA8C7FA) else Color(0xFFEDF0F5),
+                                        modifier = Modifier.size(18.dp)
                                     )
                                     Spacer(modifier = Modifier.width(10.dp))
                                     Column {
@@ -1362,22 +1365,52 @@ fun ReleaseItemCard(
                                             style = CodeTypography,
                                             fontWeight = FontWeight.Bold,
                                             fontSize = 12.sp,
-                                            color = Color(0xFFE6EDF3)
+                                            color = Color(0xFFEDF0F5)
                                         )
                                         Text(
                                             text = "$formattedSize • ${asset.downloadCount} downloads",
                                             fontFamily = GoogleSansFlexFamily,
                                             fontSize = 11.sp,
-                                            color = Color(0xFF8B949E)
+                                            color = Color(0xFF9AA0A6)
                                         )
                                     }
                                 }
-                                Icon(
-                                    imageVector = Icons.Default.Download,
-                                    contentDescription = "Download",
-                                    tint = TerracottaPrimaryDark,
-                                    modifier = Modifier.size(16.dp)
-                                )
+
+                                Row(
+                                    verticalAlignment = Alignment.CenterVertically,
+                                    horizontalArrangement = Arrangement.spacedBy(6.dp)
+                                ) {
+                                    if (isApk) {
+                                        Button(
+                                            onClick = { onInstallApk(asset.browserDownloadUrl, asset.name) },
+                                            shape = PillBadgeShape,
+                                            colors = ButtonDefaults.buttonColors(
+                                                containerColor = Color(0xFFA8C7FA),
+                                                contentColor = Color(0xFF041E49)
+                                            ),
+                                            contentPadding = PaddingValues(horizontal = 12.dp, vertical = 6.dp)
+                                        ) {
+                                            Icon(Icons.Default.RocketLaunch, contentDescription = null, modifier = Modifier.size(14.dp))
+                                            Spacer(modifier = Modifier.width(4.dp))
+                                            Text("Install", fontWeight = FontWeight.Bold, fontSize = 11.5.sp)
+                                        }
+                                    }
+
+                                    IconButton(
+                                        onClick = {
+                                            val intent = Intent(Intent.ACTION_VIEW, Uri.parse(asset.browserDownloadUrl))
+                                            context.startActivity(intent)
+                                        },
+                                        modifier = Modifier.size(34.dp)
+                                    ) {
+                                        Icon(
+                                            imageVector = Icons.Default.Download,
+                                            contentDescription = "Download in Browser",
+                                            tint = Color(0xFFA8C7FA),
+                                            modifier = Modifier.size(18.dp)
+                                        )
+                                    }
+                                }
                             }
                         }
                     }

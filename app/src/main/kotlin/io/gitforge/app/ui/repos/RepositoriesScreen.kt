@@ -28,7 +28,6 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import io.gitforge.app.ui.home.WafeerRepositoryCard
 import io.gitforge.core.designsystem.component.GitForgeEmptyView
 import io.gitforge.core.designsystem.component.GitForgeErrorView
 import io.gitforge.core.designsystem.component.GitForgeLoadingView
@@ -136,7 +135,7 @@ fun RepositoriesScreen(
                 modifier = Modifier.weight(1f)
             ) {
                 items(filteredRepos) { repo ->
-                    WafeerRepositoryCard(
+                    GitForgeRepositoryCard(
                         repository = repo,
                         onClick = {
                             val owner = repo.owner?.login ?: ""

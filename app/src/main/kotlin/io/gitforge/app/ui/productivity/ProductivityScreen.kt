@@ -71,10 +71,17 @@ import io.gitforge.core.designsystem.theme.TerracottaPrimaryDark
 import io.gitforge.core.model.Issue
 import io.gitforge.core.model.PullRequest
 
+import io.gitforge.core.model.Repository
+import androidx.compose.foundation.horizontalScroll
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.material3.FilterChip
+import androidx.compose.material3.FilterChipDefaults
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ProductivityScreen(
     initialSection: String = "issues",
+    availableRepos: List<Repository> = emptyList(),
     viewModel: ProductivityViewModel,
     onBack: () -> Unit,
     modifier: Modifier = Modifier
@@ -91,13 +98,15 @@ fun ProductivityScreen(
         )
     }
 
+    var selectedRepoIndex by remember { mutableIntStateOf(0) }
+    val currentRepo = availableRepos.getOrNull(selectedRepoIndex)
+    val owner = currentRepo?.owner?.login ?: "biZenX"
+    val repo = currentRepo?.name ?: "GitForge"
+
     var showCreateIssueDialog by remember { mutableStateOf(false) }
     var newIssueTitle by remember { mutableStateOf("") }
     var newIssueBody by remember { mutableStateOf("") }
     var activeViewingDiff by remember { mutableStateOf<String?>(null) }
-
-    val owner = remember { "octocat" }
-    val repo = remember { "Hello-World" }
 
     LaunchedEffect(owner, repo) {
         viewModel.loadRepositoryProductivity(owner, repo)
@@ -225,6 +234,39 @@ fun ProductivityScreen(
                     text = { Text("Releases", fontWeight = FontWeight.SemiBold) },
                     icon = { Icon(Icons.Default.NewReleases, contentDescription = null) }
                 )
+            }
+
+            if (availableRepos.isNotEmpty()) {
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .background(androidx.compose.ui.graphics.Color(0xFF1E2128))
+                        .padding(horizontal = 16.dp, vertical = 8.dp)
+                        .horizontalScroll(rememberScrollState()),
+                    horizontalArrangement = Arrangement.spacedBy(8.dp),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Text(
+                        text = "Repository:",
+                        style = MaterialTheme.typography.labelMedium,
+                        color = androidx.compose.ui.graphics.Color(0xFF9AA0A6),
+                        fontWeight = FontWeight.Bold
+                    )
+                    availableRepos.forEachIndexed { index, r ->
+                        FilterChip(
+                            selected = index == selectedRepoIndex,
+                            onClick = { selectedRepoIndex = index },
+                            label = { Text(r.name) },
+                            shape = PillBadgeShape,
+                            colors = FilterChipDefaults.filterChipColors(
+                                selectedContainerColor = androidx.compose.ui.graphics.Color(0xFF2B477A),
+                                selectedLabelColor = androidx.compose.ui.graphics.Color(0xFFD3E3FD),
+                                containerColor = androidx.compose.ui.graphics.Color(0xFF14161B),
+                                labelColor = androidx.compose.ui.graphics.Color(0xFF9AA0A6)
+                            )
+                        )
+                    }
+                }
             }
 
             if (uiState.isLoading && uiState.issues.isEmpty() && uiState.pullRequests.isEmpty()) {

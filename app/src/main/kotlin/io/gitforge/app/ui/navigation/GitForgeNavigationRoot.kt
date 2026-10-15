@@ -108,7 +108,7 @@ fun GitForgeNavigationRoot(
 
     Scaffold(
         topBar = {
-            if (isPrimaryScreen) {
+            if (isPrimaryScreen && currentRoute != Screen.Home.route && currentRoute != Screen.Profile.route) {
                 TopAppBar(
                     title = {
                         Text(
@@ -119,7 +119,7 @@ fun GitForgeNavigationRoot(
                         )
                     },
                     colors = TopAppBarDefaults.topAppBarColors(
-                        containerColor = MaterialTheme.colorScheme.surface
+                        containerColor = androidx.compose.ui.graphics.Color(0xFF14161B)
                     ),
                     actions = {
                         IconButton(
@@ -277,8 +277,10 @@ fun GitForgeNavigationRoot(
                 )
             ) { backStack ->
                 val section = backStack.arguments?.getString("section") ?: "issues"
+                val homeState by homeViewModel.uiState.collectAsState()
                 ProductivityScreen(
                     initialSection = section,
+                    availableRepos = homeState.recentRepositories,
                     viewModel = productivityViewModel,
                     onBack = { navController.popBackStack() }
                 )

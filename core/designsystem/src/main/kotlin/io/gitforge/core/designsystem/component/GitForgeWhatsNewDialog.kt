@@ -66,6 +66,23 @@ fun GitForgeWhatsNewSheet(
 
     val changelogs = listOf(
         VersionChangelog(
+            version = "GitForge v1.0.6",
+            releaseDate = "2026-10-15",
+            newFeatures = listOf(
+                ReleaseItem("Supercharged Markdown Reader", "Crisp white bold typography, interactive tap-to-copy for inline code snippets, dedicated command copy boxes, and large touch-friendly code block copy buttons."),
+                ReleaseItem("Followed Releases Hub & 1-Tap APK Updates", "Watch GitHub repositories, track incoming APK releases with release notes, and install updates in one tap via Android FileProvider."),
+                ReleaseItem("Essentials Developer Profile & Studio", "Full Material 3 developer profile with biZenX GitHub integration, repository statistics pills, and productivity tools."),
+                ReleaseItem("Eradication of Neon Glare", "Unified slate charcoal surfaces (#14161B / #1E2128) paired with calming Material 3 pastels (Periwinkle Blue, Mint Green, Soft Lavender, Warm Gold).")
+            ),
+            improvements = listOf(
+                ReleaseItem("Clean Edge-to-Edge Navigation", "Seamless floating dock with pill indicator and dedicated action button without double header clutter."),
+                ReleaseItem("Touch-First Mobile Experience", "Every code snippet, shell command, filter chip, and button calibrated for one-handed mobile ergonomics.")
+            ),
+            bugFixes = listOf(
+                ReleaseItem("Inline Code Text Clipping", "Fixed text clipping and touch target responsiveness in Markdown code blocks on mobile devices.")
+            )
+        ),
+        VersionChangelog(
             version = "GitForge v1.0.5",
             releaseDate = "2026-10-15",
             newFeatures = listOf(

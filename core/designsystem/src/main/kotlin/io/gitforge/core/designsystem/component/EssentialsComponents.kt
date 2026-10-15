@@ -68,8 +68,8 @@ fun EssentialsGroupedItem(
             .fillMaxWidth()
             .bounceClick(onClick = onClick),
         shape = shape,
-        color = Color(0xFF1E232B),
-        border = BorderStroke(1.dp, Color(0x1A8B949E))
+        color = Color(0xFF1E2128),
+        border = BorderStroke(1.dp, Color(0x14FFFFFF))
     ) {
         Row(
             modifier = Modifier
@@ -178,15 +178,14 @@ fun EssentialsFloatingDock(
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.spacedBy(10.dp)
     ) {
-        // Floating Wide Pill Dock
+        // Floating Wide Pill Dock (Material You Periwinkle Blue from Essentials photo_2026-10-15_19-29-29.jpg)
         Surface(
             modifier = Modifier
                 .weight(1f)
                 .height(64.dp),
             shape = PillBadgeShape,
-            color = Color(0xFF1E2128),
-            border = BorderStroke(1.dp, Color(0x22FFFFFF)),
-            shadowElevation = 8.dp
+            color = Color(0xFFA8C7FA),
+            shadowElevation = 10.dp
         ) {
             Row(
                 modifier = Modifier
@@ -198,13 +197,12 @@ fun EssentialsFloatingDock(
                 items.forEachIndexed { index, pair ->
                     val isSelected = index == selectedIndex
                     if (isSelected) {
-                        // Selected Capsule Pill
+                        // Selected Capsule Pill (Dark obsidian capsule inside periwinkle dock)
                         Box(
                             modifier = Modifier
                                 .height(44.dp)
                                 .clip(PillBadgeShape)
-                                .background(Color(0xFF2B477A))
-                                .border(1.dp, Color(0x33A8C7FA), PillBadgeShape)
+                                .background(Color(0xFF191C20))
                                 .padding(horizontal = 16.dp)
                                 .bounceClick { onItemSelected(index) },
                             contentAlignment = Alignment.Center
@@ -213,20 +211,20 @@ fun EssentialsFloatingDock(
                                 Icon(
                                     imageVector = pair.second,
                                     contentDescription = pair.first,
-                                    tint = Color(0xFFD3E3FD),
+                                    tint = Color.White,
                                     modifier = Modifier.size(18.dp)
                                 )
                                 Spacer(modifier = Modifier.width(8.dp))
                                 Text(
                                     text = pair.first,
-                                    color = Color(0xFFD3E3FD),
+                                    color = Color.White,
                                     fontSize = 13.sp,
                                     fontWeight = FontWeight.Bold
                                 )
                             }
                         }
                     } else {
-                        // Unselected Icon
+                        // Unselected Icon (Deep navy icon on periwinkle dock)
                         Box(
                             modifier = Modifier
                                 .size(44.dp)
@@ -237,7 +235,7 @@ fun EssentialsFloatingDock(
                             Icon(
                                 imageVector = pair.second,
                                 contentDescription = pair.first,
-                                tint = Color(0xFF9AA0A6),
+                                tint = Color(0xFF041E49),
                                 modifier = Modifier.size(22.dp)
                             )
                         }
@@ -252,9 +250,8 @@ fun EssentialsFloatingDock(
                 .size(64.dp)
                 .bounceClick(onClick = onActionClick),
             shape = RoundedCornerShape(22.dp),
-            color = Color(0xFF234275),
-            border = BorderStroke(1.dp, Color(0x33A8C7FA)),
-            shadowElevation = 8.dp
+            color = Color(0xFF2B477A),
+            shadowElevation = 10.dp
         ) {
             Box(
                 modifier = Modifier.fillMaxWidth(),
