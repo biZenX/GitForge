@@ -1,10 +1,13 @@
 package io.gitforge.app.ui.workspace
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
 import androidx.compose.material.icons.outlined.Description
@@ -280,6 +283,7 @@ fun CodeStudioTabScreen(
         } else {
             LazyColumn(
                 verticalArrangement = Arrangement.spacedBy(8.dp),
+                contentPadding = PaddingValues(bottom = 80.dp),
                 modifier = Modifier.weight(1f)
             ) {
                 items(uiState.files) { file ->
@@ -304,31 +308,41 @@ fun LocalFileItem(
     file: LocalFile,
     onClick: () -> Unit
 ) {
-    Card(
+    Surface(
         modifier = Modifier
             .fillMaxWidth()
             .clickable(onClick = onClick),
-        shape = RoundedCornerShape(8.dp),
-        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface)
+        shape = RoundedCornerShape(16.dp),
+        color = Color(0xFF1E2128),
+        border = androidx.compose.foundation.BorderStroke(1.dp, Color(0x14FFFFFF))
     ) {
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(12.dp),
+                .padding(14.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            Icon(
-                imageVector = if (file.isDirectory) Icons.Default.Folder else Icons.Outlined.Description,
-                contentDescription = null,
-                tint = if (file.isDirectory) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurfaceVariant,
-                modifier = Modifier.size(20.dp)
-            )
+            Box(
+                modifier = Modifier
+                    .size(36.dp)
+                    .clip(RoundedCornerShape(10.dp))
+                    .background(if (file.isDirectory) Color(0x22A8C7FA) else Color(0x14FFFFFF)),
+                contentAlignment = Alignment.Center
+            ) {
+                Icon(
+                    imageVector = if (file.isDirectory) Icons.Default.Folder else Icons.Outlined.Description,
+                    contentDescription = null,
+                    tint = if (file.isDirectory) Color(0xFFA8C7FA) else MaterialTheme.colorScheme.onSurfaceVariant,
+                    modifier = Modifier.size(20.dp)
+                )
+            }
             Spacer(modifier = Modifier.width(12.dp))
             Text(
                 text = file.name,
                 style = MaterialTheme.typography.bodyMedium,
                 fontWeight = if (file.isDirectory) FontWeight.SemiBold else FontWeight.Normal,
-                modifier = Modifier.weight(1f)
+                modifier = Modifier.weight(1f),
+                color = MaterialTheme.colorScheme.onSurface
             )
             if (!file.isDirectory && file.size > 0) {
                 Text(

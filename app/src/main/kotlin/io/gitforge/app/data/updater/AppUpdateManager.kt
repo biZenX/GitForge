@@ -36,8 +36,8 @@ class AppUpdateManager @Inject constructor(
      * Checks GitHub for the latest release and returns update info if a newer version exists.
      */
     suspend fun checkForUpdates(
-        currentVersionName: String = "1.0.4",
-        currentVersionCode: Int = 5
+        currentVersionName: String = "1.0.5",
+        currentVersionCode: Int = 6
     ): Result<AppUpdateInfo?> = withContext(Dispatchers.IO) {
         try {
             val url = "https://api.github.com/repos/$GITHUB_REPO_OWNER/$GITHUB_REPO_NAME/releases/latest"

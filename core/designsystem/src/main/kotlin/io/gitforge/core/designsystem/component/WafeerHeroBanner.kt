@@ -61,8 +61,8 @@ fun WafeerHeroBanner(
     Surface(
         modifier = modifier.fillMaxWidth(),
         shape = RoundedCornerShape(32.dp),
-        color = Color(0xFF141915),
-        border = BorderStroke(1.dp, Color(0xFF233026))
+        color = Color(0xFF1E2128),
+        border = BorderStroke(1.dp, Color(0x1AFFFFFF))
     ) {
         Column(
             modifier = Modifier.padding(20.dp),
@@ -74,7 +74,7 @@ fun WafeerHeroBanner(
                     .width(36.dp)
                     .height(4.dp)
                     .clip(CircleShape)
-                    .background(Color(0xFF374151))
+                    .background(Color(0xFF3C404B))
             )
 
             Spacer(modifier = Modifier.height(16.dp))
@@ -89,7 +89,7 @@ fun WafeerHeroBanner(
                     text = title,
                     style = MaterialTheme.typography.titleLarge,
                     fontWeight = FontWeight.Bold,
-                    color = Color(0xFFF3F4F6)
+                    color = Color(0xFFEDF0F5)
                 )
 
                 if (onEditClick != null) {
@@ -100,7 +100,7 @@ fun WafeerHeroBanner(
                         Icon(
                             imageVector = Icons.Default.Edit,
                             contentDescription = "Edit",
-                            tint = Color(0xFF9CA3AF),
+                            tint = Color(0xFF9AA0A6),
                             modifier = Modifier.size(18.dp)
                         )
                     }
@@ -109,13 +109,13 @@ fun WafeerHeroBanner(
 
             Spacer(modifier = Modifier.height(14.dp))
 
-            // Main Forest Green Card with Organic Curved Shape Overlay
+            // Main Slate Hero Card with Organic Curved Shape Overlay
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(108.dp)
                     .clip(RoundedCornerShape(26.dp))
-                    .background(Color(0xFF2E531C))
+                    .background(Color(0xFF233554))
                     .padding(18.dp)
             ) {
                 // Background curved artistic shape
@@ -129,7 +129,7 @@ fun WafeerHeroBanner(
                         0f, size.height
                     )
                     path.close()
-                    drawPath(path, color = Color(0x334ADE80))
+                    drawPath(path, color = Color(0x1FA8C7FA))
                 }
 
                 Column(
@@ -140,39 +140,40 @@ fun WafeerHeroBanner(
                         text = primaryMetricValue,
                         fontSize = 28.sp,
                         fontWeight = FontWeight.ExtraBold,
-                        color = Color(0xFFF3F4F6)
+                        color = Color(0xFFEDF0F5)
                     )
                     Text(
                         text = primaryMetricLabel,
                         fontSize = 12.sp,
                         fontWeight = FontWeight.SemiBold,
-                        color = Color(0xFFD1D5DB)
+                        color = Color(0xFFB0B7C3)
                     )
                     Spacer(modifier = Modifier.height(2.dp))
                     Text(
                         text = primaryMetricAvailable,
                         fontSize = 12.sp,
                         fontWeight = FontWeight.Medium,
-                        color = Color(0xFFA7F3D0)
+                        color = Color(0xFF81C784)
                     )
                 }
             }
 
             Spacer(modifier = Modifier.height(12.dp))
 
-            // Two-Column Row: Left Ivory/Obsidian Card + Right Scalloped Flower Badge
+            // Two-Column Row: Left Slate Card + Right Scalloped Flower Badge
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.spacedBy(12.dp)
             ) {
-                // Left Card: Light Ivory/Cream Container
+                // Left Card: Elevated Slate Container
                 Box(
                     modifier = Modifier
                         .weight(1f)
                         .height(104.dp)
                         .clip(RoundedCornerShape(24.dp))
-                        .background(Color(0xFFE8E5DA))
+                        .background(Color(0xFF272B34))
+                        .border(1.dp, Color(0x14FFFFFF), RoundedCornerShape(24.dp))
                         .padding(16.dp)
                 ) {
                     Column(
@@ -183,13 +184,13 @@ fun WafeerHeroBanner(
                             text = secondaryLeftValue,
                             fontSize = 20.sp,
                             fontWeight = FontWeight.ExtraBold,
-                            color = Color(0xFF1F2937)
+                            color = Color(0xFFEDF0F5)
                         )
                         Text(
                             text = secondaryLeftTitle,
                             fontSize = 11.sp,
                             fontWeight = FontWeight.SemiBold,
-                            color = Color(0xFF6B7280)
+                            color = Color(0xFF9AA0A6)
                         )
                         Spacer(modifier = Modifier.height(6.dp))
                         Row(verticalAlignment = Alignment.CenterVertically) {
@@ -197,13 +198,13 @@ fun WafeerHeroBanner(
                                 text = secondaryLeftSubtext,
                                 fontSize = 11.sp,
                                 fontWeight = FontWeight.Bold,
-                                color = Color(0xFF374151)
+                                color = Color(0xFFA8C7FA)
                             )
                             Spacer(modifier = Modifier.width(4.dp))
                             Icon(
                                 imageVector = Icons.AutoMirrored.Filled.ArrowForward,
                                 contentDescription = null,
-                                tint = Color(0xFF374151),
+                                tint = Color(0xFFA8C7FA),
                                 modifier = Modifier.size(12.dp)
                             )
                         }
@@ -214,10 +215,10 @@ fun WafeerHeroBanner(
                 WafeerFlowerBadge(
                     countText = badgeCount,
                     labelText = badgeLabel,
-                    badgeColor = Color(0xFF16271A),
-                    borderColor = Color(0xFF4ADE80),
-                    arcColor = Color(0xFF86EFAC),
-                    trackColor = Color(0x3386EFAC)
+                    badgeColor = Color(0xFF272B34),
+                    borderColor = Color(0x33A8C7FA),
+                    arcColor = Color(0xFFA8C7FA),
+                    trackColor = Color(0x1FA8C7FA)
                 )
             }
 
@@ -227,7 +228,7 @@ fun WafeerHeroBanner(
             Text(
                 text = "Filter Workspace Repositories",
                 style = MaterialTheme.typography.bodySmall,
-                color = Color(0xFF9CA3AF),
+                color = Color(0xFF9AA0A6),
                 fontWeight = FontWeight.SemiBold,
                 modifier = Modifier.fillMaxWidth()
             )
@@ -246,10 +247,10 @@ fun WafeerHeroBanner(
                             .weight(1f)
                             .height(40.dp)
                             .clip(PillBadgeShape)
-                            .background(if (isSelected) Color(0xFF3B6623) else Color(0xFF1F2937))
+                            .background(if (isSelected) Color(0xFF2B477A) else Color(0xFF272B34))
                             .border(
                                 1.dp,
-                                if (isSelected) Color(0xFF4ADE80) else Color(0x229CA3AF),
+                                if (isSelected) Color(0x44A8C7FA) else Color(0x14FFFFFF),
                                 PillBadgeShape
                             )
                             .bounceClick { onFilterSelected(option) },
@@ -259,7 +260,7 @@ fun WafeerHeroBanner(
                             text = option,
                             fontSize = 12.sp,
                             fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Medium,
-                            color = if (isSelected) Color.White else Color(0xFF9CA3AF)
+                            color = if (isSelected) Color(0xFFD3E3FD) else Color(0xFF9AA0A6)
                         )
                     }
                 }

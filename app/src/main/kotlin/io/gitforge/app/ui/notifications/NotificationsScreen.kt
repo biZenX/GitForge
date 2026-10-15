@@ -66,15 +66,17 @@ fun NotificationsScreen(
         } else {
             LazyColumn(
                 verticalArrangement = Arrangement.spacedBy(10.dp),
+                contentPadding = PaddingValues(bottom = 80.dp),
                 modifier = Modifier.fillMaxSize()
             ) {
                 items(uiState.notifications) { item ->
-                    Card(
+                    Surface(
                         modifier = Modifier.fillMaxWidth(),
-                        shape = RoundedCornerShape(10.dp),
-                        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface)
+                        shape = RoundedCornerShape(18.dp),
+                        color = androidx.compose.ui.graphics.Color(0xFF1E2128),
+                        border = androidx.compose.foundation.BorderStroke(1.dp, androidx.compose.ui.graphics.Color(0x14FFFFFF))
                     ) {
-                        Column(modifier = Modifier.padding(14.dp)) {
+                        Column(modifier = Modifier.padding(16.dp)) {
                             Row(verticalAlignment = Alignment.CenterVertically) {
                                 Text(
                                     text = item.repository.fullName,
@@ -83,16 +85,17 @@ fun NotificationsScreen(
                                 )
                                 Spacer(modifier = Modifier.weight(1f))
                                 if (item.unread) {
-                                    Badge(containerColor = ForgeEmerald) {
-                                        Text("New")
+                                    Badge(containerColor = MaterialTheme.colorScheme.primary) {
+                                        Text("New", color = androidx.compose.ui.graphics.Color(0xFF041E49))
                                     }
                                 }
                             }
-                            Spacer(modifier = Modifier.height(4.dp))
+                            Spacer(modifier = Modifier.height(6.dp))
                             Text(
                                 text = item.subject.title,
-                                style = MaterialTheme.typography.titleSmall,
-                                fontWeight = FontWeight.SemiBold
+                                style = MaterialTheme.typography.titleMedium,
+                                fontWeight = FontWeight.SemiBold,
+                                color = MaterialTheme.colorScheme.onSurface
                             )
                             Spacer(modifier = Modifier.height(4.dp))
                             Text(

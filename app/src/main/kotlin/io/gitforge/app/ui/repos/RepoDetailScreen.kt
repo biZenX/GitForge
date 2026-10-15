@@ -244,7 +244,7 @@ fun RepoDetailScreen(
                     Surface(
                         onClick = { viewModel.setBranchSheetOpen(true) },
                         shape = PillBadgeShape,
-                        color = Color(0xFF161B22),
+                        color = Color(0xFF1E2128),
                         border = BorderStroke(1.dp, Color(0x338B949E)),
                         modifier = Modifier
                             .padding(end = 12.dp)
@@ -286,7 +286,7 @@ fun RepoDetailScreen(
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .background(Color(0xFF161B22))
+                        .background(Color(0xFF1E2128))
                         .padding(horizontal = 16.dp, vertical = 10.dp)
                         .horizontalScroll(rememberScrollState()),
                     verticalAlignment = Alignment.CenterVertically,
@@ -413,7 +413,7 @@ fun RepoDetailScreen(
                                     Surface(
                                         modifier = Modifier.fillMaxWidth(),
                                         shape = HeroCardShape,
-                                        color = Color(0xFF161B22),
+                                        color = Color(0xFF1E2128),
                                         border = BorderStroke(1.dp, Color(0x338B949E))
                                     ) {
                                         Column(modifier = Modifier.padding(20.dp)) {
@@ -479,7 +479,7 @@ fun RepoDetailScreen(
                                 Row(
                                     modifier = Modifier
                                         .fillMaxWidth()
-                                        .background(Color(0xFF161B22))
+                                        .background(Color(0xFF1E2128))
                                         .padding(horizontal = 16.dp, vertical = 8.dp),
                                     verticalAlignment = Alignment.CenterVertically
                                 ) {
@@ -537,7 +537,7 @@ fun RepoDetailScreen(
                                             expandedCommitSha = if (isExpanded) null else commit.sha
                                         },
                                     shape = ItemCardShape,
-                                    color = Color(0xFF161B22),
+                                    color = Color(0xFF1E2128),
                                     border = BorderStroke(1.dp, if (isExpanded) TerracottaPrimaryDark.copy(alpha = 0.5f) else Color(0x338B949E))
                                 ) {
                                     Column(modifier = Modifier.padding(16.dp)) {
@@ -706,7 +706,7 @@ fun RepoDetailScreen(
                                     Surface(
                                         modifier = Modifier.fillMaxWidth(),
                                         shape = ItemCardShape,
-                                        color = if (uiState.isWatched) EmeraldAccentDark.copy(alpha = 0.12f) else Color(0xFF161B22),
+                                        color = if (uiState.isWatched) EmeraldAccentDark.copy(alpha = 0.12f) else Color(0xFF1E2128),
                                         border = BorderStroke(
                                             1.dp,
                                             if (uiState.isWatched) EmeraldAccentDark.copy(alpha = 0.35f) else Color(0x338B949E)
@@ -811,7 +811,7 @@ fun RepoDetailScreen(
         ModalBottomSheet(
             onDismissRequest = { viewModel.setBranchSheetOpen(false) },
             sheetState = sheetState,
-            containerColor = Color(0xFF161B22)
+            containerColor = Color(0xFF1E2128)
         ) {
             Column(
                 modifier = Modifier
@@ -918,7 +918,7 @@ fun RepoDetailScreen(
         val file = uiState.activeViewingFile!!
         AlertDialog(
             onDismissRequest = { viewModel.closeActiveFile() },
-            containerColor = Color(0xFF161B22),
+            containerColor = Color(0xFF1E2128),
             shape = ItemCardShape,
             title = {
                 Row(
@@ -1025,7 +1025,7 @@ private fun IssueItemCard(issue: Issue) {
     Surface(
         modifier = Modifier.fillMaxWidth(),
         shape = ItemCardShape,
-        color = Color(0xFF161B22),
+        color = Color(0xFF1E2128),
         border = BorderStroke(1.dp, Color(0x228B949E))
     ) {
         Column(modifier = Modifier.padding(16.dp)) {
@@ -1107,7 +1107,7 @@ private fun PullRequestItemCard(pr: PullRequest) {
     Surface(
         modifier = Modifier.fillMaxWidth(),
         shape = ItemCardShape,
-        color = Color(0xFF161B22),
+        color = Color(0xFF1E2128),
         border = BorderStroke(1.dp, Color(0x228B949E))
     ) {
         Column(modifier = Modifier.padding(16.dp)) {
@@ -1195,7 +1195,7 @@ fun WafeerFileNodeItem(
             .fillMaxWidth()
             .bounceClick(onClick = onClick),
         shape = ItemCardShape,
-        color = Color(0xFF161B22),
+        color = Color(0xFF1E2128),
         border = BorderStroke(1.dp, Color(0x228B949E))
     ) {
         Row(
@@ -1251,7 +1251,7 @@ fun ReleaseItemCard(
     Surface(
         modifier = modifier.fillMaxWidth(),
         shape = ItemCardShape,
-        color = Color(0xFF161B22),
+        color = Color(0xFF1E2128),
         border = BorderStroke(1.dp, Color(0x338B949E))
     ) {
         Column(modifier = Modifier.padding(18.dp)) {

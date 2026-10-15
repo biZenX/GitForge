@@ -66,6 +66,23 @@ fun GitForgeWhatsNewSheet(
 
     val changelogs = listOf(
         VersionChangelog(
+            version = "GitForge v1.0.5",
+            releaseDate = "2026-10-15",
+            newFeatures = listOf(
+                ReleaseItem("Pure Material 3 Pastels", "Removed all harsh saturated/neon colors. Refined with soothing Google Pixel Periwinkle, Sage Mint, Soft Lavender, and warm Slate surfaces."),
+                ReleaseItem("Essentials Floating Dock", "Floating bottom navigation capsule dock with animated pill indicator and squircle terminal launcher."),
+                ReleaseItem("Interactive Live Search & Filter", "Fully responsive in-memory search and tag filtering (All, Starred, Sources, Forks) with real-time UI updates."),
+                ReleaseItem("Refined Wafeer Header", "Elevated slate surface container with live repository metrics and branch synchronization status.")
+            ),
+            improvements = listOf(
+                ReleaseItem("80dp Content Clearance", "Added dynamic content bottom clearance on all primary screens to ensure perfect readability over the floating dock."),
+                ReleaseItem("Zero Neon Policy", "Every single container, badge, chip, and border unified under authentic matte Material 3 palette.")
+            ),
+            bugFixes = listOf(
+                ReleaseItem("Filter Recomposition", "Resolved filter selection state persistence across repository lists.")
+            )
+        ),
+        VersionChangelog(
             version = "GitForge v1.0.4",
             releaseDate = "2026-10-15",
             newFeatures = listOf(
@@ -128,7 +145,7 @@ fun GitForgeWhatsNewSheet(
     ModalBottomSheet(
         onDismissRequest = onDismissRequest,
         sheetState = sheetState,
-        containerColor = Color(0xFF111411),
+        containerColor = Color(0xFF16181D),
         dragHandle = null,
         modifier = modifier
     ) {

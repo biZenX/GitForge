@@ -133,8 +133,8 @@ fun RespiroPillButton(
     text: String,
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
-    buttonColor: Color = Color(0xFFA3E635),
-    textColor: Color = Color(0xFF0D1117)
+    buttonColor: Color = Color(0xFFB7F397),
+    textColor: Color = Color(0xFF142010)
 ) {
     Button(
         onClick = onClick,
@@ -184,8 +184,8 @@ fun EssentialsFloatingDock(
                 .weight(1f)
                 .height(64.dp),
             shape = PillBadgeShape,
-            color = Color(0xFF161B22),
-            border = BorderStroke(1.dp, Color(0xFF30363D)),
+            color = Color(0xFF1E2128),
+            border = BorderStroke(1.dp, Color(0x22FFFFFF)),
             shadowElevation = 8.dp
         ) {
             Row(
@@ -203,8 +203,8 @@ fun EssentialsFloatingDock(
                             modifier = Modifier
                                 .height(44.dp)
                                 .clip(PillBadgeShape)
-                                .background(Color(0xFF238636))
-                                .border(1.dp, Color(0xFF2EA043), PillBadgeShape)
+                                .background(Color(0xFF2B477A))
+                                .border(1.dp, Color(0x33A8C7FA), PillBadgeShape)
                                 .padding(horizontal = 16.dp)
                                 .bounceClick { onItemSelected(index) },
                             contentAlignment = Alignment.Center
@@ -213,13 +213,13 @@ fun EssentialsFloatingDock(
                                 Icon(
                                     imageVector = pair.second,
                                     contentDescription = pair.first,
-                                    tint = Color.White,
+                                    tint = Color(0xFFD3E3FD),
                                     modifier = Modifier.size(18.dp)
                                 )
                                 Spacer(modifier = Modifier.width(8.dp))
                                 Text(
                                     text = pair.first,
-                                    color = Color.White,
+                                    color = Color(0xFFD3E3FD),
                                     fontSize = 13.sp,
                                     fontWeight = FontWeight.Bold
                                 )
@@ -237,7 +237,7 @@ fun EssentialsFloatingDock(
                             Icon(
                                 imageVector = pair.second,
                                 contentDescription = pair.first,
-                                tint = Color(0xFF8B949E),
+                                tint = Color(0xFF9AA0A6),
                                 modifier = Modifier.size(22.dp)
                             )
                         }
@@ -252,8 +252,8 @@ fun EssentialsFloatingDock(
                 .size(64.dp)
                 .bounceClick(onClick = onActionClick),
             shape = RoundedCornerShape(22.dp),
-            color = Color(0xFF1F6FEB),
-            border = BorderStroke(1.dp, Color(0xFF388BFD)),
+            color = Color(0xFF234275),
+            border = BorderStroke(1.dp, Color(0x33A8C7FA)),
             shadowElevation = 8.dp
         ) {
             Box(
@@ -263,7 +263,7 @@ fun EssentialsFloatingDock(
                 Icon(
                     imageVector = actionIcon,
                     contentDescription = "Action",
-                    tint = Color.White,
+                    tint = Color(0xFFD3E3FD),
                     modifier = Modifier.size(24.dp)
                 )
             }

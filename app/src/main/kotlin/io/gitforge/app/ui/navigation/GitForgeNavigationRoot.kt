@@ -4,7 +4,10 @@ import androidx.compose.animation.AnimatedContentTransitionScope
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
@@ -111,8 +114,8 @@ fun GitForgeNavigationRoot(
                         Text(
                             text = currentScreenTitle,
                             style = MaterialTheme.typography.titleLarge,
-                            fontWeight = FontWeight.ExtraBold,
-                            color = MaterialTheme.colorScheme.primary
+                            fontWeight = FontWeight.Bold,
+                            color = MaterialTheme.colorScheme.onSurface
                         )
                     },
                     colors = TopAppBarDefaults.topAppBarColors(
@@ -120,16 +123,14 @@ fun GitForgeNavigationRoot(
                     ),
                     actions = {
                         IconButton(
-                            onClick = { navController.navigate(Screen.Terminal.route) },
-                            modifier = Modifier.bounceClick(onClick = { navController.navigate(Screen.Terminal.route) })
+                            onClick = { navController.navigate(Screen.Terminal.route) }
                         ) {
-                            Icon(Icons.Default.Terminal, contentDescription = "Terminal", tint = MaterialTheme.colorScheme.tertiary)
+                            Icon(Icons.Default.Terminal, contentDescription = "Terminal", tint = MaterialTheme.colorScheme.onSurfaceVariant)
                         }
                         IconButton(
-                            onClick = { navController.navigate(Screen.Settings.route) },
-                            modifier = Modifier.bounceClick(onClick = { navController.navigate(Screen.Settings.route) })
+                            onClick = { navController.navigate(Screen.Settings.route) }
                         ) {
-                            Icon(Icons.Default.Settings, contentDescription = "Settings", tint = MaterialTheme.colorScheme.onSurface)
+                            Icon(Icons.Default.Settings, contentDescription = "Settings", tint = MaterialTheme.colorScheme.onSurfaceVariant)
                         }
                     }
                 )
@@ -137,36 +138,37 @@ fun GitForgeNavigationRoot(
         },
         bottomBar = {
             if (isPrimaryScreen) {
-                NavigationBar(
-                    containerColor = MaterialTheme.colorScheme.surfaceContainer,
-                    tonalElevation = 6.dp
+                val dockItems = primaryDestinations.map { screen ->
+                    screen.title to screen.icon
+                }
+                val selectedIndex = primaryDestinations.indexOfFirst { it.route == currentRoute }.coerceAtLeast(0)
+
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .navigationBarsPadding()
+                        .padding(bottom = 6.dp)
                 ) {
-                    primaryDestinations.forEach { screen ->
-                        val selected = currentRoute == screen.route
-                        NavigationBarItem(
-                            icon = { Icon(screen.icon, contentDescription = screen.title, modifier = Modifier.size(24.dp)) },
-                            label = { Text(screen.title, fontWeight = if (selected) FontWeight.Bold else FontWeight.Medium) },
-                            selected = selected,
-                            colors = NavigationBarItemDefaults.colors(
-                                indicatorColor = MaterialTheme.colorScheme.primary.copy(alpha = 0.2f),
-                                selectedIconColor = MaterialTheme.colorScheme.primary,
-                                selectedTextColor = MaterialTheme.colorScheme.primary,
-                                unselectedIconColor = MaterialTheme.colorScheme.onSurfaceVariant,
-                                unselectedTextColor = MaterialTheme.colorScheme.onSurfaceVariant
-                            ),
-                            onClick = {
-                                if (currentRoute != screen.route) {
-                                    navController.navigate(screen.route) {
-                                        popUpTo(navController.graph.findStartDestination().id) {
-                                            saveState = true
-                                        }
-                                        launchSingleTop = true
-                                        restoreState = true
+                    io.gitforge.core.designsystem.component.EssentialsFloatingDock(
+                        items = dockItems,
+                        selectedIndex = selectedIndex,
+                        onItemSelected = { index ->
+                            val screen = primaryDestinations[index]
+                            if (currentRoute != screen.route) {
+                                navController.navigate(screen.route) {
+                                    popUpTo(navController.graph.findStartDestination().id) {
+                                        saveState = true
                                     }
+                                    launchSingleTop = true
+                                    restoreState = true
                                 }
                             }
-                        )
-                    }
+                        },
+                        onActionClick = {
+                            navController.navigate(Screen.Terminal.route)
+                        },
+                        actionIcon = Icons.Default.Terminal
+                    )
                 }
             }
         }

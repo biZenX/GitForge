@@ -56,11 +56,11 @@ fun RepositoriesScreen(
             value = uiState.searchQuery,
             onValueChange = { viewModel.onSearchQueryChanged(it) },
             placeholder = { Text("Search repositories on GitHub...", style = MaterialTheme.typography.bodyMedium) },
-            leadingIcon = { Icon(Icons.Default.Search, contentDescription = "Search", tint = TerracottaPrimaryDark) },
+            leadingIcon = { Icon(Icons.Default.Search, contentDescription = "Search", tint = MaterialTheme.colorScheme.onSurfaceVariant) },
             trailingIcon = {
                 if (uiState.searchQuery.isNotBlank()) {
                     IconButton(onClick = { viewModel.onSearchQueryChanged("") }) {
-                        Icon(Icons.Default.Clear, contentDescription = "Clear search")
+                        Icon(Icons.Default.Clear, contentDescription = "Clear search", tint = MaterialTheme.colorScheme.onSurfaceVariant)
                     }
                 }
             },
@@ -68,7 +68,7 @@ fun RepositoriesScreen(
             colors = OutlinedTextFieldDefaults.colors(
                 focusedContainerColor = MaterialTheme.colorScheme.surfaceContainer,
                 unfocusedContainerColor = MaterialTheme.colorScheme.surfaceContainer,
-                focusedBorderColor = TerracottaPrimaryDark,
+                focusedBorderColor = MaterialTheme.colorScheme.primary,
                 unfocusedBorderColor = MaterialTheme.colorScheme.outlineVariant
             ),
             modifier = Modifier.fillMaxWidth(),
@@ -86,8 +86,16 @@ fun RepositoriesScreen(
                     label = { Text(filter) },
                     shape = PillBadgeShape,
                     colors = FilterChipDefaults.filterChipColors(
-                        selectedContainerColor = TerracottaPrimaryDark.copy(alpha = 0.2f),
-                        selectedLabelColor = TerracottaPrimaryDark
+                        selectedContainerColor = androidx.compose.ui.graphics.Color(0xFF2B477A),
+                        selectedLabelColor = androidx.compose.ui.graphics.Color(0xFFD3E3FD),
+                        containerColor = androidx.compose.ui.graphics.Color(0xFF1E2128),
+                        labelColor = androidx.compose.ui.graphics.Color(0xFF9AA0A6)
+                    ),
+                    border = FilterChipDefaults.filterChipBorder(
+                        borderColor = androidx.compose.ui.graphics.Color(0x14FFFFFF),
+                        selectedBorderColor = androidx.compose.ui.graphics.Color(0x33A8C7FA),
+                        enabled = true,
+                        selected = uiState.selectedFilter == filter
                     )
                 )
             }
@@ -124,7 +132,7 @@ fun RepositoriesScreen(
 
             LazyColumn(
                 verticalArrangement = Arrangement.spacedBy(14.dp),
-                contentPadding = PaddingValues(bottom = 16.dp),
+                contentPadding = PaddingValues(top = 4.dp, bottom = 80.dp),
                 modifier = Modifier.weight(1f)
             ) {
                 items(filteredRepos) { repo ->

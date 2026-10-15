@@ -198,7 +198,7 @@ fun SettingsScreen(
                             )
                         }
                         Text(
-                            text = "v1.0.4",
+                            text = "v1.0.5",
                             style = CodeTypography,
                             color = MaterialTheme.colorScheme.onSurfaceVariant
                         )
@@ -242,11 +242,11 @@ fun SettingsScreen(
             )
 
             EssentialsGroupedItem(
-                title = "What's New in v1.0.4",
-                subtitle = "Explore the Wafeer & Essentials M3 Expressive design overhaul",
+                title = "What's New in v1.0.5",
+                subtitle = "Explore the pure Material 3 pastels and Essentials floating dock overhaul",
                 icon = Icons.Default.AutoAwesome,
-                iconBackgroundColor = Color(0xFF272F24),
-                iconTintColor = Color(0xFFA3E635),
+                iconBackgroundColor = Color(0xFF1E2822),
+                iconTintColor = Color(0xFFB7F397),
                 position = GroupedCardPosition.Top,
                 onClick = { showWhatsNew = true }
             )
@@ -255,8 +255,8 @@ fun SettingsScreen(
                 title = "Check for Updates",
                 subtitle = "Verify latest GitHub releases and automated APK downloads",
                 icon = Icons.Default.Refresh,
-                iconBackgroundColor = Color(0xFF1E3545),
-                iconTintColor = Color(0xFF38BDF8),
+                iconBackgroundColor = Color(0xFF1E2633),
+                iconTintColor = Color(0xFFA8C7FA),
                 position = GroupedCardPosition.Bottom,
                 onClick = { viewModel.checkForAppUpdates() }
             )
@@ -265,7 +265,7 @@ fun SettingsScreen(
 
             // Essentials-Style About Card (photo_2026-10-15_19-28-47.jpg)
             GitForgeAboutCard(
-                version = "GitForge v1.0.4",
+                version = "GitForge v1.0.5",
                 onWhatsNewClick = { showWhatsNew = true }
             )
 

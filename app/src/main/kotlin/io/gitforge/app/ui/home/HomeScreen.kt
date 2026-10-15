@@ -19,6 +19,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.MergeType
 import androidx.compose.material.icons.filled.Close
@@ -53,6 +54,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
 import io.gitforge.core.designsystem.component.GitForgeEmptyView
 import io.gitforge.core.designsystem.component.GitForgeErrorView
@@ -70,6 +72,7 @@ import io.gitforge.core.designsystem.theme.EmeraldAccentDark
 import io.gitforge.core.designsystem.theme.HeroCardShape
 import io.gitforge.core.designsystem.theme.IconContainerShape
 import io.gitforge.core.designsystem.theme.ItemCardShape
+import io.gitforge.core.designsystem.theme.LavenderAccentDark
 import io.gitforge.core.designsystem.theme.PillBadgeShape
 import io.gitforge.core.designsystem.theme.RoseAccentDark
 import io.gitforge.core.designsystem.theme.SubCardShape
@@ -87,6 +90,25 @@ fun HomeScreen(
     modifier: Modifier = Modifier
 ) {
     val uiState by viewModel.uiState.collectAsState()
+    var selectedFilter by remember { mutableStateOf("All") }
+    var searchQuery by remember { mutableStateOf("") }
+
+    val filteredRepositories = remember(uiState.recentRepositories, selectedFilter, searchQuery) {
+        uiState.recentRepositories
+            .filter { repo ->
+                when (selectedFilter) {
+                    "Starred" -> repo.stargazersCount > 0
+                    "Forks" -> repo.fork
+                    "Sources" -> !repo.fork
+                    else -> true
+                }
+            }
+            .filter { repo ->
+                searchQuery.isBlank() ||
+                repo.name.contains(searchQuery, ignoreCase = true) ||
+                (repo.description?.contains(searchQuery, ignoreCase = true) == true)
+            }
+    }
 
     if (uiState.isLoading && uiState.recentRepositories.isEmpty()) {
         Column(
@@ -115,7 +137,7 @@ fun HomeScreen(
         modifier = modifier
             .fillMaxSize()
             .padding(horizontal = 16.dp),
-        contentPadding = PaddingValues(vertical = 16.dp),
+        contentPadding = PaddingValues(top = 8.dp, bottom = 80.dp),
         verticalArrangement = Arrangement.spacedBy(16.dp)
     ) {
         // In-App Update Available Banner
@@ -125,8 +147,8 @@ fun HomeScreen(
                 Surface(
                     modifier = Modifier.fillMaxWidth(),
                     shape = ItemCardShape,
-                    color = TerracottaPrimaryDark.copy(alpha = 0.12f),
-                    border = androidx.compose.foundation.BorderStroke(1.dp, TerracottaPrimaryDark.copy(alpha = 0.35f))
+                    color = Color(0xFF1E2838),
+                    border = androidx.compose.foundation.BorderStroke(1.dp, Color(0x33A8C7FA))
                 ) {
                     Row(
                         modifier = Modifier
@@ -143,7 +165,7 @@ fun HomeScreen(
                                 modifier = Modifier
                                     .size(38.dp)
                                     .clip(CircleShape)
-                                    .background(TerracottaPrimaryDark.copy(alpha = 0.2f)),
+                                    .background(Color(0x22A8C7FA)),
                                 contentAlignment = Alignment.Center
                             ) {
                                 Text("🚀", style = MaterialTheme.typography.titleMedium)
@@ -168,10 +190,10 @@ fun HomeScreen(
                             Button(
                                 onClick = onNavigateToSettings,
                                 shape = PillBadgeShape,
-                                colors = ButtonDefaults.buttonColors(containerColor = TerracottaPrimaryDark),
+                                colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.primary),
                                 contentPadding = PaddingValues(horizontal = 14.dp, vertical = 6.dp)
                             ) {
-                                Text("Update", style = MaterialTheme.typography.labelMedium)
+                                Text("Update", style = MaterialTheme.typography.labelMedium, color = Color(0xFF041E49))
                             }
                             IconButton(onClick = { viewModel.dismissUpdateBanner() }) {
                                 Icon(Icons.Default.Close, contentDescription = "Dismiss", modifier = Modifier.size(18.dp))
@@ -182,139 +204,161 @@ fun HomeScreen(
             }
         }
 
-        // Hero Card (Wafeer / Zenith caliber)
+        // Minimal Profile & Sync Header
         item {
             Surface(
                 modifier = Modifier.fillMaxWidth(),
-                shape = HeroCardShape,
-                color = MaterialTheme.colorScheme.surfaceContainer,
-                border = androidx.compose.foundation.BorderStroke(1.dp, MaterialTheme.colorScheme.outlineVariant)
+                shape = RoundedCornerShape(26.dp),
+                color = Color(0xFF1E2128),
+                border = androidx.compose.foundation.BorderStroke(1.dp, Color(0x1AFFFFFF))
             ) {
-                Column(modifier = Modifier.padding(20.dp)) {
-                    // Profile Header Row
-                    Row(
-                        modifier = Modifier.fillMaxWidth(),
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
-                        if (uiState.user != null) {
-                            AsyncImage(
-                                model = uiState.user?.avatarUrl,
-                                contentDescription = "User Avatar",
-                                modifier = Modifier
-                                    .size(54.dp)
-                                    .clip(IconContainerShape)
-                                    .border(1.dp, MaterialTheme.colorScheme.outlineVariant, IconContainerShape)
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 16.dp, vertical = 14.dp),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    if (uiState.user != null) {
+                        AsyncImage(
+                            model = uiState.user?.avatarUrl,
+                            contentDescription = "User Avatar",
+                            modifier = Modifier
+                                .size(48.dp)
+                                .clip(RoundedCornerShape(16.dp))
+                                .border(1.dp, Color(0x33A8C7FA), RoundedCornerShape(16.dp))
+                        )
+                        Spacer(modifier = Modifier.width(14.dp))
+                        Column(modifier = Modifier.weight(1f)) {
+                            Text(
+                                text = uiState.user?.name ?: uiState.user?.login ?: "Developer",
+                                style = MaterialTheme.typography.titleMedium,
+                                fontWeight = FontWeight.Bold,
+                                color = MaterialTheme.colorScheme.onSurface
                             )
-                            Spacer(modifier = Modifier.width(14.dp))
-                            Column(modifier = Modifier.weight(1f)) {
-                                Text(
-                                    text = uiState.user?.name ?: uiState.user?.login ?: "Developer",
-                                    style = MaterialTheme.typography.titleLarge,
-                                    fontWeight = FontWeight.Bold,
-                                    color = MaterialTheme.colorScheme.onSurface
-                                )
-                                Text(
-                                    text = "@${uiState.user?.login}",
-                                    style = MaterialTheme.typography.bodyMedium,
-                                    color = TerracottaPrimaryDark,
-                                    fontWeight = FontWeight.Medium
-                                )
-                            }
-                            Box(
-                                modifier = Modifier
-                                    .clip(PillBadgeShape)
-                                    .background(EmeraldAccentDark.copy(alpha = 0.12f))
-                                    .border(1.dp, EmeraldAccentDark.copy(alpha = 0.3f), PillBadgeShape)
-                                    .padding(horizontal = 10.dp, vertical = 5.dp)
-                            ) {
-                                Row(verticalAlignment = Alignment.CenterVertically) {
-                                    Box(
-                                        modifier = Modifier
-                                            .size(6.dp)
-                                            .clip(CircleShape)
-                                            .background(EmeraldAccentDark)
-                                    )
-                                    Spacer(modifier = Modifier.width(6.dp))
-                                    Text(
-                                        text = "Active",
-                                        style = MaterialTheme.typography.labelSmall,
-                                        color = EmeraldAccentDark,
-                                        fontWeight = FontWeight.Bold
-                                    )
-                                }
-                            }
-                        } else {
-                            Box(
-                                modifier = Modifier
-                                    .size(54.dp)
-                                    .clip(IconContainerShape)
-                                    .background(Color(0xFF21262D))
-                                    .border(1.5.dp, Color(0xFF30363D), IconContainerShape),
-                                contentAlignment = Alignment.Center
-                            ) {
-                                Icon(
-                                    imageVector = Icons.Outlined.Person,
-                                    contentDescription = "Guest Developer",
-                                    tint = Color(0xFF8B949E),
-                                    modifier = Modifier.size(28.dp)
-                                )
-                            }
-                            Spacer(modifier = Modifier.width(14.dp))
-                            Column(modifier = Modifier.weight(1f)) {
-                                Text(
-                                    text = "Developer Workspace",
-                                    style = MaterialTheme.typography.titleLarge,
-                                    fontWeight = FontWeight.Bold,
-                                    color = MaterialTheme.colorScheme.onSurface
-                                )
-                                Text(
-                                    text = "Local offline mode • Sign in for GitHub sync",
-                                    style = MaterialTheme.typography.bodySmall,
-                                    color = Color(0xFF8B949E),
-                                    fontWeight = FontWeight.Normal
-                                )
-                            }
-                            Button(
-                                onClick = onNavigateToSettings,
-                                shape = PillBadgeShape,
-                                colors = ButtonDefaults.buttonColors(
-                                    containerColor = Color(0xFF238636),
-                                    contentColor = Color.White
-                                ),
-                                contentPadding = PaddingValues(horizontal = 16.dp, vertical = 6.dp)
-                            ) {
-                                Text("Sign In", fontWeight = FontWeight.Bold)
-                            }
+                            Text(
+                                text = "@${uiState.user?.login}",
+                                style = MaterialTheme.typography.bodySmall,
+                                color = MaterialTheme.colorScheme.primary,
+                                fontWeight = FontWeight.Medium
+                            )
+                        }
+                    } else {
+                        Box(
+                            modifier = Modifier
+                                .size(48.dp)
+                                .clip(RoundedCornerShape(16.dp))
+                                .background(Color(0xFF262A33))
+                                .border(1.dp, Color(0x14FFFFFF), RoundedCornerShape(16.dp)),
+                            contentAlignment = Alignment.Center
+                        ) {
+                            Icon(
+                                imageVector = Icons.Outlined.Person,
+                                contentDescription = "Developer",
+                                tint = Color(0xFF9AA0A6),
+                                modifier = Modifier.size(24.dp)
+                            )
+                        }
+                        Spacer(modifier = Modifier.width(14.dp))
+                        Column(modifier = Modifier.weight(1f)) {
+                            Text(
+                                text = "Developer Workspace",
+                                style = MaterialTheme.typography.titleMedium,
+                                fontWeight = FontWeight.Bold,
+                                color = MaterialTheme.colorScheme.onSurface
+                            )
+                            Text(
+                                text = "Local offline storage active",
+                                style = MaterialTheme.typography.bodySmall,
+                                color = Color(0xFF9AA0A6)
+                            )
+                        }
+                        Button(
+                            onClick = onNavigateToSettings,
+                            shape = PillBadgeShape,
+                            colors = ButtonDefaults.buttonColors(
+                                containerColor = Color(0xFF234275),
+                                contentColor = Color(0xFFD3E3FD)
+                            ),
+                            contentPadding = PaddingValues(horizontal = 14.dp, vertical = 6.dp)
+                        ) {
+                            Text("Sign In", fontWeight = FontWeight.Bold, fontSize = 12.sp)
                         }
                     }
                 }
             }
         }
 
-        // Authentic Wafeer Hero Banner ("يافطة وفير الكبرى")
+        // Authentic Wafeer Hero Banner ("يافطة وفير الكبرى") - Real Dynamic Functionality
         item {
-            var selectedFilter by remember { mutableStateOf("All") }
-            val repoCount = uiState.user?.publicRepos ?: uiState.recentRepositories.size
+            val userLogin = uiState.user?.login ?: "biZenX"
             WafeerHeroBanner(
-                title = "Workspace Overview",
-                primaryMetricValue = "$repoCount Repositories",
-                primaryMetricLabel = "All local projects synchronized",
-                primaryMetricAvailable = "Available: 100% Offline",
-                secondaryLeftTitle = "Active Branch",
-                secondaryLeftValue = "main",
-                secondaryLeftSubtext = "HEAD -> origin/main",
-                badgeCount = "$repoCount",
-                badgeLabel = "Active",
-                filterOptions = listOf("All", "Starred", "Local", "Cloned"),
+                title = "Workspace Hub",
+                primaryMetricValue = "${filteredRepositories.size} Repositories",
+                primaryMetricLabel = if (selectedFilter == "All") "All repositories synchronized" else "Filtered by $selectedFilter",
+                primaryMetricAvailable = if (uiState.isAuthenticated) "Cloud Sync: Active" else "Local Workspace: Ready",
+                secondaryLeftTitle = "Active Developer",
+                secondaryLeftValue = userLogin,
+                secondaryLeftSubtext = if (uiState.isAuthenticated) "GitHub Connected" else "Guest Mode",
+                badgeCount = "${filteredRepositories.size}",
+                badgeLabel = if (selectedFilter == "All") "Total" else selectedFilter,
+                filterOptions = listOf("All", "Starred", "Sources", "Forks"),
                 selectedFilter = selectedFilter,
-                onFilterSelected = { selectedFilter = it }
+                onFilterSelected = { selectedFilter = it },
+                onEditClick = { viewModel.refresh() }
             )
         }
 
-        // Quick Tools (Expressive Pill Chips)
+        // Real-Time Instant Search Filter
+        item {
+            Surface(
+                modifier = Modifier.fillMaxWidth(),
+                shape = PillBadgeShape,
+                color = Color(0xFF1E2128),
+                border = androidx.compose.foundation.BorderStroke(1.dp, Color(0x14FFFFFF))
+            ) {
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 14.dp, vertical = 2.dp),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Icon(
+                        imageVector = Icons.Outlined.Folder,
+                        contentDescription = "Search",
+                        tint = Color(0xFF9AA0A6),
+                        modifier = Modifier.size(18.dp)
+                    )
+                    Spacer(modifier = Modifier.width(10.dp))
+                    androidx.compose.foundation.text.BasicTextField(
+                        value = searchQuery,
+                        onValueChange = { searchQuery = it },
+                        modifier = Modifier.weight(1f).padding(vertical = 12.dp),
+                        singleLine = true,
+                        textStyle = MaterialTheme.typography.bodyMedium.copy(color = MaterialTheme.colorScheme.onSurface),
+                        decorationBox = { innerTextField ->
+                            if (searchQuery.isEmpty()) {
+                                Text(
+                                    text = "Quick search in ${filteredRepositories.size} repositories...",
+                                    style = MaterialTheme.typography.bodyMedium,
+                                    color = Color(0xFF6B7280)
+                                )
+                            }
+                            innerTextField()
+                        }
+                    )
+                    if (searchQuery.isNotEmpty()) {
+                        IconButton(onClick = { searchQuery = "" }, modifier = Modifier.size(28.dp)) {
+                            Icon(Icons.Default.Close, contentDescription = "Clear", tint = Color(0xFF9AA0A6), modifier = Modifier.size(16.dp))
+                        }
+                    }
+                }
+            }
+        }
+
+        // Quick Tools (Essentials Pill Chips with Soft Pastels)
         item {
             Text(
-                text = "Workspace Tools",
+                text = "Developer Studio & Tools",
                 style = MaterialTheme.typography.titleMedium,
                 fontWeight = FontWeight.Bold,
                 color = MaterialTheme.colorScheme.onSurface
@@ -363,17 +407,25 @@ fun HomeScreen(
                         onClick = { onNavigateToProductivity("actions") }
                     )
                 }
+                item {
+                    ExpressiveActionPill(
+                        title = "Sync",
+                        icon = Icons.Default.Close,
+                        tint = LavenderAccentDark,
+                        onClick = { viewModel.refresh() }
+                    )
+                }
             }
         }
 
-        // Repositories Header
+        // Repositories Section Header
         item {
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Text(
-                    text = if (uiState.isAuthenticated) "Your Repositories" else "Featured Repositories",
+                    text = if (selectedFilter == "All") "Your Repositories" else "$selectedFilter Repositories",
                     style = MaterialTheme.typography.titleMedium,
                     fontWeight = FontWeight.Bold,
                     color = MaterialTheme.colorScheme.onSurface
@@ -382,14 +434,14 @@ fun HomeScreen(
                 Box(
                     modifier = Modifier
                         .clip(PillBadgeShape)
-                        .background(MaterialTheme.colorScheme.surfaceContainerHigh)
-                        .border(1.dp, MaterialTheme.colorScheme.outlineVariant, PillBadgeShape)
+                        .background(Color(0xFF262A33))
+                        .border(1.dp, Color(0x14FFFFFF), PillBadgeShape)
                         .padding(horizontal = 10.dp, vertical = 4.dp)
                 ) {
                     Text(
-                        text = "${uiState.recentRepositories.size} Repos",
+                        text = "${filteredRepositories.size} Repos",
                         style = MaterialTheme.typography.labelSmall,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        color = Color(0xFFB0B7C3),
                         fontWeight = FontWeight.Medium
                     )
                 }
@@ -397,16 +449,16 @@ fun HomeScreen(
         }
 
         // Repositories List
-        if (uiState.recentRepositories.isEmpty()) {
+        if (filteredRepositories.isEmpty()) {
             item {
                 GitForgeEmptyView(
-                    title = "No repositories found",
-                    description = "Search or clone repositories to get started with your workspace.",
+                    title = "No repositories matching filter",
+                    description = if (searchQuery.isNotEmpty()) "No results matching \"$searchQuery\"." else "No repositories under $selectedFilter filter.",
                     icon = Icons.Outlined.Folder
                 )
             }
         } else {
-            items(uiState.recentRepositories) { repo ->
+            items(filteredRepositories, key = { it.id }) { repo ->
                 WafeerRepositoryCard(
                     repository = repo,
                     onClick = {
@@ -418,7 +470,7 @@ fun HomeScreen(
         }
 
         item {
-            Spacer(modifier = Modifier.height(32.dp))
+            Spacer(modifier = Modifier.height(24.dp))
         }
     }
 }
@@ -432,8 +484,8 @@ fun ExpressiveActionPill(
 ) {
     Surface(
         shape = PillBadgeShape,
-        color = Color(0xFF21262D),
-        border = androidx.compose.foundation.BorderStroke(1.dp, Color(0x228B949E)),
+        color = Color(0xFF1E2128),
+        border = androidx.compose.foundation.BorderStroke(1.dp, Color(0x1AFFFFFF)),
         modifier = Modifier
             .height(44.dp)
             .bounceClick(onClick = onClick)
@@ -476,11 +528,11 @@ fun WafeerRepositoryCard(
     Surface(
         modifier = modifier
             .fillMaxWidth()
-            .clip(ItemCardShape)
+            .clip(RoundedCornerShape(22.dp))
             .bounceClick(onClick = onClick),
-        shape = ItemCardShape,
-        color = Color(0xFF161B22),
-        border = androidx.compose.foundation.BorderStroke(1.dp, Color(0x338B949E))
+        shape = RoundedCornerShape(22.dp),
+        color = Color(0xFF1E2128),
+        border = androidx.compose.foundation.BorderStroke(1.dp, Color(0x1AFFFFFF))
     ) {
         Column(modifier = Modifier.padding(18.dp)) {
             Row(
@@ -489,15 +541,15 @@ fun WafeerRepositoryCard(
             ) {
                 Box(
                     modifier = Modifier
-                        .size(36.dp)
-                        .clip(IconContainerShape)
-                        .background(TerracottaPrimaryDark.copy(alpha = 0.12f)),
+                        .size(38.dp)
+                        .clip(RoundedCornerShape(12.dp))
+                        .background(Color(0x22A8C7FA)),
                     contentAlignment = Alignment.Center
                 ) {
                     Icon(
                         imageVector = if (repository.private) Icons.Default.Lock else Icons.Outlined.Folder,
                         contentDescription = null,
-                        tint = TerracottaPrimaryDark,
+                        tint = Color(0xFFA8C7FA),
                         modifier = Modifier.size(20.dp)
                     )
                 }
@@ -540,8 +592,8 @@ fun WafeerRepositoryCard(
                 Box(
                     modifier = Modifier
                         .clip(PillBadgeShape)
-                        .background(MaterialTheme.colorScheme.surfaceContainerHigh)
-                        .border(1.dp, MaterialTheme.colorScheme.outlineVariant, PillBadgeShape)
+                        .background(Color(0xFF262A33))
+                        .border(1.dp, Color(0x14FFFFFF), PillBadgeShape)
                         .padding(horizontal = 8.dp, vertical = 3.dp)
                 ) {
                     Row(verticalAlignment = Alignment.CenterVertically) {
@@ -566,8 +618,8 @@ fun WafeerRepositoryCard(
                 Box(
                     modifier = Modifier
                         .clip(PillBadgeShape)
-                        .background(MaterialTheme.colorScheme.surfaceContainerHigh)
-                        .border(1.dp, MaterialTheme.colorScheme.outlineVariant, PillBadgeShape)
+                        .background(Color(0xFF262A33))
+                        .border(1.dp, Color(0x14FFFFFF), PillBadgeShape)
                         .padding(horizontal = 8.dp, vertical = 3.dp)
                 ) {
                     Row(verticalAlignment = Alignment.CenterVertically) {
