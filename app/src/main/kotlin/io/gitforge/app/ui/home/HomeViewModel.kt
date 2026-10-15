@@ -42,7 +42,7 @@ class HomeViewModel @Inject constructor(
 
     fun checkForUpdates() {
         viewModelScope.launch {
-            val res = updateManager.checkForUpdates(currentVersionName = "1.0.3", currentVersionCode = 4)
+            val res = updateManager.checkForUpdates(currentVersionName = "1.0.4", currentVersionCode = 5)
             if (res.isSuccess) {
                 _uiState.update { it.copy(updateAvailable = res.getOrNull()) }
             }

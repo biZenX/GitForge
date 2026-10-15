@@ -75,7 +75,7 @@ jobs:
           body: |
             # 🚀 GitForge ${{ env.TAG }} — Production Release
 
-            [![Creator](https://img.shields.io/badge/Created%20by-Arkim%20(@biZenX)-orange?logo=github&style=for-the-badge)](https://github.com/biZenX)
+            [![Creator](https://img.shields.io/badge/Created%20by-biZenX-orange?logo=github&style=for-the-badge)](https://github.com/biZenX)
             [![Platform](https://img.shields.io/badge/Platform-Android%208.0%2B%20(API%2027--36)-brightgreen?logo=android&style=for-the-badge)](https://github.com/biZenX/GitForge)
             [![License](https://img.shields.io/badge/License-GNU%20GPLv3-blue?style=for-the-badge)](https://github.com/biZenX/GitForge/blob/main/LICENSE)
 
@@ -84,10 +84,10 @@ jobs:
             ### 👨‍💻 Created & Designed by
             <p align="left">
               <a href="https://github.com/biZenX">
-                <img src="https://github.com/biZenX.png" width="96" height="96" style="border-radius: 28px;" alt="Arkim" />
+                <img src="https://github.com/biZenX.png" width="96" height="96" style="border-radius: 28px;" alt="biZenX" />
               </a>
               <br />
-              <strong>Arkim (<a href="https://github.com/biZenX">@biZenX</a>)</strong><br />
+              <strong>biZenX (<a href="https://github.com/biZenX">@biZenX</a>)</strong><br />
               <em>Lead Architect & Android Engineer</em>
             </p>
 
@@ -107,6 +107,6 @@ jobs:
             ```bash
             sha256sum -c GitForge-${{ env.TAG }}.apk.sha256
             ```
-            © 2026 Arkim (@biZenX). Licensed under the GNU General Public License v3.0 (GPLv3).
+            © 2026 biZenX (@biZenX). Licensed under the GNU General Public License v3.0 (GPLv3).
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

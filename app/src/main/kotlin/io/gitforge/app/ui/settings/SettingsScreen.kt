@@ -23,7 +23,11 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
-import io.gitforge.core.designsystem.component.GitForgeCreatorCard
+import androidx.compose.ui.graphics.Color
+import io.gitforge.core.designsystem.component.EssentialsGroupedItem
+import io.gitforge.core.designsystem.component.GitForgeAboutCard
+import io.gitforge.core.designsystem.component.GitForgeWhatsNewSheet
+import io.gitforge.core.designsystem.component.GroupedCardPosition
 import io.gitforge.core.designsystem.theme.CodeTypography
 import io.gitforge.core.designsystem.theme.ForgeEmerald
 
@@ -40,6 +44,7 @@ fun SettingsScreen(
 
     var patInput by remember { mutableStateOf("") }
     var showToken by remember { mutableStateOf(false) }
+    var showWhatsNew by remember { mutableStateOf(false) }
 
     Scaffold(
         topBar = {
@@ -193,7 +198,7 @@ fun SettingsScreen(
                             )
                         }
                         Text(
-                            text = "v1.0.3",
+                            text = "v1.0.4",
                             style = CodeTypography,
                             color = MaterialTheme.colorScheme.onSurfaceVariant
                         )
@@ -228,41 +233,41 @@ fun SettingsScreen(
                 }
             }
 
-            // Creator & Author Credits (Arkim @biZenX)
-            GitForgeCreatorCard()
+            // Ecosystem & Releases (Essentials Grouped Cards)
+            Text(
+                text = "Ecosystem & Releases",
+                style = MaterialTheme.typography.titleMedium,
+                fontWeight = FontWeight.Bold,
+                color = MaterialTheme.colorScheme.onSurface
+            )
 
-            // Application & Security Info Card
-            Card(
-                modifier = Modifier.fillMaxWidth(),
-                shape = RoundedCornerShape(16.dp),
-                colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceVariant)
-            ) {
-                Column(modifier = Modifier.padding(16.dp)) {
-                    Text(
-                        text = "About GitForge",
-                        style = MaterialTheme.typography.titleMedium,
-                        fontWeight = FontWeight.Bold
-                    )
-                    Spacer(modifier = Modifier.height(4.dp))
-                    Text(
-                        text = "Version 1.0.3 • Native Android Material 3 Expressive",
-                        style = MaterialTheme.typography.bodySmall,
-                        color = MaterialTheme.colorScheme.primary
-                    )
-                    Spacer(modifier = Modifier.height(8.dp))
-                    Text(
-                        text = """
-                            • Pure native Jetpack Compose & Material 3 Expressive
-                            • Eclipse JGit pure JVM engine for clone/commit/branch
-                            • Sandboxed workspace process & built-in terminal
-                            • AES256-GCM Keystore token encryption
-                            • Zero hardcoded secrets & full permission isolation
-                        """.trimIndent(),
-                        style = CodeTypography,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant
-                    )
-                }
-            }
+            EssentialsGroupedItem(
+                title = "What's New in v1.0.4",
+                subtitle = "Explore the Wafeer & Essentials M3 Expressive design overhaul",
+                icon = Icons.Default.AutoAwesome,
+                iconBackgroundColor = Color(0xFF272F24),
+                iconTintColor = Color(0xFFA3E635),
+                position = GroupedCardPosition.Top,
+                onClick = { showWhatsNew = true }
+            )
+
+            EssentialsGroupedItem(
+                title = "Check for Updates",
+                subtitle = "Verify latest GitHub releases and automated APK downloads",
+                icon = Icons.Default.Refresh,
+                iconBackgroundColor = Color(0xFF1E3545),
+                iconTintColor = Color(0xFF38BDF8),
+                position = GroupedCardPosition.Bottom,
+                onClick = { viewModel.checkForAppUpdates() }
+            )
+
+            Spacer(modifier = Modifier.height(12.dp))
+
+            // Essentials-Style About Card (photo_2026-10-15_19-28-47.jpg)
+            GitForgeAboutCard(
+                version = "GitForge v1.0.4",
+                onWhatsNewClick = { showWhatsNew = true }
+            )
 
             // Messages feedback
             if (uiState.successMessage != null) {
@@ -377,6 +382,12 @@ fun SettingsScreen(
                     }
                 }
             }
+        )
+    }
+
+    if (showWhatsNew) {
+        GitForgeWhatsNewSheet(
+            onDismissRequest = { showWhatsNew = false }
         )
     }
 }

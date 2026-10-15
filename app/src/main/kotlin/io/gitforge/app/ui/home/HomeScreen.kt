@@ -32,6 +32,7 @@ import androidx.compose.material.icons.filled.Terminal
 import androidx.compose.material.icons.outlined.BugReport
 import androidx.compose.material.icons.outlined.Folder
 import androidx.compose.material.icons.outlined.Star
+import androidx.compose.material.icons.outlined.Person
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
@@ -42,6 +43,9 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -50,7 +54,6 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
-import io.gitforge.core.designsystem.component.GitForgeCreatorCard
 import io.gitforge.core.designsystem.component.GitForgeEmptyView
 import io.gitforge.core.designsystem.component.GitForgeErrorView
 import io.gitforge.core.designsystem.component.GitForgeLanguageDot
@@ -58,6 +61,8 @@ import io.gitforge.core.designsystem.component.GitForgeLoadingView
 import io.gitforge.core.designsystem.component.GitForgeMetricCard
 import io.gitforge.core.designsystem.component.GitForgeShimmerCard
 import io.gitforge.core.designsystem.component.GitForgeStatusBadge
+import io.gitforge.core.designsystem.component.GitForgeWhatsNewSheet
+import io.gitforge.core.designsystem.component.WafeerHeroBanner
 import io.gitforge.core.designsystem.component.bounceClick
 import io.gitforge.core.designsystem.theme.AmberAccentDark
 import io.gitforge.core.designsystem.theme.CyanAccentDark
@@ -239,35 +244,42 @@ fun HomeScreen(
                                 }
                             }
                         } else {
-                            AsyncImage(
-                                model = "https://github.com/biZenX.png",
-                                contentDescription = "Arkim Avatar",
+                            Box(
                                 modifier = Modifier
                                     .size(54.dp)
                                     .clip(IconContainerShape)
-                                    .border(1.5.dp, TerracottaPrimaryDark, IconContainerShape)
-                            )
+                                    .background(Color(0xFF21262D))
+                                    .border(1.5.dp, Color(0xFF30363D), IconContainerShape),
+                                contentAlignment = Alignment.Center
+                            ) {
+                                Icon(
+                                    imageVector = Icons.Outlined.Person,
+                                    contentDescription = "Guest Developer",
+                                    tint = Color(0xFF8B949E),
+                                    modifier = Modifier.size(28.dp)
+                                )
+                            }
                             Spacer(modifier = Modifier.width(14.dp))
                             Column(modifier = Modifier.weight(1f)) {
                                 Text(
-                                    text = "Arkim",
+                                    text = "Developer Workspace",
                                     style = MaterialTheme.typography.titleLarge,
                                     fontWeight = FontWeight.Bold,
                                     color = MaterialTheme.colorScheme.onSurface
                                 )
                                 Text(
-                                    text = "@biZenX • GitForge Creator",
+                                    text = "Local offline mode • Sign in for GitHub sync",
                                     style = MaterialTheme.typography.bodySmall,
-                                    color = TerracottaPrimaryDark,
-                                    fontWeight = FontWeight.SemiBold
+                                    color = Color(0xFF8B949E),
+                                    fontWeight = FontWeight.Normal
                                 )
                             }
                             Button(
                                 onClick = onNavigateToSettings,
                                 shape = PillBadgeShape,
                                 colors = ButtonDefaults.buttonColors(
-                                    containerColor = TerracottaPrimaryDark,
-                                    contentColor = Color.Black
+                                    containerColor = Color(0xFF238636),
+                                    contentColor = Color.White
                                 ),
                                 contentPadding = PaddingValues(horizontal = 16.dp, vertical = 6.dp)
                             ) {
@@ -275,58 +287,28 @@ fun HomeScreen(
                             }
                         }
                     }
-
-                    Spacer(modifier = Modifier.height(18.dp))
-
-                    // 4 Expressive Stat Metric Cards (Wafeer / Mowatib style)
-                    Row(
-                        modifier = Modifier.fillMaxWidth(),
-                        horizontalArrangement = Arrangement.spacedBy(10.dp)
-                    ) {
-                        val repoCount = uiState.user?.publicRepos ?: uiState.recentRepositories.size
-                        GitForgeMetricCard(
-                            title = "Repos",
-                            value = "$repoCount",
-                            icon = Icons.Outlined.Folder,
-                            iconTint = TerracottaPrimaryDark,
-                            modifier = Modifier.weight(1f)
-                        )
-                        GitForgeMetricCard(
-                            title = "Followers",
-                            value = "${uiState.user?.followers ?: 0}",
-                            icon = Icons.Default.Star,
-                            iconTint = AmberAccentDark,
-                            modifier = Modifier.weight(1f)
-                        )
-                    }
-
-                    Spacer(modifier = Modifier.height(10.dp))
-
-                    Row(
-                        modifier = Modifier.fillMaxWidth(),
-                        horizontalArrangement = Arrangement.spacedBy(10.dp)
-                    ) {
-                        GitForgeMetricCard(
-                            title = "Git Engine",
-                            value = "JGit",
-                            icon = Icons.Default.Terminal,
-                            iconTint = EmeraldAccentDark,
-                            badgeText = "v6.10",
-                            modifier = Modifier.weight(1f),
-                            onClick = onNavigateToTerminal
-                        )
-                        GitForgeMetricCard(
-                            title = "Code Studio",
-                            value = "Ready",
-                            icon = Icons.Default.EditNote,
-                            iconTint = CyanAccentDark,
-                            badgeText = "Editor",
-                            modifier = Modifier.weight(1f),
-                            onClick = onNavigateToStudio
-                        )
-                    }
                 }
             }
+        }
+
+        // Authentic Wafeer Hero Banner ("يافطة وفير الكبرى")
+        item {
+            var selectedFilter by remember { mutableStateOf("All") }
+            val repoCount = uiState.user?.publicRepos ?: uiState.recentRepositories.size
+            WafeerHeroBanner(
+                title = "Workspace Overview",
+                primaryMetricValue = "$repoCount Repositories",
+                primaryMetricLabel = "All local projects synchronized",
+                primaryMetricAvailable = "Available: 100% Offline",
+                secondaryLeftTitle = "Active Branch",
+                secondaryLeftValue = "main",
+                secondaryLeftSubtext = "HEAD -> origin/main",
+                badgeCount = "$repoCount",
+                badgeLabel = "Active",
+                filterOptions = listOf("All", "Starred", "Local", "Cloned"),
+                selectedFilter = selectedFilter,
+                onFilterSelected = { selectedFilter = it }
+            )
         }
 
         // Quick Tools (Expressive Pill Chips)
@@ -435,10 +417,8 @@ fun HomeScreen(
             }
         }
 
-        // Creator Credits Card (Arkim @biZenX)
         item {
-            Spacer(modifier = Modifier.height(4.dp))
-            GitForgeCreatorCard()
+            Spacer(modifier = Modifier.height(32.dp))
         }
     }
 }

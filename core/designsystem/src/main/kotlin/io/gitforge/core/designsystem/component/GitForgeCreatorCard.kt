@@ -38,13 +38,13 @@ import io.gitforge.core.designsystem.theme.PillBadgeShape
 import io.gitforge.core.designsystem.theme.TerracottaPrimaryDark
 
 /**
- * Authentic Material 3 Expressive Creator Credit Card for Arkim (@biZenX).
+ * Authentic Material 3 Expressive Profile Card for biZenX.
  * Displays creator avatar, GitHub link, role pills, and GNU GPLv3 copyright notice.
  */
 @Composable
 fun GitForgeCreatorCard(
     modifier: Modifier = Modifier,
-    creatorName: String = "Arkim",
+    creatorName: String = "biZenX",
     creatorHandle: String = "biZenX",
     creatorAvatarUrl: String = "https://github.com/biZenX.png",
     profileUrl: String = "https://github.com/biZenX"

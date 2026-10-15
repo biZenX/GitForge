@@ -111,7 +111,7 @@ class SettingsViewModel @Inject constructor(
     fun checkForAppUpdates() {
         viewModelScope.launch {
             _uiState.update { it.copy(isCheckingUpdate = true, errorMessage = null) }
-            val result = updateManager.checkForUpdates(currentVersionName = "1.0.3", currentVersionCode = 4)
+            val result = updateManager.checkForUpdates(currentVersionName = "1.0.4", currentVersionCode = 5)
             _uiState.update { it.copy(isCheckingUpdate = false) }
 
             if (result.isSuccess) {
@@ -119,7 +119,7 @@ class SettingsViewModel @Inject constructor(
                 if (info != null) {
                     _uiState.update { it.copy(updateInfo = info) }
                 } else {
-                    _uiState.update { it.copy(successMessage = "GitForge is up to date (v1.0.3).") }
+                    _uiState.update { it.copy(successMessage = "GitForge is up to date (v1.0.4).") }
                 }
             } else {
                 _uiState.update { it.copy(errorMessage = "Update check failed: ${result.exceptionOrNull()?.message}") }

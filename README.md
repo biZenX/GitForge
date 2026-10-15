@@ -118,11 +118,11 @@ app/build/outputs/apk/release/app-release.apk
     <tr>
       <td width="120" valign="top">
         <a href="https://github.com/biZenX">
-          <img src="https://github.com/biZenX.png" width="110" height="110" style="border-radius: 28px;" alt="Arkim (@biZenX)" />
+          <img src="https://github.com/biZenX.png" width="110" height="110" style="border-radius: 28px;" alt="biZenX" />
         </a>
       </td>
       <td valign="middle">
-        <h3>Arkim (<a href="https://github.com/biZenX">@biZenX</a>)</h3>
+        <h3>biZenX (<a href="https://github.com/biZenX">@biZenX</a>)</h3>
         <p><strong>Lead Architect & Creator of GitForge</strong></p>
         <p>Crafting production-grade native Android applications with Material 3 Expressive, pure on-device JGit, and local development workspaces.</p>
         <p>
@@ -138,6 +138,6 @@ app/build/outputs/apk/release/app-release.apk
 
 ## 📜 Copyright & License
 
-Copyright © 2026 **Arkim** ([@biZenX](https://github.com/biZenX)). All Rights Reserved.  
+Copyright © 2026 **biZenX** ([@biZenX](https://github.com/biZenX)). All Rights Reserved.  
 This project is licensed under the **GNU General Public License v3.0 (GPLv3)**.  
 See the [LICENSE](LICENSE) file for complete terms and copyleft guarantees.

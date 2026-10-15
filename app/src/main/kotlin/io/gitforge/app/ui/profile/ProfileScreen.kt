@@ -20,7 +20,6 @@ import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import io.gitforge.app.ui.home.HomeViewModel
 import io.gitforge.app.ui.settings.SettingsViewModel
-import io.gitforge.core.designsystem.component.GitForgeCreatorCard
 import io.gitforge.core.designsystem.component.GitForgeEmptyView
 
 @Composable
@@ -48,8 +47,6 @@ fun ProfileScreen(
         Spacer(modifier = Modifier.height(24.dp))
 
         if (user == null) {
-            GitForgeCreatorCard()
-            Spacer(modifier = Modifier.height(20.dp))
             GitForgeEmptyView(
                 title = "Not Signed In",
                 description = "Sign in using a Personal Access Token or OAuth to view your personal GitHub repositories, stars, and organization workspaces.",
