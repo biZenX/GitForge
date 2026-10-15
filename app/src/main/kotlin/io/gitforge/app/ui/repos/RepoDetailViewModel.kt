@@ -23,6 +23,9 @@ import io.gitforge.core.database.WatchedReleaseEntity
 import io.gitforge.core.model.Release
 import java.util.UUID
 
+import io.gitforge.core.model.Issue
+import io.gitforge.core.model.PullRequest
+
 data class RepoDetailUiState(
     val isLoading: Boolean = false,
     val repository: Repository? = null,
@@ -30,7 +33,10 @@ data class RepoDetailUiState(
     val currentBranch: String = "main",
     val commits: List<CommitInfo> = emptyList(),
     val releases: List<Release> = emptyList(),
+    val issues: List<Issue> = emptyList(),
+    val pullRequests: List<PullRequest> = emptyList(),
     val isWatched: Boolean = false,
+    val isBranchSheetOpen: Boolean = false,
     val currentPath: String = "",
     val fileTree: List<FileNode> = emptyList(),
     val readmeContent: String? = null,
@@ -110,6 +116,8 @@ class RepoDetailViewModel @Inject constructor(
             val treeRes = repository.getContents(owner, repo, path = "", ref = defaultBranch)
             val readmeRes = repository.getReadme(owner, repo, ref = defaultBranch)
             val releasesRes = repository.getReleases(owner, repo)
+            val issuesRes = repository.getIssues(owner, repo)
+            val pullsRes = repository.getPullRequests(owner, repo)
 
             val decodedReadme = readmeRes.getOrNull()?.content?.let { raw ->
                 try {
@@ -127,12 +135,18 @@ class RepoDetailViewModel @Inject constructor(
                     currentBranch = defaultBranch,
                     commits = commitsRes.getOrDefault(emptyList()),
                     releases = releasesRes.getOrDefault(emptyList()),
+                    issues = issuesRes.getOrDefault(emptyList()).filter { !it.isPullRequest },
+                    pullRequests = pullsRes.getOrDefault(emptyList()),
                     fileTree = treeRes.getOrDefault(emptyList()),
                     readmeContent = decodedReadme,
                     errorMessage = repoRes.exceptionOrNull()?.message
                 )
             }
         }
+    }
+
+    fun setBranchSheetOpen(open: Boolean) {
+        _uiState.update { it.copy(isBranchSheetOpen = open) }
     }
 
     fun toggleWatch() {

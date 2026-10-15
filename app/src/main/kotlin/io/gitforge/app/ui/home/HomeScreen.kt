@@ -56,7 +56,9 @@ import io.gitforge.core.designsystem.component.GitForgeErrorView
 import io.gitforge.core.designsystem.component.GitForgeLanguageDot
 import io.gitforge.core.designsystem.component.GitForgeLoadingView
 import io.gitforge.core.designsystem.component.GitForgeMetricCard
+import io.gitforge.core.designsystem.component.GitForgeShimmerCard
 import io.gitforge.core.designsystem.component.GitForgeStatusBadge
+import io.gitforge.core.designsystem.component.bounceClick
 import io.gitforge.core.designsystem.theme.AmberAccentDark
 import io.gitforge.core.designsystem.theme.CyanAccentDark
 import io.gitforge.core.designsystem.theme.EmeraldAccentDark
@@ -82,7 +84,17 @@ fun HomeScreen(
     val uiState by viewModel.uiState.collectAsState()
 
     if (uiState.isLoading && uiState.recentRepositories.isEmpty()) {
-        GitForgeLoadingView(message = "Loading dashboard...")
+        Column(
+            modifier = modifier
+                .fillMaxSize()
+                .padding(16.dp),
+            verticalArrangement = Arrangement.spacedBy(14.dp)
+        ) {
+            GitForgeShimmerCard(height = 140.dp)
+            GitForgeShimmerCard(height = 84.dp)
+            GitForgeShimmerCard(height = 84.dp)
+            GitForgeShimmerCard(height = 84.dp)
+        }
         return
     }
 
@@ -439,11 +451,12 @@ fun ExpressiveActionPill(
     onClick: () -> Unit
 ) {
     Surface(
-        onClick = onClick,
         shape = PillBadgeShape,
-        color = MaterialTheme.colorScheme.surfaceContainerHigh,
-        border = androidx.compose.foundation.BorderStroke(1.dp, MaterialTheme.colorScheme.outlineVariant),
-        modifier = Modifier.height(44.dp)
+        color = Color(0xFF21262D),
+        border = androidx.compose.foundation.BorderStroke(1.dp, Color(0x228B949E)),
+        modifier = Modifier
+            .height(44.dp)
+            .bounceClick(onClick = onClick)
     ) {
         Row(
             modifier = Modifier.padding(horizontal = 14.dp),
@@ -484,10 +497,10 @@ fun WafeerRepositoryCard(
         modifier = modifier
             .fillMaxWidth()
             .clip(ItemCardShape)
-            .clickable(onClick = onClick),
+            .bounceClick(onClick = onClick),
         shape = ItemCardShape,
-        color = MaterialTheme.colorScheme.surfaceContainer,
-        border = androidx.compose.foundation.BorderStroke(1.dp, MaterialTheme.colorScheme.outlineVariant)
+        color = Color(0xFF161B22),
+        border = androidx.compose.foundation.BorderStroke(1.dp, Color(0x338B949E))
     ) {
         Column(modifier = Modifier.padding(18.dp)) {
             Row(

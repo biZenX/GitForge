@@ -32,6 +32,7 @@ import io.gitforge.app.ui.home.WafeerRepositoryCard
 import io.gitforge.core.designsystem.component.GitForgeEmptyView
 import io.gitforge.core.designsystem.component.GitForgeErrorView
 import io.gitforge.core.designsystem.component.GitForgeLoadingView
+import io.gitforge.core.designsystem.component.GitForgeShimmerCard
 import io.gitforge.core.designsystem.theme.PillBadgeShape
 import io.gitforge.core.designsystem.theme.TerracottaPrimaryDark
 
@@ -95,7 +96,12 @@ fun RepositoriesScreen(
         Spacer(modifier = Modifier.height(14.dp))
 
         if (uiState.isLoading && uiState.repositories.isEmpty()) {
-            GitForgeLoadingView(message = "Searching repositories...")
+            Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
+                GitForgeShimmerCard(height = 92.dp)
+                GitForgeShimmerCard(height = 92.dp)
+                GitForgeShimmerCard(height = 92.dp)
+                GitForgeShimmerCard(height = 92.dp)
+            }
         } else if (uiState.errorMessage != null && uiState.repositories.isEmpty()) {
             GitForgeErrorView(
                 message = uiState.errorMessage ?: "Failed to load repositories",

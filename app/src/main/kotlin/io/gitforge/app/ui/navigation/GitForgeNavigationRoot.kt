@@ -1,5 +1,9 @@
 package io.gitforge.app.ui.navigation
 
+import androidx.compose.animation.AnimatedContentTransitionScope
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -16,6 +20,7 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import io.gitforge.core.designsystem.component.bounceClick
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHostController
@@ -89,15 +94,24 @@ fun GitForgeNavigationRoot(
     val context = LocalContext.current
     val workspaceRoot = remember(context) { File(context.filesDir, "workspaces").apply { if (!exists()) mkdirs() } }
 
+    val currentScreenTitle = when (currentRoute) {
+        Screen.Home.route -> "GitForge"
+        Screen.Repositories.route -> "Repositories"
+        Screen.CodeStudio.route -> "Code Studio"
+        Screen.Notifications.route -> "Inbox & Activity"
+        Screen.Profile.route -> "Developer Profile"
+        else -> "GitForge"
+    }
+
     Scaffold(
         topBar = {
             if (isPrimaryScreen) {
                 TopAppBar(
                     title = {
                         Text(
-                            text = "GitForge",
+                            text = currentScreenTitle,
                             style = MaterialTheme.typography.titleLarge,
-                            fontWeight = FontWeight.Bold,
+                            fontWeight = FontWeight.ExtraBold,
                             color = MaterialTheme.colorScheme.primary
                         )
                     },
@@ -105,10 +119,16 @@ fun GitForgeNavigationRoot(
                         containerColor = MaterialTheme.colorScheme.surface
                     ),
                     actions = {
-                        IconButton(onClick = { navController.navigate(Screen.Terminal.route) }) {
+                        IconButton(
+                            onClick = { navController.navigate(Screen.Terminal.route) },
+                            modifier = Modifier.bounceClick(onClick = { navController.navigate(Screen.Terminal.route) })
+                        ) {
                             Icon(Icons.Default.Terminal, contentDescription = "Terminal", tint = MaterialTheme.colorScheme.tertiary)
                         }
-                        IconButton(onClick = { navController.navigate(Screen.Settings.route) }) {
+                        IconButton(
+                            onClick = { navController.navigate(Screen.Settings.route) },
+                            modifier = Modifier.bounceClick(onClick = { navController.navigate(Screen.Settings.route) })
+                        ) {
                             Icon(Icons.Default.Settings, contentDescription = "Settings", tint = MaterialTheme.colorScheme.onSurface)
                         }
                     }
@@ -156,7 +176,31 @@ fun GitForgeNavigationRoot(
             startDestination = Screen.Home.route,
             modifier = Modifier
                 .fillMaxSize()
-                .padding(paddingValues)
+                .padding(paddingValues),
+            enterTransition = {
+                slideIntoContainer(
+                    AnimatedContentTransitionScope.SlideDirection.Start,
+                    animationSpec = tween(300)
+                ) + fadeIn(animationSpec = tween(220))
+            },
+            exitTransition = {
+                slideOutOfContainer(
+                    AnimatedContentTransitionScope.SlideDirection.Start,
+                    animationSpec = tween(280)
+                ) + fadeOut(animationSpec = tween(200))
+            },
+            popEnterTransition = {
+                slideIntoContainer(
+                    AnimatedContentTransitionScope.SlideDirection.End,
+                    animationSpec = tween(300)
+                ) + fadeIn(animationSpec = tween(220))
+            },
+            popExitTransition = {
+                slideOutOfContainer(
+                    AnimatedContentTransitionScope.SlideDirection.End,
+                    animationSpec = tween(280)
+                ) + fadeOut(animationSpec = tween(200))
+            }
         ) {
             composable(Screen.Home.route) {
                 HomeScreen(

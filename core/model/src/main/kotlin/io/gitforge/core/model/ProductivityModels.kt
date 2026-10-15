@@ -70,6 +70,17 @@ data class Notification(
 )
 
 @Serializable
+data class ReleaseAsset(
+    val id: Long = 0L,
+    val name: String = "",
+    val size: Long = 0L,
+    @SerialName("download_count")
+    val downloadCount: Int = 0,
+    @SerialName("browser_download_url")
+    val browserDownloadUrl: String = ""
+)
+
+@Serializable
 data class Release(
     val id: Long = 0L,
     @SerialName("tag_name")
@@ -84,5 +95,6 @@ data class Release(
     val publishedAt: String? = null,
     @SerialName("html_url")
     val htmlUrl: String = "",
-    val author: User? = null
+    val author: User? = null,
+    val assets: List<ReleaseAsset> = emptyList()
 )
